@@ -1,4 +1,4 @@
-name_user = 'Богдан'                    #  input('Введіть своє ім\'я: ')
+name_user = input('Введіть своє ім\'я: ')
 name_user_up = name_user.capitalize()
 first_digit = name_user_up + ' введіть перше число: '
 second_digit = name_user_up + ' введіть друге число: '
@@ -14,19 +14,17 @@ print(name_user_up + """ будь-ласка оберіть операцію, н
 ! факторіал
 0 вийти з програми""")
 while True:
-    choice_operation = input()
+    choice_operation = input(name_user_up + ' ваш вибір операції: ')
     if choice_operation == '!':
         z = input(name_user_up + ' введіть число: ')
         if z.isdigit():
-            z = int(z)
+            z = float(z)
             i = 1
-            print(z)
-            while True:
-                z *= i
+            factorial = 1
+            while i <= z:
+                factorial *= i
                 i = i + 1
-                if i > z:
-                    print(result_print, z)
-                    break
+            print(result_print, factorial)
         else:
             print(f'{name_user_up} {z} не є числом.')
     elif choice_operation in ('+', '-', '*', '/', '//', '%', '**', '0'):
