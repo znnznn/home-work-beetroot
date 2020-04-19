@@ -49,7 +49,7 @@ while True:
         x = input(first_digit)
         y = input(second_digit)
         digit = x + y
-        if not digit.islower() or not digit.islower():
+        if not (digit.islower() or digit.isupper()):
             if choice_operation == '+':
                 print(f'{result_print} {x} + {y} = {(float(x) + float(y)):.{n}f}')
             elif choice_operation == '-':
