@@ -1,10 +1,9 @@
 name_user = input('Введіть своє ім\'я: ')
 name_user_strip = name_user.strip()
 while not name_user_strip.isalpha():
-    if not name_user_strip.isalpha():
-        print(name_user_strip + ' містить не лише букви')
-        name_user = input('Введіть своє ім\'я: ')
-        name_user_strip = name_user.strip()
+    print(name_user_strip + ' містить не лише букви')
+    name_user = input('Введіть своє ім\'я: ')
+    name_user_strip = name_user.strip()
 else:
     name_user_strip = name_user_strip.capitalize()
 name_user_up = name_user_strip
