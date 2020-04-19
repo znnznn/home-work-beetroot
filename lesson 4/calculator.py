@@ -1,3 +1,4 @@
+import random
 name_user = input('Введіть своє ім\'я: ')
 name_user_strip = name_user.strip()
 while not name_user_strip.isalpha():
@@ -19,12 +20,29 @@ print(name_user_up + """ будь-ласка оберіть операцію, н
 % остача від цілочисленого ділення 
 ** підведення числа у степінь
 ^^ знайти корінь цілого числа
+? генератор випадкових цілих чисел
 ! факторіал
 0 вийти з програми""")
 while True:
     choice_operation = input(name_user_up + ' ваш вибір операції: ')
     choice_operation = choice_operation.strip()
-    if choice_operation == '0':
+    if choice_operation == '?':
+        lower_limit = input(name_user_up + ' введіть нижню межу: ')
+        upper_limit = input(name_user_up + ' введіть верхню межу: ')
+        lower_limit = lower_limit.strip()
+        upper_limit = upper_limit.strip()
+        while not (lower_limit.isdigit() or upper_limit.isdigit()):
+            print(f'{name_user_up} {lower_limit} або {upper_limit} не є числом.')
+            lower_limit = input(name_user_up + ' введіть нижню межу: ')
+            upper_limit = input(name_user_up + ' введіть верхню межу: ')
+            lower_limit = lower_limit.strip()
+            upper_limit = upper_limit.strip()
+        else:
+            lower_limit = int(lower_limit.strip())
+            upper_limit = int(upper_limit.strip())
+            limit_digit = random.randrange(lower_limit, upper_limit)
+            print (limit_digit)
+    elif choice_operation == '0':
         print(f'Дякуємо {name_user_up} . До наступних обчислень.')
         break
     round_digit = input(name_user_up + ' введіть бажану кількість знаків після коми: ')
@@ -57,6 +75,8 @@ while True:
     elif choice_operation in ('+', '-', '*', '/', '//', '%', '**'):
         x = input(first_digit)
         y = input(second_digit)
+        x = x.strip()
+        y = y.strip()
         x_find_plus = x.find('+')
         x_find_minus = x.find('-')
         y_find_plus = y.find('+')
