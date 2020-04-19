@@ -23,6 +23,10 @@ print(name_user_up + """ будь-ласка оберіть операцію, н
 0 вийти з програми""")
 while True:
     choice_operation = input(name_user_up + ' ваш вибір операції: ')
+    choice_operation = choice_operation.strip()
+    if choice_operation == '0':
+        print(f'Дякуємо {name_user_up} . До наступних обчислень.')
+        break
     round_digit = input(name_user_up + ' введіть бажану кількість знаків після коми: ')
     while not round_digit.isdigit():
         print(round_digit + ' не є цілим числом')
@@ -50,10 +54,7 @@ while True:
             print(result_print, result_root)
         else:
             print(f'{name_user_up} {digit_root} або {root} не є числом.')
-    elif choice_operation in ('+', '-', '*', '/', '//', '%', '**', '0'):
-        if choice_operation == '0':
-            print(f'Дякуємо {name_user_up} . До наступних обчислень.')
-            break
+    elif choice_operation in ('+', '-', '*', '/', '//', '%', '**'):
         x = input(first_digit)
         y = input(second_digit)
         x_find_plus = x.find('+')
