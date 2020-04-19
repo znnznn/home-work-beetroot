@@ -1,7 +1,10 @@
 name_user = input('Введіть своє ім\'я: ')
 name_user_strip = name_user.strip()
 while not name_user_strip.isalpha():
-    name_user = input('Введіть своє ім\'я: ')
+    if not name_user_strip.isalpha():
+        print(name_user_strip + ' містить не лише букви')
+        name_user = input('Введіть своє ім\'я: ')
+        name_user_strip = name_user.strip()
 else:
     name_user_strip = name_user_strip.capitalize()
 name_user_up = name_user_strip
@@ -21,8 +24,10 @@ print(name_user_up + """ будь-ласка оберіть операцію, н
 while True:
     choice_operation = input(name_user_up + ' ваш вибір операції: ')
     round_digit = input(name_user_up + ' введіть бажану кількість знаків після коми: ')
-    while round_digit.islower() or round_digit.islower():
+    while not round_digit.isdigit():
+        print(round_digit + ' не є цілим числом')
         round_digit = input(name_user_up + ' введіть бажану кількість знаків після коми: ')
+        round_digit = round_digit
     else:
         n = round_digit
     if choice_operation == '!':
