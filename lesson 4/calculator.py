@@ -91,7 +91,7 @@ while True:
         y_symbol1 = y.find('*')
         y_symbol2 = y.find(',')
         digit_find_symbol = max([x_symbol, x_symbol1, x_symbol2, y_symbol, y_symbol1, y_symbol2])
-        if digit_plus_or_minus <= 0 >= digit_find_symbol and not (digit.islower() or digit.isupper()) and xy_point == 0:
+        if digit_plus_or_minus <= 0 > digit_find_symbol and not (digit.islower() or digit.isupper()) and xy_point == 0:
             if choice_operation == '+':
                 print(f'{result_print} {x} + {y} = {(float(x) + float(y)):.{n}f}')
             elif choice_operation == '-':
