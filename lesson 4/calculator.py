@@ -81,6 +81,7 @@ while True:
         x_find_minus = x.rfind('-')
         y_find_plus = y.rfind('+')
         y_find_minus = y.rfind('-')
+        digit_point = x.find('.') - x.rfind('.')
         digit_plus_or_minus = max([x_find_plus, x_find_minus, y_find_plus, y_find_minus])
         digit = x + y
         x_symbol = x.find('/')
@@ -90,7 +91,7 @@ while True:
         y_symbol1 = y.find('*')
         y_symbol2 = y.find(',')
         digit_find_symbol = max([x_symbol, x_symbol1, x_symbol2, y_symbol, y_symbol1, y_symbol2])
-        if digit_plus_or_minus <= 0 >= digit_find_symbol and not (digit.islower() or digit.isupper()):
+        if digit_plus_or_minus <= 0 >= digit_find_symbol and not (digit.islower(), digit.isupper(), digit_point == 0):
             if choice_operation == '+':
                 print(f'{result_print} {x} + {y} = {(float(x) + float(y)):.{n}f}')
             elif choice_operation == '-':
