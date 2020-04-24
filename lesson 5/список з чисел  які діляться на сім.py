@@ -10,8 +10,9 @@ print(list_work.index(7))
 print(len(list_work))
 len_work = len(list_work)
 while x < len_work:
-    y = list_work.index(x) % 7
-    if y == 0:
+    multiple_seven = list_work.index(x) % 7
+    multiple_five = list_work.index(x) % 5
+    if multiple_seven == 0 and not multiple_five == 0:
         list_seven.append(list_work.index(x))
     x += 1
 print(list_seven)
