@@ -27,20 +27,20 @@ else:
     i = 0
     list_digit = []
     list_digit1 = []
-    list_digit2 = []
     while i < count_limit:
         limit_digit1 = random.randint(lower_limit, upper_limit)
         limit_digit2 = random.randint(lower_limit, upper_limit)
-        limit_digit3 = random.randint(lower_limit, upper_limit)
         list_digit.append(limit_digit1)
         list_digit1.append(limit_digit2)
-        list_digit2.append(limit_digit3)
         i += 1
     print(result_list, list_digit)
     print(result_list, list_digit1)
-    print(result_list, list_digit2)
-    #list_digit1 = random.shuffle(list_digit)
-    #a = list_digit
-    #a = random.shuffle(a)
-
-#print(a)  чогось виводить None  коли пробую працювати з збережиним списком 
+i = 0
+list_new = []
+while i < len(list_digit):
+    if list_digit[i] not in list_digit1 and i < len(list_digit):
+        list_new.append(list_digit[i])
+    elif list_digit1[i] not in list_digit and i < len(list_digit1):
+        list_new.append(list_digit1[i])
+    i += 1
+print(list_new)
