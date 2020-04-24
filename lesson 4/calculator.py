@@ -31,7 +31,7 @@ while True:
         upper_limit = input(name_user_up + ' введіть верхню межу: ')
         lower_limit = lower_limit.strip()
         upper_limit = upper_limit.strip()
-        while not (lower_limit.isdigit() or upper_limit.isdigit()):
+        while not lower_limit.isdigit() or not upper_limit.isdigit():
             print(f'{name_user_up} {lower_limit} або {upper_limit} не є числом.')
             lower_limit = input(name_user_up + ' введіть нижню межу: ')
             upper_limit = input(name_user_up + ' введіть верхню межу: ')
