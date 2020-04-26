@@ -1,11 +1,13 @@
 import random
-print('Це генератор трьох списків випадкових цілих чесел.')
-please = 'Будь-ласка'
+print('''Це генератор двох списків випадкових цілих чесел, і третього
+списку з чисел які є в першій послідовності але немає в другій''')
+please = 'Будь ласка'
 sorry = 'Вибачте'
-limit_dn = 'Будь-ласка введіть нижню межу ціле число: '
-limit_up = 'Будь-ласка введіть верхню межу ціле число: '
-count = 'Будь-ласка введіть кількість випадкових цілих чисел: '
+limit_dn = f'{please} введіть нижню межу ціле число: '
+limit_up = f'{please} введіть верхню межу ціле число: '
+count = f'{please} введіть кількість випадкових цілих чисел: '
 result_list = 'Згенерована послідовність випадкових чисел така: '
+result_list_without_duplicates = 'Числа які є лише в першій полсідовності'
 max_digit = 'Максимальне число з послідовності чисел таке: '
 lower_limit = input(limit_dn)
 upper_limit = input(limit_up)
@@ -36,11 +38,16 @@ else:
     print(result_list, list_digit)
     print(result_list, list_digit1)
 i = 0
-list_new = []
+list_new1 = []
+list_new2 = []
+
+for list_new in list_digit:
+    if list_new not in list_new2:
+        list_new2.append(list_new)
+print(result_list_without_duplicates, list_new2, ' iterator for')
+
 while i < len(list_digit):
-    if list_digit[i] not in list_digit1 and i < len(list_digit):
-        list_new.append(list_digit[i])
-    elif list_digit1[i] not in list_digit and i < len(list_digit1):
-        list_new.append(list_digit1[i])
+    if list_digit[i] not in (list_digit1 and list_new1) and i < len(list_digit):
+        list_new1.append(list_digit[i])
     i += 1
-print(list_new)
+print(result_list_without_duplicates, list_new1, ' через while')
