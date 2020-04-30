@@ -20,12 +20,13 @@ operation_valid = {
     '//': 'ділення націло',
     '%': 'остача від цілочисленого ділення',
     '**': 'підведення числа у степінь',
-    '^^': 'найти корінь цілого числа',
+    '^': 'найти корінь цілого числа',
     '?': 'генератор випадкових цілих чисел',
     '!': 'факторіал',
     '0': 'вийти з програми'
 }
-print(name_user_up, *operation_valid.items(), sep='\n')
+operationToprint = [': '.join(prety) for prety in operation_valid.items()]
+print(name_user_up, *operationToprint, sep='\n')
 
 
 # функція повернення рандомного числа
@@ -92,7 +93,7 @@ while True:
             print(result_print, factorial)
         else:
             print(f'{name_user_up} {z_factorial} не є числом.')
-    elif choice_operation == '^^':
+    elif choice_operation == '^':
         digit_root = input(name_user_up + ' введіть число: ')
         root = input(name_user_up + ' введіть степінь кореня: ')
         if digit_root.isdigit() and root.isdigit():
