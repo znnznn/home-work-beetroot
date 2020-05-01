@@ -1,17 +1,17 @@
 import random
-name_user = input('Введіть своє ім\'я: ')
+name_user = input(f'Введіть своє ім\'я: ')
 name_user_strip = name_user.strip()
 while not name_user_strip.isalpha():
-    print(name_user_strip + ' містить не лише букви')
-    name_user = input('Введіть своє ім\'я: ')
+    print(f'{name_user_strip} містить не лише букви')
+    name_user = input(f'Введіть своє ім\'я: ')
     name_user_strip = name_user.strip()
 else:
     name_user_strip = name_user_strip.capitalize()
 name_user_up = name_user_strip
-first_digit = name_user_up + ' введіть перше число: '
-second_digit = name_user_up + ' введіть друге число: '
-result_print = name_user_up + ' ваш результат:'
-symbol_valid = list('+-1234567890.')
+first_digit = f'{name_user_up} введіть перше число: '
+second_digit = f'{name_user_up} введіть друге число: '
+result_print = f'{name_user_up} ваш результат:'
+symbol_valid = list(f'+-1234567890.')
 operation_valid = {
     '+': 'додавання',
     '-': 'віднімання',
@@ -20,7 +20,7 @@ operation_valid = {
     '//': 'ділення націло',
     '%': 'остача від цілочисленого ділення',
     '**': 'підведення числа у степінь',
-    '^': 'найти корінь цілого числа',
+    '^^': 'найти корінь цілого числа',
     '?': 'генератор випадкових цілих чисел',
     '!': 'факторіал',
     '0': 'вийти з програми'
@@ -31,14 +31,14 @@ print(name_user_up, *operationToprint, sep='\n')
 
 # функція повернення рандомного числа
 def random_choice():
-    lower_limit1 = input(name_user_up + ' введіть нижню межу: ')
-    upper_limit1 = input(name_user_up + ' введіть верхню межу: ')
+    lower_limit1 = input(f'{name_user_up} введіть нижню межу: ')
+    upper_limit1 = input(f'{name_user_up} введіть верхню межу: ')
     lower_limit1 = lower_limit1.strip()
     upper_limit1 = upper_limit1.strip()
     while not lower_limit1.isdigit() or not upper_limit1.isdigit() or upper_limit1 < lower_limit1:
-        print(f'{name_user_up} {lower_limit1} або {upper_limit1} не є числом.')
-        lower_limit1 = input(name_user_up + ' введіть нижню межу: ')
-        upper_limit1 = input(name_user_up + ' введіть верхню межу: ')
+        print(f'{name_user_up} {lower_limit1} або {upper_limit1} не є числом або {upper_limit1} < {lower_limit1}')
+        lower_limit1 = input(f'{name_user_up} введіть нижню межу: ')
+        upper_limit1 = input(f'{name_user_up} введіть верхню межу: ')
         lower_limit1 = lower_limit1.strip()
         upper_limit1 = upper_limit1.strip()
     else:
@@ -52,10 +52,9 @@ def random_choice():
 def choice_valide(operation):
     for t in operation:
         if t not in operation_valid:
-            print(t)
             return 1
         else:
-            return operation
+            return t
 
 
 
@@ -73,8 +72,8 @@ def round():
 while True:
     choice_operation = input(name_user_up + ' ваш вибір операції: ')
     choice_operation = choice_operation.strip()
-    choice_operation = choice_valide(choice_operation)
-    print(choice_operation)
+    choice_operation = {''.join(choice_operation)}
+    choice_operation = (choice_valide(choice_operation))
     if choice_operation == '?':
         print(random_choice())
         continue
@@ -93,7 +92,7 @@ while True:
             print(result_print, factorial)
         else:
             print(f'{name_user_up} {z_factorial} не є числом.')
-    elif choice_operation == '^':
+    elif choice_operation == '^^':
         digit_root = input(name_user_up + ' введіть число: ')
         root = input(name_user_up + ' введіть степінь кореня: ')
         if digit_root.isdigit() and root.isdigit():
@@ -119,7 +118,7 @@ while True:
         for i in digit:
             if i not in symbol_valid:                  #  перевірка на валідність введених символів
                 digit = False
-        if digit_plus_or_minus <= 0 and digit != False and xy_point == 0:
+        if digit_plus_or_minus <= 0 and digit is not False and xy_point == 0:
             if choice_operation == '+':
                 print(f'{result_print} {x} + {y} = {(float(x) + float(y)):.{n}f}')
             elif choice_operation == '-':
