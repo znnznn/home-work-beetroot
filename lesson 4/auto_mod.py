@@ -5,8 +5,9 @@ import math
 def check_valid_digit(str_digit):
     symbol_valid = '*+-1234567890./^^'
     symbol_valid_place = str_digit.find('/') * str_digit.find('*') * str_digit.find('^')
+    count_point = str_digit.count('.')
     for item in str_digit:
-        if item not in symbol_valid or symbol_valid_place == 0:
+        if item not in symbol_valid or symbol_valid_place == 0 or count_point > 2:
             return False
         return True
 
@@ -75,10 +76,10 @@ def auto_mod(name_user_up):
                     print(f'{name_user_up} Ви ввели незрозумілий вираз :')
                     continue
                 x, y, choice_operation = float(one_digit_new), float(two_digit_new), operation_new
-                print(x, y, choice_operation)
+                print(x, y, choice_operation, 5)
             else:
                 print(f'{name_user_up} Ви ввели надто мало даних :')
         return x, y, choice_operation  # пише Перед призначенням може бути посилання на локальну змінну 'x'
 
 
-print(auto_mod())
+print(auto_mod('HHh'))
