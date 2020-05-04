@@ -1,5 +1,5 @@
 import random
-from _auto_mod import auto_mod
+import calc_mod
 name_user = input('Введіть своє ім\'я: ')
 name_user_strip = name_user.strip()
 while not name_user_strip.isalpha():
@@ -27,7 +27,8 @@ operation_valid = {
     '0': 'вийти з програми',
     'auto': 'автоматичний розрахунок на основі виразу (приклад: -1--1)',
 }
-print(name_user_up, *operation_valid.items(), sep='\n')
+operationToprint = [': '.join(prety) for prety in operation_valid.items()]
+print(name_user_up, *operationToprint, sep='\n')
 
 
 # функція повернення рандомного числа
@@ -110,7 +111,8 @@ while True:
         print(f'{name_user_up} {choice_operation} не підтримується.')
     elif choice_operation == 'auto':
         a = name_user_up
-        auto = auto_mod(a)
+        from calc_mod.func_calc_mod import auto_mod
+        auto = auto_mod(name_user_up)
     else:
         n = round()
         x = input(first_digit)
@@ -127,7 +129,7 @@ while True:
         for i in digit:
             if i not in symbol_valid:                  #  перевірка на валідність введених символів
                 digit = False
-        if digit_plus_or_minus <= 0 and digit is False and xy_point == 0:
+        if digit_plus_or_minus <= 0 and digit is not False and xy_point == 0:
             if choice_operation == '+':
                 print(f'{result_print} {x} + {y} = {(float(x) + float(y)):.{n}f}')
             elif choice_operation == '-':
