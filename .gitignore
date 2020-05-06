@@ -2,3 +2,5 @@
 *.xml
 *.html
 
+.idea\
+__pycache__\
