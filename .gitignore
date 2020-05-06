@@ -1,5 +1,5 @@
-.idea
-.xml
-.html
-.idea/misc.xml
+*.idea
+*.xml
+*.html
+*.idea/misc.xml
 *.xml
