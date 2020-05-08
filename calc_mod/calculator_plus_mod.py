@@ -1,5 +1,4 @@
 import random
-import calc_mod
 name_user = input('Введіть своє ім\'я: ')
 name_user_strip = name_user.strip()
 while not name_user_strip.isalpha():
@@ -54,10 +53,8 @@ def random_choice():
 def choice_valide(operation):
     for t in operation:
         if t not in operation_valid:
-            print(t)
-            return 1
+            return False
         else:
-            print(operation)
             return t
 
 
@@ -72,12 +69,10 @@ def round():
         return round_digit
 
 
-
-
-
 while True:
     choice_operation = input(name_user_up + ' ваш вибір операції: ')
     choice_operation = choice_operation.strip()
+    choice_operation_if_not_valid = choice_operation
     choice_operation = {''.join(choice_operation)}
     choice_operation = (choice_valide(choice_operation))
     print(choice_operation)
@@ -107,11 +102,11 @@ while True:
             print(result_print, result_root)
         else:
             print(f'{name_user_up} {digit_root} або {root} не є числом.')
-    elif choice_operation == 1:
-        print(f'{name_user_up} {choice_operation} не підтримується.')
+    elif choice_operation is False:
+        print(f'{name_user_up} {choice_operation_if_not_valid} не підтримується.')
     elif choice_operation == 'auto':
         a = name_user_up
-        from calc_mod.func_calc_mod import auto_mod
+        from calc_mod.func_calc_mod import auto_mod         # виклик функції автомода AUTOMOD
         auto = auto_mod(name_user_up)
     else:
         n = round()
@@ -127,7 +122,7 @@ while True:
         digit_plus_or_minus = max([x_find_plus, x_find_minus, y_find_plus, y_find_minus])
         digit = x + y
         for i in digit:
-            if i not in symbol_valid:                  #  перевірка на валідність введених символів
+            if i not in symbol_valid:                  # перевірка на валідність введених символів
                 digit = False
         if digit_plus_or_minus <= 0 and digit is not False and xy_point == 0:
             if choice_operation == '+':
