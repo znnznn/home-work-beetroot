@@ -79,8 +79,7 @@ def auto_mod(name_user_up):
                 x, y, choice_operation = float(one_digit_new), float(two_digit_new), operation_new
                 print(x, y, choice_operation)
                 from calc_mod.func_calc import calculator
-                calculator(x, y, choice_operation, name_user_up)
+                calculator(x, y, choice_operation, name_user_up)  # виклик функції калькулятора длдя роботи з виразом
                 break
             else:
                 print(f'{name_user_up} Ви ввели надто мало даних.')
-    
