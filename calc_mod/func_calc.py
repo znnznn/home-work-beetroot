@@ -1,6 +1,6 @@
 def calculator(x, y, choice_operation, name_user_up):
     result_print = name_user_up + ' ваш результат:'
-    from .calculator_plus_mod import round
+    from .calculator_plus_mod import round  # виклик функції заокруглення
     n = round()
     if choice_operation == '^^':
         digit_root = x
