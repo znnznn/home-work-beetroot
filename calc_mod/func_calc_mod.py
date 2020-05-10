@@ -1,5 +1,3 @@
-
-
 # перевірка на валідність введених символів
 def check_valid_digit(str_digit):
     symbol_valid = '*+-1234567890./^^'
