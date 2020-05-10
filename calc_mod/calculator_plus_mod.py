@@ -1,4 +1,5 @@
 import random
+from calc_mod.func_calc_mod import auto_mod     #  виклик функції автомода AUTOMOD
 name_user = input('Введіть своє ім\'я: ')
 name_user_strip = name_user.strip()
 while not name_user_strip.isalpha():
@@ -106,7 +107,6 @@ while True:
         print(f'{name_user_up} {choice_operation_if_not_valid} не підтримується.')
     elif choice_operation == 'auto':
         a = name_user_up
-        from calc_mod.func_calc_mod import auto_mod         # виклик функції автомода AUTOMOD
         auto = auto_mod(name_user_up)
     else:
         n = round()
