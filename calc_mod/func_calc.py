@@ -1,7 +1,16 @@
+def round(name_user_up):
+    round_digit = input(name_user_up + ' введіть бажану кількість знаків після коми: ')
+    while not round_digit.isdigit():
+        print(round_digit + ' не є цілим числом')
+        round_digit = input(name_user_up + ' введіть бажану кількість знаків після коми: ')
+        round_digit = round_digit
+    else:
+        return round_digit
+
+
 def calculator(x, y, choice_operation, name_user_up):
     result_print = name_user_up + ' ваш результат:'
-    from .calculator_plus_mod import round  # виклик функції заокруглення
-    n = round()
+    n = round(name_user_up)
     if choice_operation == '^^':
         digit_root = x
         root = y
