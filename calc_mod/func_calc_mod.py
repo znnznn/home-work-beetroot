@@ -23,7 +23,6 @@ def auto_mod(name_user_up):
         w1 = a.strip('+')
         w2 = w1.strip('^^')
         w = w2.rstrip('-')
-        print(w)
         n = False
         count = 0
         u = 0
@@ -50,7 +49,6 @@ def auto_mod(name_user_up):
                 one_digit = n[0]
                 two_digit = n[-1]
                 operation = n[1]
-                print(one_digit, two_digit, operation)
                 if count <= 3 and ('-' == one_digit[-1] or one_digit[-1] == '+'):
                     one_digit_new = one_digit[:-1]
                     two_digit_new = one_digit[-1] + two_digit
@@ -75,11 +73,8 @@ def auto_mod(name_user_up):
                     operation_new = operation
                 else:
                     print(f'{name_user_up} Ви ввели незрозумілий вираз :')
-                    continue
                 x, y, choice_operation = float(one_digit_new), float(two_digit_new), operation_new
-                print(x, y, choice_operation)
                 from calc_mod.func_calc import calculator
                 calculator(x, y, choice_operation, name_user_up)  # виклик функції калькулятора длдя роботи з виразом
-                break
             else:
                 print(f'{name_user_up} Ви ввели надто мало даних.')
