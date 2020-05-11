@@ -22,7 +22,7 @@ contacts = [
     },
 ]
 with open('phone_book.json', 'w') as phone_book:
-    json.dump(contacts, phone_book)
+    json.dump(contacts, phone_book, indent=4)
 
 
 
@@ -65,7 +65,7 @@ def delete(my_phone_book):
             print(f"Ви дійсно бажаєте видалити контект (yes/no)?: {name}")
             name_del = input('> ').strip()
             if name_del == 'yes':
-                contacts.remove(my_phone_book)
+                my_phone_book.remove(value)
                 print(f"Ви видалили контакт {name}")
 
 
@@ -111,8 +111,8 @@ print(*operation_listToprint, sep='\n')
 
 while True:
     print("Введiть команду: ")
-    command = input('> ').strip()
-    command = {''.join(command)}
+    command1 = input('> ').strip()
+    command = {''.join(command1)}
     command = choice_find(command, operation_list)
     if command == 'list':
         list(my_phone_book)
@@ -145,5 +145,5 @@ while True:
     elif command == 'exit':
         break
     else :
-        print("Неизвестная команда")
+        print(f"{command1} ця команда не підтримується.")
 my_phone_book.close()
