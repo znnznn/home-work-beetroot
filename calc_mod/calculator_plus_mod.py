@@ -27,7 +27,7 @@ operation_valid = {
     '0': 'вийти з програми',
     'auto': 'автоматичний розрахунок на основі виразу (приклад: -1--1)',
 }
-operationToprint = [': '.join(prety) for prety in operation_valid.items()]
+operationToprint = [': '.join(pretty) for pretty in operation_valid.items()]
 print(name_user_up, *operationToprint, sep='\n')
 
 
@@ -37,8 +37,8 @@ def random_choice():
     upper_limit1 = input(name_user_up + ' введіть верхню межу: ')
     lower_limit1 = lower_limit1.strip()
     upper_limit1 = upper_limit1.strip()
-    while not lower_limit1.isdigit() or not upper_limit1.isdigit() or upper_limit1 < lower_limit1:
-        print(f'{name_user_up} {lower_limit1} або {upper_limit1} не є числом.')
+    while not lower_limit1.isdigit() or not upper_limit1.isdigit() or int(upper_limit1) < int(lower_limit1):
+        print(f'{name_user_up} {lower_limit1} або {upper_limit1} не є числом або {upper_limit1} > {lower_limit1}.')
         lower_limit1 = input(name_user_up + ' введіть нижню межу: ')
         upper_limit1 = input(name_user_up + ' введіть верхню межу: ')
         lower_limit1 = lower_limit1.strip()
@@ -52,11 +52,12 @@ def random_choice():
 
 # функція перевірки операції на валідність
 def choice_valide(operation):
+    oper_user = None
     for t in operation:
-        if t not in operation_valid:
-            return False
-        else:
-            return t
+        if t in operation_valid:
+            oper_user = t
+            break
+    return oper_user
 
 
 # функция перевірка на валідність числа кількість знаків після коми
@@ -103,7 +104,7 @@ while True:
             print(result_print, result_root)
         else:
             print(f'{name_user_up} {digit_root} або {root} не є числом.')
-    elif choice_operation is False:
+    elif choice_operation is None:
         print(f'{name_user_up} {choice_operation_if_not_valid} не підтримується.')
     elif choice_operation == 'auto':
         a = name_user_up
