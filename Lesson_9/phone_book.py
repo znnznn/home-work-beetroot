@@ -171,7 +171,7 @@ try:
                 command_find = choice_find(command_find, find_list)
                 if command_find == 'name':
                     criterion = 'name'
-                    print("Введіть iм'я: ")
+                    print("Введіть iм\'я: ")
                     print(find(my_phone_book, criterion))
                 elif command_find == 'last name':
                     criterion = 'last name'
@@ -185,14 +185,18 @@ try:
                     criterion = 'phone'
                     print("Введіть номер телеіону: ")
                     find(my_phone_book, criterion)
+                elif command == 'edit':
+                    print('Вибачте ця команда на стадії налаштування. Спробуйте іншу команду.')
+                    pass    #edit(my_phone_book)
                 else:
                     print("Даний критерій пошуку не підтримується")
         elif empty_list is False and command is not None:
             print('База даних порожня тому пошук, видалення, редагування неможливий. Спробуйте іншу команду.')
-            '''elif command == 'edit':
-            edit(my_phone_book)'''
+
         else:
             print(f"{command1} ця команда не підтримується.")
-#exept
+except Exception:
+    print('Вибачте критична помилка Вам доведеться перезапустити програму.')
 finally:
+    print('Дані збережено у файл.')
     json_file.close()
