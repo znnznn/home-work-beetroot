@@ -1,5 +1,4 @@
 import json
-
 import sys
 
 try:
@@ -9,7 +8,6 @@ try:
         filename = sys_argv1
     else:
         filename = sys.argv[1]
-    json_file = open(filename)
     print(f'Ви починаєте працювати з {filename} базою даних.')
 except FileNotFoundError:
     print(f'{sys_argv1} базу даних не знайдено.')
@@ -24,9 +22,9 @@ except FileNotFoundError:
 except Exception:
     print('Ви створили критичну помилку. Перезапустіть програму.')
     exit()
-
+json_file = open(filename, 'r')   # підсвічується filename
 try:
-    my_phone_book = json.load(json_file)   # підсвічується join_file
+    my_phone_book = json.load(json_file)
     empty_list = True
 except Exception:
     empty_list = False
@@ -34,18 +32,11 @@ except Exception:
 json_file.close()
 
 
-#my_phone_book = open('phone_book.json', 'w+')
 
-
-'''with open('phone_book.json', 'w') as phone_book:
-    json.dump(contacts, phone_book, indent=4)'''
-
-
-
-
-def list(my_phone_book):
-    for i in json.load(my_phone_book):
-        print(i, sep='\n')
+def list(filename):
+    with open(filename, 'r') as phone_book:
+        for i in json.load(phone_book):
+            print(i, sep='\n')
 
 
 def choice_find(x, y):
@@ -59,7 +50,7 @@ def choice_find(x, y):
 
 
 def find(my_phone_book, criterion):
-    find_value = input("> ")
+    find_value = input("> ").strip().capitalize()
     work_my_phone_book = my_phone_book.copy()
     row = []
     row_index = []
@@ -73,7 +64,7 @@ def find(my_phone_book, criterion):
             continue
         if item == 0:
             return print(f'Данні по {criterion} {find_value} відсутні.')
-    return print(f"Данні по {criterion} {find_value}: знайдено {len(row)}'\n' {row}', '\n'"), row_index
+    return print(f"Данні по {criterion} {find_value}: знайдено {len(row)}'\n' {row}', '\n"), row_index
 
 
 def delete(my_phone_book, criterion):
@@ -110,9 +101,20 @@ def delete(my_phone_book, criterion):
     return print(f'Спробуйте іншу операцію. Наприклад: find')
 
 
-def edit(my_phone_book, index_edit):
-    work_my_phone_book = my_phone_book.copy()
-    work_my_phone_book[index_edit] = add()
+def edit(index_edit):
+    #phone_book = open(filename, 'r')
+    phone_book = open(filename, 'r')
+    print(index_edit)
+    work_my_phone_book = json.load(phone_book)
+    phone_book.close()
+    phone_book = open(filename, 'w')
+    print(work_my_phone_book)
+    del work_my_phone_book[index_edit[0]]
+    print(work_my_phone_book)
+    json.dump(work_my_phone_book, phone_book, indent=4)
+    phone_book.close()
+    print('Введіть нові данні для даного контакту.')
+    add()
     print('Контакт відредаговано')
 
 
@@ -160,6 +162,7 @@ def add():
     phone_book.close()
     return print('Контакт збережено')
 
+
 find_list = {
     'name': 'пошук за ім\'ям',
     'last name': 'пошук за призвіщем',
@@ -195,23 +198,30 @@ try:
             empty_list = True
         elif empty_list is True:
             if command == 'list':
-                list(my_phone_book)
-            elif command == 'edit' :
-                print ( *find_listToprint, sep='\n' )
-                print ( 'Оберіть критерій пошуку' )
-                command_find = input ( '>' ).strip ()
-                command_find = {''.join ( command_find )}
-                command_find = choice_find ( command_find, find_list )
-                if command_find is not None :
-                    index_edit = find ( my_phone_book, command_find )
-                    if index_edit is not None :
-                        if len ( index_edit ) > 1 :
-                            print ( 'Ви вибрали для зміни більше ніж один контакт. Спробуйте ще раз' )
-                            break
-                        else :
-                            edit ( my_phone_book, index_edit )
-                        print ( 'Вибачте ця команда на стадії налаштування. Спробуйте іншу команду.' )
-                    # edit(my_phone_book)
+                list(filename)
+            elif command == 'edit':
+                print(*find_listToprint, sep='\n')
+                print('Оберіть критерій пошуку')
+                command_find1 = input('>').strip()
+                command_find = {''.join(command_find1)}
+                command_find = choice_find(command_find, find_list)
+                if command_find is not None:
+                    command_find = command_find1
+                    print('Введіть пошукове значення')
+                    edit_find, index_edit = find(my_phone_book, command_find)
+                    if len(index_edit) != 0:
+                        if len(index_edit) > 1:
+                            print(index_edit, len(index_edit))
+                            print('Ви вибрали для зміни більше ніж один контакт. Спробуйте ще раз')
+                            continue
+                        else:
+                            print(index_edit)
+                            edit(index_edit)
+                    else:
+                        print('Даного контакту не існує. Спробуйте ще раз.')
+                        continue
+                else:
+                    print("Даний критерій пошуку не підтримується")
             elif command == 'del':
                 criterion = 'phone'
                 delete(my_phone_book, criterion)
