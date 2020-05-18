@@ -55,6 +55,7 @@ operation_valid = {
     '-': 'Ввімкнеться попередній канал у списку',
     '+': 'Ввімкнеться наступний канал у списку',
     '?': 'Ввімкнеться канал у списку який ви оберете.',
+    '!': 'Показує поточний телеканал',
     '0': 'Ввімкнеться останній канал у списку',
     '*': 'Вихід'
 }
@@ -63,7 +64,7 @@ print(*operationToprint, sep='\n')
     #print(channels_obj.__class__.__getitem__(ControllerTV))
 print(ControllerTV.find_f(self=1))
 try:
-    index_tv = 0
+    index_tv = 1
     len_obj = channels_obj.__class__.__len__(channels_obj)
     while True:
         print('Оберіть операцію для управління каналами: ')
@@ -74,7 +75,9 @@ try:
         if tv_oper == '*':
             print('До побачення')
             break
-        if tv_oper == '1':
+        if tv_oper == '!':
+            print(ControllerTV.find_f(index_tv))
+        elif tv_oper == '1':
             print(ControllerTV.find_f(index_tv))
         elif tv_oper == '0':
             index_tv = len_obj
