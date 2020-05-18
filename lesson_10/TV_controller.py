@@ -49,7 +49,7 @@ a = ([i for i in enumerate(channels, 1)])
     #print(channels_obj.__class__.__len__(channels_obj))
 
     #print(channels_obj.__class__.__next__(d))
-list_oper1 = {'10-+?'}
+
 operation_valid = {
     '1': 'Ввімкнеться перший канал у списку',
     '-': 'Ввімкнеться попередній канал у списку',
