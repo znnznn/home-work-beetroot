@@ -95,9 +95,6 @@ try:
                 if not tv.isdigit():
                     print('Номер каналу місчтить не лише цифри: ')
                     tv = input('> ').strip()
-                else:
-                    print('Даного TV каналу не існує: ')
-                    tv = input('> ').strip()
             index_tv = int(tv)
             print(*channels_obj.get_tv(index_tv))
         else:
