@@ -7,6 +7,9 @@ class ControllerTV:
     def __str__(self):
         return f'{self.number} - {self.name}'
 
+    def __repr__(self):
+        return f'{self.number} - {self.name}'
+
     def first_tv(self):
         self.number = 1
         return self.current_tv()
@@ -20,7 +23,7 @@ class ControllerTV:
 
     def previous_tv(self):
         while True:
-            self.number = (self.number - 1) % (len(self.name) + 1)
+            self.number = (self.number - 1) % len(self.name)
             if self.number == 0:
                 self.number = len(self.name)
             return self.current_tv()
@@ -76,15 +79,15 @@ try:
             print('До побачення')
             break
         if tv_oper == '!':
-            print(channels_obj.current_tv())
+            print(*channels_obj.current_tv())
         elif tv_oper == '1':
-            print(channels_obj.first_tv())
+            print(*channels_obj.first_tv())
         elif tv_oper == '0':
-            print(channels_obj.last_tv())
+            print(*channels_obj.last_tv())
         elif tv_oper == '-':
-            print(channels_obj.previous_tv())
+            print(*channels_obj.previous_tv())
         elif tv_oper == '+':
-            print(channels_obj.next_tv())
+            print(*channels_obj.next_tv())
         elif tv_oper == '?':
             print('Натисніть номер каналу для перегляду: ')
             tv = (input('> ')).strip()
@@ -96,7 +99,7 @@ try:
                     print('Даного TV каналу не існує: ')
                     tv = input('> ').strip()
             index_tv = int(tv)
-            print(channels_obj.get_tv(index_tv))
+            print(*channels_obj.get_tv(index_tv))
         else:
             print('Дана операція не підтримується.')
 except Exception as h:
