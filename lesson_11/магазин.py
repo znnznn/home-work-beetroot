@@ -16,9 +16,9 @@ class Product:
 
     def creat_product(self):  # куда краще записувати створений продукт щоб він не перезаписався
         print('Enter the product type')
-        self.store_type = input('> ').strip()
+        self.store_type = input('> ').strip().capitalize()
         print('Enter the product name')
-        self.name = input('> ').strip()
+        self.name = input('> ').strip().capitalize()
         print('Enter the product price')
         self.price = input('> ').strip()
         while not type(self.price) != float:
@@ -161,7 +161,7 @@ try:
                 print('You entered not only numbers. Please try again.')
                 percent_size = input('> ')
             print('enter the product type or name.')
-            discount_product = input('> ').strip()
+            discount_product = input('> ').strip().capitalize()
             print(my_Store.discount(discount_product, percent_size))
         elif oper == '1':
             creats = Product.creat_product(Product)
@@ -169,7 +169,7 @@ try:
             print(my_Store.get_net_profit())
         elif oper == '-':
             print('enter the name of the product for sale.')
-            sell_product = input('> ').strip()
+            sell_product = input('> ').strip().capitalize()
             print('enter sales volume.')
             sell_volume = input('> ').strip()
             while not type(sell_volume) != float:
@@ -186,7 +186,7 @@ try:
             my_Store.add(creats_add, sell_volume)
         elif oper == '?':
             print('enter a name to verify')
-            find_product = input('> ').strip()
+            find_product = input('> ').strip().capitalize()
             verify = my_Store.find(find_product)
             if verify is None:
                 print(f'{find_product} not found')
