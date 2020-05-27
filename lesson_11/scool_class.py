@@ -6,8 +6,11 @@ class PersonSchool:
         self.age = age
         self.sex = sex
 
-    def __str__(self, *args, **kwargs):  # не виводить додаткові параметри з субкласу + не викликається метод
-        return f'{self.name} {self.last_name} - {self.age} років, {self.sex} {args} {kwargs}'
+    def __str__(self):  # не виводить додаткові параметри з субкласу + не викликається метод
+        return f'{self.name} {self.last_name} - {self.age} років, {self.sex}'
+
+    def __repr__(self):  # не виводить додаткові параметри з субкласу + не викликається метод
+        return f'{self.name} {self.last_name} - {self.age} років, {self.sex}'
 
     def current_person(self, *args, **kwargs):  # вертає кортеж цих елементів а при друку в стр не потрапляє
         return self.name, self.last_name, self.age, self.sex, *args, *kwargs
@@ -25,7 +28,7 @@ class StudentSchool(PersonSchool):
 
     def __init__(self, name, last_name, age, sex, course=None, *args, **kwargs):
         self.course = course
-        super().__init__(name, last_name, age, sex, course)
+        super().__init__(name, last_name, age, sex, course, *args, **kwargs)
 
     def __str__(self):
         return PersonSchool.__str__(self)
@@ -41,7 +44,7 @@ class StudentSchool(PersonSchool):
 class TeacherSchool(PersonSchool):
 
     def __init__(self, name, last_name, age, sex, salary=None, *args, **kwargs):
-        super().__init__(name, last_name, age, sex)
+        super().__init__(name, last_name, age, sex, salary, *args, **kwargs)
         self.salary = salary
 
     def find_tch(self, find_atr):
@@ -50,14 +53,12 @@ class TeacherSchool(PersonSchool):
 
 
 list_person = [()]
-
-
-
 x = 'f'
 d = 'l'
 hg = StudentSchool('f', 'd', '25', 'm', 'g')
 d = PersonSchool(d, ';;;', 25)
 e = PersonSchool(x)
+
 print(d.find(25))
 print(hg.find_st('g'))
 print(hg.current())
