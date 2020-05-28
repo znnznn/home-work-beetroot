@@ -14,16 +14,6 @@ class Product:
     def __repr__(self):
         return f'name {self.name} price {self.price:.2f}'
 
-    def creat_product(self):  # куда краще записувати створений продукт щоб він не перезаписався
-        print('Enter the product type')
-        self.store_type = input('> ').strip().capitalize()
-        print('Enter the product name')
-        self.name = input('> ').strip().capitalize()
-        print('Enter the product price')
-        self.price = input('> ').strip()
-        while not type(self.price) != float:
-            print('Enter the product price')
-            self.price = input('> ').strip()
 
 
 
@@ -42,19 +32,18 @@ class StorageProduct():
 
     def add(self, product_obj, amount):  # додає об'єкти у список або додає кількість дло існуючого
         try:
-            list_ = self.find(product_obj.name)
+            list_name = self.find(product_obj.name)
             list_type = self.find(product_obj.store_type)
-            if list_ is None or list_type is None:
+            if list_name is None or list_type is None:
                 if int(amount) or float(amount):
                     list_product = {}
-                    list_product['Type'] = product_obj.store_type
-                    list_product['Name'] = product_obj.name
+                    product_obj(Product)
                     list_product['Price'] = product_obj.price * 1.3
                     list_product['amount'] = float(amount)
                     self.storage.append(list_product)
             else:
                 for item in self.storage:
-                    if list_ == item:
+                    if list_name == item:
                         item['amount'] += float(amount)
         except Exception as e :
             print('Error in add.there may be a lack of products', e)
@@ -68,9 +57,9 @@ class StorageProduct():
 
     def sell_product(self, product_sell, amount):  # віднімає кількість проданого товару і рахує прибуток
         try:
-            list_ = self.find(product_sell)
+            list_product = self.find(product_sell)
             for item in self.storage:
-                if list_ == item and list_['amount'] >= float(amount):
+                if list_product == item and list_product['amount'] >= float(amount):
                     item['amount'] -= float(amount)
                     profit_gross = float(amount) * item['Price']
                     profit_net = float(amount) * (item['Price'] - item['Price'] / 1.3)
@@ -79,7 +68,7 @@ class StorageProduct():
                     self.gross_profit += profit_gross
                     self.net_profit += profit_net
                     return f'{product_sell} sold such quantity {amount} for the total amount {profit_gross}'
-                elif list_['amount'] < float(amount):
+                elif list_product['amount'] < float(amount):
                     raise ValueError
             return f'{product_sell} missing from the list'
         except Exception as e:
@@ -98,10 +87,10 @@ class StorageProduct():
         try:
             if float(size_percent) >= -100:
                 try:
-                    list_ = self.find(product_discount)
-                    if list_ is not None:
+                    list_product = self.find(product_discount)
+                    if list_product is not None:
                         for item in self.storage:
-                            if list_ == item:
+                            if list_product == item:
                                 product_discount = []
                                 product_discount.append(item)
                                 item['Price'] = item['Price'] * (1 + (float(size_percent)/100))
@@ -164,7 +153,7 @@ try:
             discount_product = input('> ').strip().capitalize()
             print(my_Store.discount(discount_product, percent_size))
         elif oper == '1':
-            creats = Product.creat_product(Product)
+            creats = Product.creat_product(Product)  # переробити без функції лише через ініт (функцію видалив)
         elif oper == '0':
             print(my_Store.get_net_profit())
         elif oper == '-':
@@ -177,7 +166,7 @@ try:
                 sell_volume = input('> ').strip()
             my_Store.sell_product(sell_product, sell_volume)
         elif oper == '+':
-            creats_add = Product.creat_product(Product)
+            creats_add = Product.creat_product(Product) # переробити без функції лише через ініт (функцію видалив)
             print('enter sales volume.')
             sell_volume = input('> ').strip()
             while not type(sell_volume) != float:
