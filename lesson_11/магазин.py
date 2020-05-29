@@ -49,10 +49,10 @@ class StorageProduct():
             print('Error in add.there may be a lack of products', e)
 
     def find(self, find_product):  # повертає шуканий елемент або None
-        for find_ in self.storage:
-            if find_product in find_.values():
+        for find_values in self.storage:
+            if find_product in find_values.values():
                 print('YES')
-                return find_
+                return find_values
        # raise ValueError
 
     def sell_product(self, product_sell, amount):  # віднімає кількість проданого товару і рахує прибуток
@@ -166,7 +166,7 @@ try:
                 sell_volume = input('> ').strip()
             my_Store.sell_product(sell_product, sell_volume)
         elif oper == '+':
-            creats_add = Product.creat_product(Product) # переробити без функції лише через ініт (функцію видалив)
+            creats_add = Product.creat_product(Product)  # переробити без функції лише через ініт (функцію видали
             print('enter sales volume.')
             sell_volume = input('> ').strip()
             while not type(sell_volume) != float:
