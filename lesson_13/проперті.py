@@ -14,6 +14,7 @@ class ControllerTV:
     def setTV(self, name):
         if name not in self.name:
             raise ValueError('Halepa')
+        print(self.name.index(name))
         return True
     name_ = property(setTV)
 
