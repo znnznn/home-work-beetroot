@@ -16,11 +16,11 @@ class ControllerTV:
             raise ValueError('Halepa')
         print(self.name.index(name))
         return True
-    name_ = property(setTV)
+    my_tv = property(getTV, setTV)
 
 
 channels = ["BBC", "Discovery", "TV1000", "MTV", "Sci-Fi", "GALAXY TV", "CNN"]
 channels_obj = ControllerTV(channels, number=1)
-
+print(channels_obj.getTV)
 x = channels_obj.setTV("MTV")
 print(x)
