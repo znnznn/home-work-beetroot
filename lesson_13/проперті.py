@@ -11,16 +11,15 @@ class ControllerTV:
         return f'{self.name} +++'
 
 
-    def setTV(self, name):
-        if name not in self.name:
-            raise ValueError('Halepa')
-        print(self.name.index(name))
-        return True
+    def setTV(self, list_tv):
+        self.name = list_tv
+        return self.name
     my_tv = property(getTV, setTV)
 
 
 channels = ["BBC", "Discovery", "TV1000", "MTV", "Sci-Fi", "GALAXY TV", "CNN"]
 channels_obj = ControllerTV(channels, number=1)
-print(channels_obj.getTV)
-x = channels_obj.setTV("MTV")
-print(x)
+print(channels_obj.my_tv)
+tv = ["MTV", "Sci-Fi", "GALAXY TV" ]
+channels_obj.my_tv = tv
+print(channels_obj.my_tv)
