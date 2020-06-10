@@ -1,19 +1,18 @@
 def with_index(iterable, start=0):
+    if start > len(iterable):
+        raise ValueError
     index_list = iter(range(start, len(iterable) + start))
-    print_list = []
     for item in iterable:
-        my_tuple = (next(index_list), item)
-        print_list.append(my_tuple)
-    return print_list
+        yield next(index_list), item
 
 
 def in_range(start, end, step=1):
-    my_range = []
+    if start > end:
+        raise ValueError
     numder = start
     while numder <= end:
-        my_range.append(numder)
+        yield numder
         numder += step
-    return my_range
 
 
 class My_iterable:
@@ -27,6 +26,9 @@ class My_iterable:
 
     def __repr__(self):
         return f'{self.my_iterable}'
+
+    def __getitem__(self, item):
+        return f'{self.my_iterable[item]}'
 
     def __iter__(self):
         return self
@@ -43,11 +45,12 @@ proba = 'Mamba'
 newProba = ['go', 1, 2, 'terra']
 newProba1 = ['lats', 3, 4, 'mars']
 proba1 = My_iterable(newProba, newProba1)
-result = with_index(proba)
+result = list(with_index(proba))
 print(result)
-result_range = in_range(0, 15, 5)
+result_range = list(in_range(0, 15, 5))
 print(result_range)
 print(proba1)
+print(proba1[1], 'hhh')
 #print(next(proba1))
 for item, i in proba1:
     print(item)
