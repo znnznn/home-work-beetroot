@@ -108,7 +108,7 @@ def delete(criterion: str):
 
 def edit(index_edit: int):
     """"edit an item by criterion"""
-    #phone_book = open(filename, 'r')
+
     phone_book = open(filename, 'r')
     print(index_edit)
     work_my_phone_book = json.load(phone_book)
@@ -152,7 +152,7 @@ def add():
         city_live = input("> ").strip().capitalize()
     new_contact = {
         'name': name,
-        'last name': last_name,      # тут в мене питання чи треба ця змінна в основному коді(типу базовий перелік)
+        'last name': last_name,
         'phone': phone,
         'city': city_live
     }
