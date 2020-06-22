@@ -22,7 +22,7 @@ def choice_find(x: Any, y: Dict) -> Optional[Dict]:
         return choice_oper
 
 
-def find(my_phone_book: list, criterion: str) -> Union[str, list]:
+def find(my_phone_book: list, criterion: str):
     """"search for an item by criterion"""
     find_value = input("> ").strip().capitalize()
     work_my_phone_book = my_phone_book.copy()
