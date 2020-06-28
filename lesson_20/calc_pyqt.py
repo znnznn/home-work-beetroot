@@ -31,6 +31,7 @@ class MyCalculatorInWindow(QMainWindow):
         mainLayout.addWidget(self.second_label)
 
         buttonLayout = QGridLayout()
+        self.result = ['']
         buttons = [
             {
                 'name': '1',
@@ -178,7 +179,9 @@ class MyCalculatorInWindow(QMainWindow):
             elif buttonName == '-':
                 btn.clicked.connect(partial(self.addSecondLable, buttonName))
             elif buttonName == '.':
-                btn.clicked.connect(partial(self.point_not_once, buttonName))
+                btn.clicked.connect(partial(self.point_only_once, buttonName))
+            elif buttonName == '%':
+                btn.clicked.connect(partial(self.result_percent))
             elif buttonName == '*':
                 btn.clicked.connect(partial(self.addSecondLable, buttonName))
             elif buttonName == '÷':
@@ -198,20 +201,19 @@ class MyCalculatorInWindow(QMainWindow):
             else:
                 btn.clicked.connect(partial(self.change_text, buttonName))
 
-
-    def editAreaText_pop(self):
+    def editAreaText_pop(self):  # not used
         """Get display's text del last item."""
         return self.editArea.setText(str(self.editArea.text()[:-1]))
 
-    def editAreaText(self):
+    def editAreaText(self):  # not used
         """Get display's text."""
         return self.editArea.text()
 
-    def second_lable_Text(self, text):
+    def second_lable_Text(self, text):  # not used
         """Get display's text."""
         return self.second_label.setText(self.editArea.text() + text)
 
-    def point_not_once(self, text):
+    def point_only_once(self, text):
         """checks whether a point has been pressed once  """
         calc_line = str(self.editArea.text())
         if len(calc_line) > 0 and calc_line[-1] != text:
@@ -223,40 +225,114 @@ class MyCalculatorInWindow(QMainWindow):
 
     def result_pow(self):
         calc_line = str(self.editArea.text())
-        text = f'Квадрат числа {calc_line} = '
-        result = calc_line
-        if int(calc_line):
-            result = int(calc_line) ** 2
-        elif float(calc_line):
+        if len(calc_line) == 0:
+            self.second_label.setText('0')
+            return self.editArea.setText('0')
+        else:
+            calc_line = str(self.editArea.text())
+            text = f'Квадрат числа {calc_line} = '
+        if float(calc_line):
             result = float(calc_line) ** 2
-        self.second_label.setText(f'{text}{result}')
-        return self.editArea.clear()
+        else:
+            result = int(calc_line) ** 2
+        self.result.append(f'{text}{result}')
+        self.second_label.setText(str(self.result[-1]))
+        return self.editArea.setText(str(result))
 
     def result_root(self):
         calc_line = str(self.editArea.text())
-        text = f'Квадратний корінь числа {calc_line} = '
+        if len(calc_line) == 0:
+            self.second_label.setText('0')
+            return self.editArea.setText('0')
+        else:
+            calc_line = str(self.editArea.text())
+            text = f'Квадратний корінь числа {calc_line} = '
         result = float(calc_line) ** 0.5
-        self.second_label.setText(f'{text}{result}')
-        return self.editArea.clear()
+        self.result.append(f'{text}{result}')
+        self.second_label.setText(str(self.result[-1]))
+        return self.editArea.setText(str(result))
 
     def result_factorial(self):
         calc_line = str(self.editArea.text())
+        if len(calc_line) == 0:
+            self.second_label.setText('0')
+            return self.editArea.setText('0')
         digit = math.trunc(float(calc_line))
         text = f'Факторіал числа {digit} = '
         result = math.factorial(digit)
-        self.second_label.setText(f'{text}{result}')
-        return self.editArea.clear()
+        self.result.append(f'{text}{result}')
+        self.second_label.setText(str(self.result[-1]))
+        return self.editArea.setText(str(result))
 
     def result_expression(self, text):
         self.addSecondLable(text)
-        calc_lable = str(self.second_label.text())
-        result = eval(calc_lable[:-1])
+        calc_lable = str(self.second_label.text().
+                         strip('=').rstrip('-').rstrip('+').rstrip('/').rstrip('*'))
+        result = eval(f'{calc_lable} + 0')
         self.second_label.clear()
-        text = f'Результат виразу {calc_lable} '
+        text = f'Результат виразу {calc_lable} = '
         self.second_label.setText(f'{text}{result}')
         return self.editArea.setText(str(result))
 
+    def result_percent(self):
+        """ Gives the result of processing the percentage button """
+        if str(self.result[-1]) == '':
+            calc_lable = '1+'
+            calc_line = '0'
+        else:
+            calc_lable = str(self.second_label.text())
+            calc_line = str(self.editArea.text())
+            self.result.append('=')
+        if calc_lable.count('=') > 0 or (len(calc_lable) == 0, len(calc_line) == 0):
+            result = float(calc_line)
+            text = f'Неймовірного числа не достатньо = '
+            self.second_label.setText(f'{text}{result}')
+            return self.editArea.setText(str(result))
+        mark = calc_lable[-1]
+        percent_expression = float(calc_lable[:-1]) / 100 * float(calc_line)
+        if mark == '+':
+            result = float(calc_lable[:-1]) + percent_expression
+            self.second_label.clear()
+            self.editArea.clear()
+            text = f'{calc_lable[:-1]} + {calc_line} % = '
+            self.second_label.setText(f'{text}{result}')
+            return self.editArea.setText(str(result))
+        elif mark == '-':
+            result = float(calc_lable[:-1]) - percent_expression
+            self.second_label.clear()
+            self.editArea.clear()
+            text = f'{calc_lable[:-1]} - {calc_line} % = '
+            self.second_label.setText(f'{text}{result}')
+            return self.editArea.setText(str(result))
+        elif mark == '/':
+            result = float(calc_lable[:-1]) * (100/float(calc_line))
+            self.second_label.clear()
+            self.editArea.clear()
+            text = f'{calc_lable[:-1]} / {calc_line} % = '
+            self.second_label.setText(f'{text}{result}')
+            return self.editArea.setText(str(result))
+        elif mark == '*':
+            result = float(calc_lable[:-1]) / (100/float(calc_line))
+            self.second_label.clear()
+            self.editArea.clear()
+            text = f'{calc_lable[:-1]} * {calc_line} % = '
+            self.second_label.setText(f'{text}{result}')
+            return self.editArea.setText(str(result))
+
     def addSecondLable(self, text):
+        """" Adds a number and a sign to second_lable """
+        calc_line = str(self.editArea.text())
+        calc_lable = str(self.result[-1])
+        if len(calc_line) > 0 and len(calc_lable) == 0 or calc_lable.count('=') > 0:
+            self.result.append(f'{calc_line}{text}')
+            self.second_label.setText(str(self.result[-1]))
+            return self.editArea.clear()
+        else:
+            self.result.append(f'{calc_lable}{calc_line}{text}')
+            self.second_label.setText(str(self.result[-1]))
+            return self.editArea.clear()
+
+    def addSecondLable1(self, text):  # not used
         """" Adds a number and a sign to second_lable """
         calc_line = str(self.editArea.text())
         calc_lable = str(self.second_label.text())
@@ -275,12 +351,14 @@ class MyCalculatorInWindow(QMainWindow):
         """changes the sign of the number to positive or negative"""
         calc_line = str(self.editArea.text())
         if calc_line[0] == '-':
-            return self.editArea.setText(f'+{calc_line[1:]}')
+            return self.editArea.setText(f'{calc_line[1:]}')
         elif calc_line[0] == '+':
             return self.editArea.setText(f'-{calc_line[1 :]}')
         return self.editArea.setText(f'-{calc_line[0:]}')
 
     def end(self):
+        """ Cleans result QLabel and QLineEdit """
+        self.result = ['']
         self.second_label.clear()
         return self.editArea.clear()
 
