@@ -315,10 +315,10 @@ class MyCalculatorInWindow(QMainWindow):
             else:
                 calc_lable = str(self.result[-1])
                 calc_line = str(self.editArea.text())
-
+                self.result.append('=')
             if calc_lable.count('e') > 0:
                 raise ValueError
-            if calc_lable.count('=') > 0 or (len(calc_lable) == 0, len(calc_line) == 0):
+            if calc_lable.count('=') > 0 or len(calc_lable) == 0 or len(calc_line) == 0:
                 result = float(calc_line)
                 text = f'Неймовірного числа не достатньо = '
                 self.second_label.setText(f'<h2><b><i>{text}{result}</i></b></h2>')
