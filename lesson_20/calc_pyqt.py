@@ -358,13 +358,19 @@ class MyCalculatorInWindow(QMainWindow):
         if str(self.editArea.text()) == '' == self.second_label.text():
             calc_line = '0'
             calc_lable = ''
+            print('1')
         elif not str(self.editArea.text()).isdigit() and len(str(self.editArea.text())) == 0:
             calc_line = ''
             calc_lable = str(self.result[-1][:-1])
         else:
             calc_line = str(self.editArea.text())
             calc_lable = str(self.result[-1])
-        if len(calc_line) > 0 and len(calc_lable) == 0 or calc_lable.count('=') > 0:
+        if calc_line[-1] == '.':
+            calc_line = calc_line + '0'
+            self.result.append(f'{calc_lable}{calc_line}{text}')
+            self.second_label.setText(str(self.result[-1]))
+            return self.editArea.clear()
+        elif len(calc_line) > 0 and len(calc_lable) == 0 or calc_lable.count('=') > 0:
             self.result.append(f'{calc_line}{text}')
             self.second_label.setText(str(self.result[-1]))
             return self.editArea.clear()
