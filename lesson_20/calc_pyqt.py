@@ -24,17 +24,14 @@ class MyCalculatorInWindow(QMainWindow):
         super().__init__(*args, **kwargs)
         self.setWindowTitle('C A L C U L A T O R')
         self.widget = QWidget(self.setGeometry(600, 300, 500, 500))
-        #widget = QWidget(self.setFixedSize(550, 550))
+        #  widget = QWidget(self.setFixedSize(550, 550))
         self.first_label = QLabel('<h1><b><i>Стандартний калькулятор</i></b></h1>')
         self.editArea = QLineEdit('')
         self.editArea.setReadOnly(True)
-
-
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(self.first_label)
         mainLayout.addWidget(self.editArea)
-        yyy = ''
-        self.second_label = QLabel(yyy)
+        self.second_label = QLabel('')
         mainLayout.addWidget(self.second_label)
 
         buttonLayout = QGridLayout()
@@ -362,6 +359,9 @@ class MyCalculatorInWindow(QMainWindow):
         if str(self.editArea.text()) == '' == self.second_label.text():
             calc_line = '0'
             calc_lable = ''
+        elif not str(self.editArea.text()).isdigit() and len(str(self.editArea.text())) == 0:
+            calc_line = ''
+            calc_lable = str(self.result[-1][:-1])
         else:
             calc_line = str(self.editArea.text())
             calc_lable = str(self.result[-1])
