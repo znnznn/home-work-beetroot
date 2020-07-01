@@ -3,7 +3,9 @@ import sys
 import math
 
 from functools import partial
-from typing import Union
+from typing import Union, NoReturn
+
+from PyQt5.Qt import Qt
 
 from PyQt5.QtWidgets import (QApplication,
                              QTextEdit,
@@ -26,6 +28,7 @@ class MyCalculatorInWindow(QMainWindow):
         self.first_label = QLabel('<h1><b><i>Стандартний калькулятор</i></b></h1>')
         self.editArea = QLineEdit('')
         self.editArea.setReadOnly(True)
+
 
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(self.first_label)
@@ -165,6 +168,7 @@ class MyCalculatorInWindow(QMainWindow):
             btn = QPushButton(name)
             self.buttons[name] = btn
             self.buttons[name].setFixedSize(85, 85)
+            self.buttons[name].font()
             buttonLayout.addWidget(btn,
                                    buttonConfig['row'],
                                    buttonConfig['col'],
@@ -239,7 +243,7 @@ class MyCalculatorInWindow(QMainWindow):
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
             return self.editArea.setText(str(result))
         except :
-            self.second_label.setText(str(f'<h2><b><i>Неможоиво обрахувати результат{calc_line}</i></b></h2>'))
+            self.second_label.setText(str(f'<h2><b><i>=Неможоиво обрахувати результат{calc_line}</i></b></h2>'))
             return self.editArea.setText('0')
 
     def result_root(self) -> str:
@@ -259,7 +263,7 @@ class MyCalculatorInWindow(QMainWindow):
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
             return self.editArea.setText(str(result))
         except Exception:
-            self.second_label.setText(str(f'<h2><b><i> =Неможоиво обрахувати результат{calc_line}</i></b></h2>'))
+            self.second_label.setText(str(f'<h2><b><i>=Неможливо обрахувати результат{calc_line}</i></b></h2>'))
             return self.editArea.setText('0')
 
     def result_factorial(self) -> str:
@@ -278,7 +282,7 @@ class MyCalculatorInWindow(QMainWindow):
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
             return self.editArea.setText(str(result))
         except ValueError:
-            self.second_label.setText(str(f'<h2><b><i> =Неможоиво обрахувати результат{calc_line}</i></b></h2>'))
+            self.second_label.setText(str(f'<h2><b><i>=Неможливо обрахувати результат{calc_line}</i></b></h2>'))
             return self.editArea.setText('0')
 
     def result_expression(self, text: str) -> str:
@@ -297,20 +301,21 @@ class MyCalculatorInWindow(QMainWindow):
         except ZeroDivisionError:
             self.second_label.setText(str(f'<h2><b><i>Увага ділення на 0 = 0</i></b></h2>'))
             return self.editArea.setText('0')
-        except Exception:
-            self.second_label.setText(str(f'<h2><b><i> =Неможоиво обрахувати результат{calc_lable}</i></b></h2>'))
+        except Exception as e:
+            print(e)
+            self.second_label.setText(str(f'<h2><b><i>=Неможливо обрахувати результат{calc_lable}</i></b></h2>'))
             return self.editArea.setText('0')
 
     def result_percent(self) -> str:
         """ Gives the result of processing the percentage button """
         try:
             if str(self.result[-1]) == '':
-                calc_lable = '1+'
+                calc_lable = '0+'
                 calc_line = '0'
             else:
-                calc_lable = str(self.second_label.text())
+                calc_lable = str(self.result[-1])
                 calc_line = str(self.editArea.text())
-                self.result.append('=')
+
             if calc_lable.count('e') > 0:
                 raise ValueError
             if calc_lable.count('=') > 0 or (len(calc_lable) == 0, len(calc_line) == 0):
@@ -349,7 +354,7 @@ class MyCalculatorInWindow(QMainWindow):
                 self.second_label.setText(f'<h2><b><i>{text}{result}</i></b></h2>')
                 return self.editArea.setText(str(result))
         except Exception:
-            self.second_label.setText(str(f'<h2><b><i> =Неможоиво обрахувати результат{calc_lable}</i></b></h2>'))
+            self.second_label.setText(str(f'<h2><b><i> =Неможливо обрахувати результат{calc_lable}</i></b></h2>'))
             return self.editArea.setText('0')
 
     def addSecondLable(self, text: str) -> Union[str, None]:
@@ -384,12 +389,12 @@ class MyCalculatorInWindow(QMainWindow):
             return self.editArea.setText(f'-{calc_line[1 :]}')
         return self.editArea.setText(f'-{calc_line[0:]}')
 
-    def end(self) -> Union[str, None]:
+    def end(self) -> NoReturn:
         """ Cleans result QLabel and QLineEdit and QWidget """
         self.editArea.clear()
+        self.second_label.clear()
         self.result = ['']
         self.widget = self.setGeometry(600, 300, 500, 500)
-        return self.second_label.clear()
 
 
 def main_window() -> None:
