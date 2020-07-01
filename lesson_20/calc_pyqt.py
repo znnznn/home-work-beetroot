@@ -239,7 +239,7 @@ class MyCalculatorInWindow(QMainWindow):
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
             return self.editArea.setText(str(result))
         except :
-            self.second_label.setText(str(f'<h2><b><i>=Неможоиво обрахувати результат{calc_line}</i></b></h2>'))
+            self.second_label.setText(str(f'<h2><b><i>=Неможливо обрахувати результат{calc_line}</i></b></h2>'))
             return self.editArea.setText('0')
 
     def result_root(self) -> str:
