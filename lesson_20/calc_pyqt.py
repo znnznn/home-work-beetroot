@@ -8,7 +8,7 @@ from typing import Union, NoReturn
 from PyQt5.Qt import Qt
 
 from PyQt5.QtWidgets import (QApplication,
-                             QTextEdit,
+                             QSizePolicy,
                              QWidget,
                              QVBoxLayout,
                              QGridLayout,
@@ -163,9 +163,8 @@ class MyCalculatorInWindow(QMainWindow):
         for buttonConfig in buttons:
             name = buttonConfig.get('name', '')
             btn = QPushButton(name)
+            btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
             self.buttons[name] = btn
-            self.buttons[name].setFixedSize(85, 85)
-            self.buttons[name].font()
             buttonLayout.addWidget(btn,
                                    buttonConfig['row'],
                                    buttonConfig['col'],
