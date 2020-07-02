@@ -269,7 +269,7 @@ class MyCalculatorInWindow(QMainWindow):
             if len(calc_line) == 0:
                 self.second_label.setText('<h2><b><i>0</i></b></h2>')
                 return self.editArea.setText('0')
-            elif calc_line.count('e') > 0:
+            elif len(calc_line) > 3 or calc_line.count('e') > 0:
                 raise ValueError
             digit = math.trunc(float(calc_line))
             text = f'Факторіал числа {digit} = '
@@ -278,7 +278,7 @@ class MyCalculatorInWindow(QMainWindow):
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
             return self.editArea.setText(str(result))
         except ValueError:
-            self.second_label.setText(str(f'<h2><b><i>=Неможливо обрахувати результат{calc_line}</i></b></h2>'))
+            self.second_label.setText(str(f'<h2><b><i>=Завелике число для обрахунку {calc_line}</i></b></h2>'))
             return self.editArea.setText('0')
 
     def result_expression(self, text: str) -> str:
