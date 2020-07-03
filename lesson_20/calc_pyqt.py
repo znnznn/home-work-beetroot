@@ -212,18 +212,16 @@ class MyCalculatorInWindow(QMainWindow):
     def point_only_once(self, text) -> str:
         """ Сhecks whether a point has been pressed once """
         calc_line = str(self.editArea.text())
-        if len(calc_line) > 0 and calc_line[-1] != text:
+        if len(calc_line) > 0 and calc_line.count(text) == 0:
             return self.editArea.setText(self.editArea.text() + text)
         elif len(calc_line) == 0:
             return self.editArea.setText('0' + text)
-        elif len(calc_line) > 0:
-            return self.editArea.setText(calc_line[:-1] + text)
 
     def result_pow(self) -> str:
         """ returns the square of a number """
         try:
             calc_line = str(self.editArea.text())
-            if calc_line.count('e') > 0:
+            if calc_line.count('e') > 0 or calc_line[0] == '-':
                 raise ValueError
             if len(calc_line) == 0:
                 self.second_label.setText('<h2><b><i>0</i></b></h2>')
@@ -252,14 +250,14 @@ class MyCalculatorInWindow(QMainWindow):
             else:
                 calc_line = str(self.editArea.text())
                 text = f'Квадратний корінь числа {calc_line} = '
-            if calc_line.count('e') != 0:
+            if calc_line.count('e') != 0 or calc_line.count('-'):
                 raise ValueError
             result = float(calc_line) ** 0.5
             self.result.append(f'{text}{result}')
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
             return self.editArea.setText(str(result))
         except Exception:
-            self.second_label.setText(str(f'<h2><b><i>=Неможливо обрахувати результат{calc_line}</i></b></h2>'))
+            self.second_label.setText(str(f'<h2><b><i>=Неможливо обрахувати результат {calc_line}</i></b></h2>'))
             return self.editArea.setText('0')
 
     def result_factorial(self) -> str:
@@ -358,10 +356,11 @@ class MyCalculatorInWindow(QMainWindow):
         if str(self.editArea.text()) == '' == self.second_label.text():
             calc_line = '0'
             calc_lable = ''
-            print('1')
         elif not str(self.editArea.text()).isdigit() and len(str(self.editArea.text())) == 0:
             calc_line = ''
             calc_lable = str(self.result[-1][:-1])
+            self.result.append ( f'{calc_lable}{calc_line}{text}')
+            return self.second_label.setText ( str ( self.result[-1]))
         else:
             calc_line = str(self.editArea.text())
             calc_lable = str(self.result[-1])
