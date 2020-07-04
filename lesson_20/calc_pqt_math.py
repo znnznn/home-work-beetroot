@@ -325,6 +325,9 @@ class MyCalculatorInWindow(QMainWindow):
                 text = f'{calc_lable} * {calc_line} % = '
                 self.second_label.setText(f'<h2><b><i>{text}{result}</i></b></h2>')
                 return self.editArea.setText(str(result))
+        except ZeroDivisionError:
+            self.second_label.setText(str(f'<h2><b><i> =Увага ділення на ноль{calc_lable}</i></b></h2>'))
+            return self.editArea.setText('0')
         except Exception as e:
             self.second_label.setText(str(f'<h2><b><i> =Неможливо обрахувати результат{calc_lable}</i></b></h2>'))
             return self.editArea.setText('0')
@@ -334,7 +337,7 @@ class MyCalculatorInWindow(QMainWindow):
         if self.editArea.text() == '' == self.second_label.text():
             return self.second_label.setText('0')
         elif self.editArea.text() == '':
-            self.two_digit[-1] = str ( self.one_digit[-1] )
+            self.two_digit[-1] = str(self.one_digit[-1])
             self.mark[-1] = text
             return self.addss()
         elif self.second_label.text() == '' or self.second_label.text().count('='):
@@ -349,17 +352,24 @@ class MyCalculatorInWindow(QMainWindow):
 
     def addss(self) -> str:
         """  Checks which mark and returns the result of calculation """
-        if self.mark[-1] == '+':
-            result = float(str(self.one_digit[-1])) + float(str(self.two_digit[-1]))
-        elif self.mark[-1] == '-':
-            result = float(str(self.one_digit[-1])) - float(str(self.two_digit[-1]))
-        elif self.mark[-1] == '*':
-            result = float(str(self.one_digit[-1])) * float(str(self.two_digit[-1]))
-        elif self.mark[-1] == '/':
-            result = float(str(self.one_digit[-1])) / float(str(self.two_digit[-1]))
-        self.second_label.setText(str(f'<h2><b><i>Результат виразу {self.one_digit[-1]}'
-                                      f'{self.mark[-1]}{self.two_digit[-1]} = {result}</i></b></h2>'))
-        return self.editArea.setText(str(result))
+        try:
+            if self.mark[-1] == '+':
+                result = float(str(self.one_digit[-1])) + float(str(self.two_digit[-1]))
+            elif self.mark[-1] == '-':
+                result = float(str(self.one_digit[-1])) - float(str(self.two_digit[-1]))
+            elif self.mark[-1] == '*':
+                result = float(str(self.one_digit[-1])) * float(str(self.two_digit[-1]))
+            elif self.mark[-1] == '/':
+                result = float(str(self.one_digit[-1])) / float(str(self.two_digit[-1]))
+            self.second_label.setText(str(f'<h2><b><i>Результат виразу {self.one_digit[-1]}'
+                                          f'{self.mark[-1]}{self.two_digit[-1]} = {result}</i></b></h2>'))
+            return self.editArea.setText(str(result))
+        except ZeroDivisionError:
+            self.second_label.setText(str(f'<h2><b><i> =Увага ділення на ноль {self.two_digit[-1]}</i></b></h2>'))
+            return self.editArea.setText('0')
+        except Exception:
+            self.second_label.setText(str(f'<h2><b><i> =Неможливо обрахувати результат</i></b></h2>'))
+            return self.editArea.setText('0')
 
     def change_text(self, text: str) -> str:
         """ Adds a button name to the string."""
