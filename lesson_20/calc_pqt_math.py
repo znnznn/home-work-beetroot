@@ -43,8 +43,8 @@ class MyCalculatorInWindow(QMainWindow):
         self.two_digit = ['']
         self.mark = ['']
         self.calc_round = ['']
-        self.button_round.addItems(['Заокруглення',
-                                    '2', '3', '5', '6', '10'])
+        self.button_round.addItems(['ЗАОКРУГЛЕННЯ',
+                                    '1', '2', '3', '5', '6', '10'])
         buttons = [
             {
                 'name': '1',
@@ -219,8 +219,9 @@ class MyCalculatorInWindow(QMainWindow):
         return self.editArea.setText(str(self.editArea.text()[:-1]))
 
     def digit_round(self) -> NoReturn:
-        if self.button_round.currentText() == 'Заокруглення':
-            self.calc_round[-1] = '1'
+        """ returns the number of characters after the point """
+        if self.button_round.currentText() == 'ЗАОКРУГЛЕННЯ':
+            self.calc_round[-1] = '0'
             return
         self.calc_round[-1] = str(self.button_round.currentText())
 
