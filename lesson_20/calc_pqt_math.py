@@ -8,6 +8,7 @@ from typing import Union, NoReturn
 from PyQt5.Qt import Qt
 
 from PyQt5.QtWidgets import (QApplication,
+                             QComboBox,
                              QSizePolicy,
                              QWidget,
                              QVBoxLayout,
@@ -35,10 +36,15 @@ class MyCalculatorInWindow(QMainWindow):
         mainLayout.addWidget(self.second_label)
 
         buttonLayout = QGridLayout()
+        self.button_round = QComboBox()
+        mainLayout.addWidget(self.button_round)
         self.result = ['']
         self.one_digit = ['0']
         self.two_digit = ['']
         self.mark = ['']
+        self.calc_round = ['']
+        self.button_round.addItems(['Заокруглення',
+                                    '2', '3', '5', '6', '10'])
         buttons = [
             {
                 'name': '1',
@@ -212,6 +218,12 @@ class MyCalculatorInWindow(QMainWindow):
         """Get display's text del last item."""
         return self.editArea.setText(str(self.editArea.text()[:-1]))
 
+    def digit_round(self) -> NoReturn:
+        if self.button_round.currentText() == 'Заокруглення':
+            self.calc_round[-1] = '1'
+            return
+        self.calc_round[-1] = str(self.button_round.currentText())
+
     def point_only_once(self, text) -> str:
         """ Сhecks whether a point has been pressed once """
         calc_line = str(self.editArea.text())
@@ -223,6 +235,7 @@ class MyCalculatorInWindow(QMainWindow):
     def result_pow(self) -> str:
         """ returns the square of a number """
         try:
+            self.digit_round()
             calc_line = str(self.editArea.text())
             if calc_line.count('e') > 0 or calc_line[0] == '-':
                 raise ValueError
@@ -236,7 +249,7 @@ class MyCalculatorInWindow(QMainWindow):
                 result = float(calc_line) ** 2
             else:
                 result = int(calc_line) ** 2
-            self.result.append(f'{text}{result}')
+            self.result.append(f'{text}{result:.{int( self.calc_round[-1])}f}')
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
             return self.editArea.setText(str(result))
         except :
@@ -246,6 +259,7 @@ class MyCalculatorInWindow(QMainWindow):
     def result_root(self) -> str:
         """ Returns the square root of a number"""
         try:
+            self.digit_round()
             calc_line = str(self.editArea.text())
             if len(calc_line) == 0:
                 self.second_label.setText('<h2><b><i>0</i></b></h2>')
@@ -266,6 +280,7 @@ class MyCalculatorInWindow(QMainWindow):
     def result_factorial(self) -> str:
         """ Returns the factorial of a number"""
         calc_line = str(self.editArea.text())
+        self.digit_round()
         try:
             if len(calc_line) == 0:
                 self.second_label.setText('<h2><b><i>0</i></b></h2>')
@@ -275,9 +290,9 @@ class MyCalculatorInWindow(QMainWindow):
             digit = math.trunc(float(calc_line))
             text = f'Факторіал числа {digit} = '
             result = math.factorial(digit)
-            self.result.append(f'{text}{result}')
+            self.result.append(f'{text}{result:.{int(self.calc_round[-1])}f}')
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
-            return self.editArea.setText(str(result))
+            return self.editArea.setText(str(f'{result:.{int(self.calc_round[-1])}f}'))
         except ValueError:
             self.second_label.setText(str(f'<h2><b><i>=Завелике число для обрахунку {calc_line}</i></b></h2>'))
             return self.editArea.setText('0')
@@ -285,6 +300,7 @@ class MyCalculatorInWindow(QMainWindow):
     def result_percent(self) -> str:
         """ Gives the result of processing the percentage button """
         try:
+            self.digit_round()
             self.two_digit[-1] = self.editArea.text()
             calc_lable = str(self.one_digit[-1])
             calc_line = str(self.two_digit[-1])
@@ -293,8 +309,8 @@ class MyCalculatorInWindow(QMainWindow):
             if calc_lable.count('=') > 0 or len(calc_lable) == 0 or len(calc_line) == 0:
                 result = calc_line
                 text = f'Неймовірного числа не достатньо = '
-                self.second_label.setText(f'<h2><b><i>{text}{result}</i></b></h2>')
-                return self.editArea.setText(str(result))
+                self.second_label.setText(f'<h2><b><i>{text}{result:.{int(self.calc_round[-1])}f}</i></b></h2>')
+                return self.editArea.setText(str(f'{result:.{int(self.calc_round[-1])}f}'))
             mark = self.mark[-1]
             percent_expression = float(calc_lable) / 100 * float(calc_line)
             if mark == '+':
@@ -302,29 +318,29 @@ class MyCalculatorInWindow(QMainWindow):
                 self.second_label.clear()
                 self.editArea.clear()
                 text = f'{calc_lable} + {calc_line} % = '
-                self.second_label.setText(f'<h2><b><i>{text}{result}</i></b></h2>')
-                return self.editArea.setText(str(result))
+                self.second_label.setText(f'<h2><b><i>{text}{result:.{int(self.calc_round[-1])}f}</i></b></h2>')
+                return self.editArea.setText(str(f'{result:.{int(self.calc_round[-1])}f}'))
             elif mark == '-':
                 result = float(calc_lable) - percent_expression
                 self.second_label.clear()
                 self.editArea.clear()
                 text = f'{calc_lable} - {calc_line} % = '
-                self.second_label.setText(f'<h2><b><i>{text}{result}</i></b></h2>')
-                return self.editArea.setText(str(result))
+                self.second_label.setText(f'<h2><b><i>{text}{result:.{int(self.calc_round[-1])}f}</i></b></h2>')
+                return self.editArea.setText(str(f'{result:.{int(self.calc_round[-1])}f}'))
             elif mark == '/':
                 result = float(calc_lable) * (100/float(calc_line))
                 self.second_label.clear()
                 self.editArea.clear()
                 text = f'{calc_lable} / {calc_line} % = '
-                self.second_label.setText(f'<h2><b><i>{text}{result}</i></b></h2>')
-                return self.editArea.setText(str(result))
+                self.second_label.setText(f'<h2><b><i>{text}{result:.{int(self.calc_round[-1])}f}</i></b></h2>')
+                return self.editArea.setText(str(f'{result:.{int(self.calc_round[-1])}f}'))
             elif mark == '*':
                 result = float(calc_lable) / (100/float(calc_line))
                 self.second_label.clear()
                 self.editArea.clear()
                 text = f'{calc_lable} * {calc_line} % = '
-                self.second_label.setText(f'<h2><b><i>{text}{result}</i></b></h2>')
-                return self.editArea.setText(str(result))
+                self.second_label.setText(f'<h2><b><i>{text}{result:.{int(self.calc_round[-1])}f}</i></b></h2>')
+                return self.editArea.setText(str(f'{result:.{int(self.calc_round[-1])}f}'))
         except ZeroDivisionError:
             self.second_label.setText(str(f'<h2><b><i> =Увага ділення на ноль{calc_lable}</i></b></h2>'))
             return self.editArea.setText('0')
@@ -353,6 +369,7 @@ class MyCalculatorInWindow(QMainWindow):
     def addss(self) -> str:
         """  Checks which mark and returns the result of calculation """
         try:
+            self.digit_round ()
             if self.mark[-1] == '+':
                 result = float(str(self.one_digit[-1])) + float(str(self.two_digit[-1]))
             elif self.mark[-1] == '-':
@@ -362,8 +379,9 @@ class MyCalculatorInWindow(QMainWindow):
             elif self.mark[-1] == '/':
                 result = float(str(self.one_digit[-1])) / float(str(self.two_digit[-1]))
             self.second_label.setText(str(f'<h2><b><i>Результат виразу {self.one_digit[-1]}'
-                                          f'{self.mark[-1]}{self.two_digit[-1]} = {result}</i></b></h2>'))
-            return self.editArea.setText(str(result))
+                                          f'{self.mark[-1]}{self.two_digit[-1]} ='
+                                          f' {result:.{int(self.calc_round[-1])}f}</i></b></h2>'))
+            return self.editArea.setText(str(f' {result:.{int(self.calc_round[-1])}f}'))
         except ZeroDivisionError:
             self.second_label.setText(str(f'<h2><b><i> =Увага ділення на ноль {self.two_digit[-1]}</i></b></h2>'))
             return self.editArea.setText('0')
