@@ -234,7 +234,7 @@ class MyCalculatorInWindow(QMainWindow):
             return self.editArea.setText('0' + text)
 
     def result_pow(self) -> str:
-        """ returns the square of a number """
+        """ Returns the square of a number """
         try:
             self.digit_round()
             calc_line = str(self.editArea.text())
