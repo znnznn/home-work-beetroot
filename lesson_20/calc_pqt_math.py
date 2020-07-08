@@ -271,7 +271,7 @@ class MyCalculatorInWindow(QMainWindow):
             if calc_line.count('e') != 0 or calc_line.count('-'):
                 raise ValueError
             result = float(calc_line) ** 0.5
-            self.result.append(f'{text}{result}')
+            self.result.append(f'{text}{result:.{int(self.calc_round[-1])}f}')
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
             return self.editArea.setText(str(result))
         except Exception:
