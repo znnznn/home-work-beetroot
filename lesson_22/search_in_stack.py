@@ -24,16 +24,17 @@ class My_Stack:
         """ removes the specified item from the stack """
         try:
             new_stack = []
-            i = 0
+            i = None
             while self.empty_cool_stack() is False:
                 ns = self.take_cool_stack()
                 if ns != item_search:
-                    new_stack.insert(0, ns)
+                    new_stack.append(ns)
                 elif ns == item_search:
                     i = ns
-            if i == 0:
+            if i is None:
                 raise ValueError
-            self.cool_stack = new_stack
+            while new_stack:
+                self.add_cool_stack(new_stack.pop())
             return i
         except ValueError:
             return False
@@ -41,11 +42,12 @@ class My_Stack:
     def __str__(self):
         return f'{list(self.cool_stack)}'
 
+
 rrr = [i for i in range(10)]
 super_stack = My_Stack()
 new_super_stack = My_Stack()
 
-print ( super_stack, '0' )
+print ( super_stack, '0')
 x = 0
 
 if super_stack.empty_cool_stack is False:
@@ -64,9 +66,9 @@ print (new_super_stack, '3')
 print(super_stack.empty_cool_stack(), '4')
 print(super_stack, '5')
 print(new_super_stack, '6')
-print(super_stack.empty_cool_stack())
-
-print(new_super_stack.get_from_stack(5))
+print(super_stack.empty_cool_stack(), 'Empty')
+print(new_super_stack.get_from_stack(5), '7')
+print(new_super_stack, '8')
 
 
 
