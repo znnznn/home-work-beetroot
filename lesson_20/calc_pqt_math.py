@@ -420,6 +420,7 @@ class MyCalculatorInWindow(QMainWindow):
         self.mark = ['']
         self.one_digit = ['0']
         self.two_digit = ['']
+        self.work = False
         self.widget = self.setGeometry(600, 300, 500, 500)
 
 
