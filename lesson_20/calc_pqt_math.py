@@ -39,6 +39,7 @@ class MyCalculatorInWindow(QMainWindow):
         self.button_round = QComboBox()
         mainLayout.addWidget(self.button_round)
         self.result = ['']
+        self.work = False
         self.one_digit = ['0']
         self.two_digit = ['']
         self.mark = ['']
@@ -220,6 +221,7 @@ class MyCalculatorInWindow(QMainWindow):
 
     def digit_round(self) -> NoReturn:
         """ returns the number of characters after the point """
+        self.work = True
         if self.button_round.currentText() == 'ЗАОКРУГЛЕННЯ':
             self.calc_round[-1] = '0'
             return
@@ -351,6 +353,7 @@ class MyCalculatorInWindow(QMainWindow):
 
     def addSecondLable(self, text):
         """ Adds a number and a sign to second_lable """
+        self.work = False
         if self.editArea.text() == '' == self.second_label.text():
             return self.second_label.setText('0')
         elif self.editArea.text() == '':
@@ -370,7 +373,7 @@ class MyCalculatorInWindow(QMainWindow):
     def addss(self) -> str:
         """  Checks which mark and returns the result of calculation """
         try:
-            self.digit_round ()
+            self.digit_round()
             if self.mark[-1] == '+':
                 result = float(str(self.one_digit[-1])) + float(str(self.two_digit[-1]))
             elif self.mark[-1] == '-':
@@ -392,6 +395,10 @@ class MyCalculatorInWindow(QMainWindow):
 
     def change_text(self, text: str) -> str:
         """ Adds a button name to the string."""
+        if self.work is True:
+            self.one_digit[-1] = self.editArea.text()
+            self.editArea.clear()
+        self.work = False
         return self.editArea.setText(self.editArea.text() + text)
 
     def positive_negative_number(self) -> str:
