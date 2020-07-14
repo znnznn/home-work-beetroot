@@ -1,15 +1,10 @@
 import sys
 import socket
-import math
 
-
-from functools import partial
 from typing import Union, NoReturn
-
-from PyQt5.Qt import Qt
+from functools import partial
 
 from PyQt5.QtWidgets import (QApplication,
-                             QComboBox,
                              QSizePolicy,
                              QWidget,
                              QVBoxLayout,
@@ -36,15 +31,12 @@ class MyServer(QMainWindow):
         self.second_label = QLabel('')
         mainLayout.addWidget(self.second_label)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.server_socket.bind(('localhost', 65000))
-        #self.server_send = self.server_socket.recv(1024)
-        buttonLayout = QGridLayout()
-        self.button_round = QComboBox()
-        mainLayout.addWidget(self.button_round)
+        self.server_socket.bind(('127.0.0.1', 65000))
 
+        buttonLayout = QGridLayout()
         buttons = [
             {
-                'name': 'on/off',
+                'name': 'receiving messages',
                 'row': 0,
                 'col': 0
             }
@@ -66,15 +58,20 @@ class MyServer(QMainWindow):
 
         for buttonName in self.buttons:
             btn = self.buttons[buttonName]
-            if buttonName == 'on/off':
+            if buttonName == 'receiving messages':
+
                 btn.clicked.connect(partial(self.start_server))
 
-    def start_server(self):
-        while True:
-            server_send = self.server_socket.recv(1024)
-            self.editArea.setText(server_send)
-            self.server_socket.close()
-            break
+    def start_server(self) -> NoReturn:
+        """ receives messages from the client """
+        try:
+            while True:
+                server_send = (self.server_socket.recv(1024)).decode('utf-8')
+                self.editArea.setText(server_send)
+                break
+        except Exception as e:
+            self.second_label.setText(f'Error : {e}')
+
 
 def main_window() -> None:
     """" calculator start function """
