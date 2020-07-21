@@ -34,31 +34,14 @@ class MyClient(QMainWindow):
         self.key = '5387623c612af64f83da5b790beef122'
 
         buttonLayout = QGridLayout()
-        buttons: List = [
-            {
-                'name': 'Дізнатись погоду',
-                'row': 0,
-                'col': 0
-            }
-        ]
-        self.buttons: Dict = {}
-        for buttonConfig in buttons:
-            name = buttonConfig.get('name', '')
-            btn = QPushButton(name)
-            btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-            self.buttons[name] = btn
-            buttonLayout.addWidget(btn,
-                                   buttonConfig['row'],
-                                   buttonConfig['col'],
-                                   )
+
+        btn = QPushButton('Дізнатись погоду')
+        btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        buttonLayout.addWidget(btn)
         mainLayout.addLayout(buttonLayout)
         self.widget.setLayout(mainLayout)
         self.setCentralWidget(self.widget)
-
-        for buttonName in self.buttons:
-            btn = self.buttons[buttonName]
-            if buttonName == 'Дізнатись погоду':
-                btn.clicked.connect(self.my_weather)
+        btn.clicked.connect(self.my_weather)
 
     def my_weather(self) -> NoReturn:
         """" sends a request for weather in the city on the HTTP server  """
@@ -71,14 +54,14 @@ class MyClient(QMainWindow):
                 weather.raise_for_status()
                 weather_city = weather.json()
                 self.second_label.setText(f"<h4><b><i>{str(weather_city['main']).strip('{}')}</i></b></h4>")
-                self.main_lable.setText ( f"<h1><b><i>"
-                                          f"{str ( weather_city['main']['temp'] ).strip ( '{}' )} ℃</i></b></h1>")
+                self.main_lable.setText(f"<h1><b><i>"
+                                        f"{str ( weather_city['main']['temp'] )} ℃</i></b></h1>")
             else:
                 raise ValueError
         except ValueError:
             self.second_label.setText('<h4><b><i>Оберіть інше місто для прогнозу погоди</i></b></h4>')
         except Exception as e:
-            if str(e).count('4') > 1:
+            if weather.status_code == 404:
                 self.second_label.setText(f'<h4><b><i>Місто {city.capitalize()} не знайдено</i></b></h4>')
             else:
                 self.second_label.setText(f'Error: {e}')
