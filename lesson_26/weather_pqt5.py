@@ -29,7 +29,7 @@ class MyClient(QMainWindow):
         mainLayout.addWidget(self.editArea)
         self.second_label = QLabel('')
         mainLayout.addWidget(self.second_label)
-        mainLayout.addWidget ( self.main_lable )
+        mainLayout.addWidget(self.main_lable)
         self.url = 'http://api.openweathermap.org/data/2.5/weather'
         self.key = '5387623c612af64f83da5b790beef122'
 
@@ -62,7 +62,7 @@ class MyClient(QMainWindow):
             self.second_label.setText('<h4><b><i>Оберіть інше місто для прогнозу погоди</i></b></h4>')
         except Exception as e:
             if weather.status_code == 404:
-                self.second_label.setText(f'<h4><b><i>Місто {city.capitalize()} не знайдено</i></b></h4>')
+                self.second_label.setText(f'<h4><b><i>Місто {city} не знайдено</i></b></h4>')
             else:
                 self.second_label.setText(f'Error: {e}')
 
