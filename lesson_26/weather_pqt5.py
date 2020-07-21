@@ -50,8 +50,7 @@ class MyClient(QMainWindow):
             buttonLayout.addWidget(btn,
                                    buttonConfig['row'],
                                    buttonConfig['col'],
-                                   1,
-                                   buttonConfig.get('colSpan', 1))
+                                   )
         mainLayout.addLayout(buttonLayout)
         self.widget.setLayout(mainLayout)
         self.setCentralWidget(self.widget)
