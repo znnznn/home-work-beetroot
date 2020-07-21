@@ -21,6 +21,7 @@ class MyClient(QMainWindow):
         self.widget = QWidget(self.setGeometry(600, 600, 100, 100))
         self.first_label = QLabel('<h1><b><i>Виберіть місто / Found city</i></b></h1>')
         self.editArea = QLineEdit('')
+        self.main_lable = QLabel('')
         self.editArea.setReadOnly(False)
 
         mainLayout = QVBoxLayout()
@@ -28,7 +29,7 @@ class MyClient(QMainWindow):
         mainLayout.addWidget(self.editArea)
         self.second_label = QLabel('')
         mainLayout.addWidget(self.second_label)
-
+        mainLayout.addWidget ( self.main_lable )
         self.url = 'http://api.openweathermap.org/data/2.5/weather'
         self.key = '5387623c612af64f83da5b790beef122'
 
@@ -71,6 +72,8 @@ class MyClient(QMainWindow):
                 weather.raise_for_status()
                 weather_city = weather.json()
                 self.second_label.setText(f"<h4><b><i>{str(weather_city['main']).strip('{}')}</i></b></h4>")
+                self.main_lable.setText ( f"<h1><b><i>"
+                                          f"{str ( weather_city['main']['temp'] ).strip ( '{}' )} ℃</i></b></h1>")
             else:
                 raise ValueError
         except ValueError:
