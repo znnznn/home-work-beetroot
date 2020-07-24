@@ -5,7 +5,6 @@ import math
 from functools import partial
 from typing import Union, NoReturn
 
-from PyQt5.Qt import Qt
 
 from PyQt5.QtWidgets import (QApplication,
                              QComboBox,
@@ -252,9 +251,10 @@ class MyCalculatorInWindow(QMainWindow):
                 result = float(calc_line) ** 2
             else:
                 result = int(calc_line) ** 2
+            result_str = f'{result:.{int ( self.calc_round[-1] )}f}'
             self.result.append(f'{text}{result:.{int( self.calc_round[-1])}f}')
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
-            return self.editArea.setText(str(result))
+            self.editArea.setText(result_str)
         except :
             self.second_label.setText(str(f'<h2><b><i>=Неможливо обрахувати результат{calc_line}</i></b></h2>'))
             return self.editArea.setText('0')
@@ -273,9 +273,10 @@ class MyCalculatorInWindow(QMainWindow):
             if calc_line.count('e') != 0 or calc_line.count('-'):
                 raise ValueError
             result = float(calc_line) ** 0.5
+            result_str = f'{result:.{int(self.calc_round[-1])}f}'
             self.result.append(f'{text}{result:.{int(self.calc_round[-1])}f}')
             self.second_label.setText(str(f'<h2><b><i>{self.result[-1]}</i></b></h2>'))
-            return self.editArea.setText(str(result))
+            self.editArea.setText(result_str)
         except Exception:
             self.second_label.setText(str(f'<h2><b><i>=Неможливо обрахувати результат {calc_line}</i></b></h2>'))
             return self.editArea.setText('0')
