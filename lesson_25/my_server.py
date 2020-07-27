@@ -65,4 +65,3 @@ def main_window() -> None:
 
 if __name__ == '__main__':
     main_window()
-

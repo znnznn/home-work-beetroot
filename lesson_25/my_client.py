@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (QApplication,
 
 class MyClient(QMainWindow):
     def __init__(self, *args, **kwargs):
-        """ Creates a server window"""
+        """ Creates a server window """
         super().__init__(*args, **kwargs)
         self.setWindowTitle('MyClient')
         self.widget = QWidget(self.setGeometry(60, 30, 50, 50))
@@ -43,7 +43,7 @@ class MyClient(QMainWindow):
         btn.clicked.connect(partial(self.my_client))
 
     def my_client(self):
-        """" sends a message to the server """
+        """" sends a message to the server  """
         try:
             send_client = self.editArea.text()
             self.client_socket.sendall(bytes(send_client, encoding='utf-8'))
