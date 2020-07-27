@@ -34,33 +34,14 @@ class MyServer(QMainWindow):
         self.server_socket.bind(('127.0.0.1', 65000))
 
         buttonLayout = QGridLayout()
-        buttons = [
-            {
-                'name': 'receiving messages',
-                'row': 0,
-                'col': 0
-            }
-        ]
-        self.buttons = {}
-        for buttonConfig in buttons:
-            name = buttonConfig.get('name', '')
-            btn = QPushButton(name)
-            btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-            self.buttons[name] = btn
-            buttonLayout.addWidget(btn,
-                                   buttonConfig['row'],
-                                   buttonConfig['col'],
-                                   1,
-                                   buttonConfig.get('colSpan', 1))
+        btn = QPushButton('receiving messages')
+        btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+
+        buttonLayout.addWidget(btn)
         mainLayout.addLayout(buttonLayout)
         self.widget.setLayout(mainLayout)
         self.setCentralWidget(self.widget)
-
-        for buttonName in self.buttons:
-            btn = self.buttons[buttonName]
-            if buttonName == 'receiving messages':
-
-                btn.clicked.connect(partial(self.start_server))
+        btn.clicked.connect(self.start_server)
 
     def start_server(self) -> NoReturn:
         """ receives messages from the client """
