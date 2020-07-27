@@ -43,13 +43,15 @@ try:
                               districts_name VARCHAR(20), FOREIGN KEY (districts_name) REFERENCES districts(name),
                               candidates_name VARCHAR(20), FOREIGN KEY (candidates_name) REFERENCES candidates(name)                   
                               );""")
+    cursor.execute("INSERT INTO parties(name) VALUES('Безпартійний');")
+    cursor.execute("INSERT INTO parties(name) VALUES('Не голосував');")
 
     cursor.close()
     connection.commit()
 except Exception as e:
     print(e)
     if 'relation' in str(e):
-        print('ww')
+        print('вже створена')
     connection.rollback()
 
 
@@ -191,8 +193,8 @@ class MyAgentFootball(QMainWindow):
             elif name_tab == 'candidates':
                 values_data = self.candidates_line.text()
             return values_data
-        except Exception as e:
-            self.set_error(name_tab, str(e))
+        except Exception as error:
+            self.set_error(name_tab, str(error))
 
     def records(self, name_tab: str) -> NoReturn:
         """ writes the entered data to the database """
@@ -201,13 +203,13 @@ class MyAgentFootball(QMainWindow):
         if values_data:
             if name_tab == 'parties' or name_tab == 'districts':
                 try:
-                    if values_data:
-                        self.cursor.execute(f"INSERT INTO {name_tab}(name) VALUES({values_data});")
-                        self.cursor.close()
-                        self.connection.commit()
-                        return
-                except Exception as e:
-                    self.set_error(name_tab, str(e))
+                    self.cursor.execute(f"INSERT INTO {name_tab}(name) VALUES('{values_data}');")
+                    self.cursor.close()
+                    self.connection.commit()
+                    self.set_error(name_tab, f'name\n{values_data} додано в базу даних')
+                    return
+                except Exception as error:
+                    self.set_error(name_tab, str(error))
                     self.connection.rollback()
                 finally:
                     self.cursor.close()
@@ -226,11 +228,14 @@ class MyAgentFootball(QMainWindow):
                 values_foreign_parties = self.reads_line('parties')
                 values_foreign_districts = self.reads_line('districts')
                 try:
-                    self.cursor.execute(f"INSERT INTO {name_tab}(name, parties_name, districts_name) "
-                                        f"values({values_data}, {values_foreign_parties}, {values_foreign_districts});"
+                    self.cursor.execute(f"INSERT INTO {name_tab}(name, parties_name, districts_name)"
+                                        f"values('{values_data}', '{values_foreign_parties}', '{values_foreign_districts}');"
                                         )
                     self.cursor.close()
                     self.connection.commit()
+                    self.set_error(name_tab, f'(name, parties_name, districts_name)\n'
+                                             f'{values_data}, {values_foreign_parties}, {values_foreign_districts}'
+                                             f' додано в базу даних')
                     return
                 except Exception as error:
                     self.set_error(name_tab, str(error))
@@ -247,9 +252,10 @@ class MyAgentFootball(QMainWindow):
         values_data = self.reads_line(name_tab)
         if values_data:
             try:
-                self.cursor.execute(f"DELETE FROM {name_tab}(name) WHERE({values_data})")
+                self.cursor.execute(f"DELETE FROM {name_tab} WHERE(name='{values_data}');")
                 self.cursor.close()
                 self.connection.commit()
+                self.set_error(name_tab, f'{values_data} з бази данних видалено')
             except Exception as error:
                 self.set_error(name_tab, str(error))
                 self.connection.rollback()
@@ -266,7 +272,9 @@ class MyAgentFootball(QMainWindow):
         if values_data:
             if name_tab == 'parties' or name_tab == 'districts':
                 try:
-                    self.cursor.execute(f"SELECT INTO {name_tab}(name) from  values({values_data})")
+                    self.cursor.execute(f"SELECT * from {name_tab} where name='{values_data}'")
+                    self.set_error(name_tab, f'{self.cursor.fetchall()}')
+
                     self.cursor.close()
                     self.connection.commit()
                 except Exception as error:
@@ -277,9 +285,10 @@ class MyAgentFootball(QMainWindow):
             else:
                 try:
                     self.cursor.execute(f"SELECT * "
-                                        f"from {name_tab}"
-                                        f"join parties on {name_tab}.parties_name = parties.name"
-                                        f"where name={values_data}")
+                                        f"FROM '{name_tab}' "
+                                        f"INNER JOIN parties ON ({name_tab}.parties_name = parties.name) "
+                                        f"WHERE {name_tab}.name={values_data}")
+                    self.set_error(name_tab, f'{self.cursor.fetchall()}')
                     self.cursor.close()
                     self.connection.commit()
                 except Exception as error:
