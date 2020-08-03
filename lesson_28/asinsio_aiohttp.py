@@ -2,7 +2,6 @@ import asyncio
 from aiohttp_requests import requests
 import time
 import json
-import typing
 
 
 url = f'https://api.pushshift.io/reddit/search/comment'
@@ -39,19 +38,21 @@ async def user_more(url: str, user_name: str) -> list:
 
 
 async def user_list(url: str) -> list:
-    """ Returns a list of users """
+    """ Returns a list of users and start Writes comments to a file by user"""
     user_data = []
     resp = await requests.get(url)
     data = await resp.json()
     for item in data['data']:
         user_data.append(item['author'])
+        await asyncio.gather(user_more(url, item['author']))
     return user_data
 
-event_loop = asyncio.get_event_loop()
 
-try:
-    users_name = event_loop.run_until_complete(event_loop.create_task(user_list(url)))
-    for item in users_name:
-        event_loop.run_until_complete(event_loop.create_task(user_more(url, item)))
-finally:
-    event_loop.close()
+async def main():
+    t1 = time.time()
+    await asyncio.gather(user_list(url))
+    print(f'all time: {time.time() - t1}')
+
+asyncio.run(main())
+
+
