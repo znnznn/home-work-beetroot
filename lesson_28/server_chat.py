@@ -9,6 +9,7 @@ class MySeverChat(asyncio.Protocol):
         self.loop = loop
         self.now_client = None
         self.client = []
+        self.peername = None
 
     def connection_lost(self, exc: Optional[Exception]) -> None:
         try:
@@ -18,20 +19,22 @@ class MySeverChat(asyncio.Protocol):
         self.loop.stop()
 
     def connection_made(self, client) -> None:
-        peername = client.get_extra_info('peername')
-        print(f'connection : {peername}')
+        self.peername = client.get_extra_info('peername')
+        print(f'connection : {self.peername}')
         self.now_client = client
-        self.client.append(client)
+        self.client.append(self.now_client)
+        self.send()
 
     def data_received(self, data: bytes) -> None:
-        self.msg.append(data.decode())
+        self.msg.append(f'{self.peername}: {data.decode()}')
+        print(*self.msg)
         self.send()
-        print(self.msg)
 
-
-    async def send(self):
+    def send(self):
         for client in self.client:
-            self.client.write(f'{client}: {self.msg}').encode()
+            for msg in self.msg:
+                client.write(bytes(msg, encoding='utf-8'))
+
 
 
 
@@ -39,7 +42,7 @@ loop = asyncio.get_event_loop()
 coro = loop.create_server(lambda: MySeverChat(loop), '127.0.0.1', 8888)
 server = loop.run_until_complete(coro)
 
-# Serve requests until Ctrl+C is pressed
+
 print(f'Serving on {(server.sockets[0].getsockname())}')
 try:
     loop.run_forever()

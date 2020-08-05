@@ -1,16 +1,35 @@
 import asyncio
 
 
-async def my_client(loop):
-    reader, writer = await asyncio.open_connection('127.0.0.1', 8888, loop=loop)
+class ClientChat(asyncio.Protocol):
+    def __init__(self, message, on_con_lost):
+        self.message = message
+        self.on_con_lost = on_con_lost
+
+    def connection_made(self, transport):
+        transport.write(self.message.encode())
+        print(f'Data sent: {self.message}')
+
+    def data_received(self, data):
+        print(f'Data received: {data.decode()}')
+
+    def connection_lost(self, exc):
+        print('The server closed the connection')
+        self.on_con_lost.set_result(True)
 
 
-    print('your message ')
-    msg = input('> ').strip()
-    writer.write(msg.encode())
+async def main():
+    loop = asyncio.get_running_loop()
 
+    on_con_lost = loop.create_future()
+    message = input('>')
 
-client_loop = asyncio.get_event_loop()
-client_loop.run_until_complete(my_client(client_loop))
-client_loop.run_forever()
-client_loop.close()
+    transport, protocol = await loop.create_connection(
+        lambda: ClientChat(message, on_con_lost),
+        '127.0.0.1', 8888)
+    try:
+        await on_con_lost
+    finally:
+        transport.close()
+
+asyncio.run(main())
