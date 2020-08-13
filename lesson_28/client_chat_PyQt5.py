@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (QApplication,
 
 
 class MyClient(QMainWindow):
-    def __init__(self, loop, *args, **kwargs):
+    def __init__(self, loop, client, *args, **kwargs):
         """ Creates a server window """
         super().__init__(*args, **kwargs)
         self.setWindowTitle('MyClient')
@@ -27,6 +27,7 @@ class MyClient(QMainWindow):
         self.editArea = QLineEdit('')
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(self.first_label)
+        self.client = client
 
         self.loop = loop
         self.msg = None
@@ -37,6 +38,8 @@ class MyClient(QMainWindow):
         chat.setSpacing(25)
         self.chat = QTextEdit()
         self.chat.setReadOnly(True)
+
+
         btn = QPushButton('send')
         btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
 
@@ -54,32 +57,40 @@ class MyClient(QMainWindow):
         try:
             self.msg = self.editArea.text()
             self.editArea.clear()
-
+            self.client.send(self.msg)
         except Exception as e:
-            self.second_label.setText(f'Error: {e}')
+            self.chat.setText(f'Error: {e}')
+
+    def set_text(self, text):
+        self.chat.setText(text)
 
 
-class ClientChat(asyncio.Protocol, MyClient):
+class ClientChat(asyncio.Protocol):
     def __init__(self, loop, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.loop = loop
-        self.message = None
-        self.transport = None
+        self.msg = ''
 
     def connection_made(self, transport):
-        self.message = self.msg
+
         self.transport = transport
-        self.transport.write(self.message.encode())
-        print(f'Data sent: {self.message}')
+        self.send(self.msg)
+        print(f'Data sent: {self.msg}')
 
     def data_received(self, data):
-
         text = data.decode()
-        self.chat.setText(text)
+        self.msg = text
         print(f'Data received: {text}')
 
     def connection_lost(self, exc):
-        self.chat.setText('The server closed the connection')
+        self.loop.stop()
+
+    def text(self):
+       return str(self.msg)
+
+    def send(self, msg):
+        self.msg = msg
+        self.transport.write(self.msg.encode())
 
 
 class App(QApplication):
@@ -88,16 +99,16 @@ class App(QApplication):
         self.loop = QEventLoop(self)
         asyncio.set_event_loop(self.loop)
 
-        self.client = ClientChat(self.loop, self.loop)
+        self.client = ClientChat(self.loop)
         self.loop.create_task(self.start())
 
-        self.gui = MyClient(self.loop)
+        self.gui = MyClient(self.loop, self.client)
         self.gui.show()
         self.loop.run_forever()
 
     async def start(self):
         connection = self.loop.create_connection(lambda: self.client, '127.0.0.1', 8888)
-        await asyncio.wait_for(connection, 10000)
+        await asyncio.wait_for(connection, 10000, loop=self.loop)
 
 
 def main_window() -> None:

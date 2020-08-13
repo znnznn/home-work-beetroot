@@ -22,7 +22,8 @@ class MySeverChat(asyncio.Protocol):
         self.peername = client.get_extra_info('peername')
         print(f'connection : {self.peername}')
         self.now_client = client
-        self.clients.append(self.now_client)
+        if self.now_client not in self.clients:
+            self.clients.append(self.now_client)
         self.send()
 
     def data_received(self, data: bytes) -> None:
