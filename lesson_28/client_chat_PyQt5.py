@@ -39,7 +39,6 @@ class MyClient(QMainWindow):
         self.chat = QTextEdit()
         self.chat.setReadOnly(True)
 
-
         btn = QPushButton('send')
         btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
 
@@ -50,19 +49,22 @@ class MyClient(QMainWindow):
         mainLayout.addLayout(chat_send)
         self.widget.setLayout(mainLayout)
         self.setCentralWidget(self.widget)
+
+        self.client.text(self.set_text)
         btn.clicked.connect(partial(self.my_client))
 
     def my_client(self):
-        """" sends a message to the server  """
+        """ sends a message to the server  """
         try:
             self.msg = self.editArea.text()
             self.editArea.clear()
             self.client.send(self.msg)
         except Exception as e:
-            self.chat.setText(f'Error: {e}')
+            self.chat.append(f'Error: {e}')
 
     def set_text(self, text):
-        self.chat.setText(text)
+        """ sends a message to the window chat  """
+        self.chat.append(text)
 
 
 class ClientChat(asyncio.Protocol):
@@ -70,9 +72,9 @@ class ClientChat(asyncio.Protocol):
         super().__init__(*args, **kwargs)
         self.loop = loop
         self.msg = ''
+        self.set_text = None
 
     def connection_made(self, transport):
-
         self.transport = transport
         self.send(self.msg)
         print(f'Data sent: {self.msg}')
@@ -80,15 +82,18 @@ class ClientChat(asyncio.Protocol):
     def data_received(self, data):
         text = data.decode()
         self.msg = text
+        self.set_text(self.msg)
         print(f'Data received: {text}')
 
     def connection_lost(self, exc):
         self.loop.stop()
 
-    def text(self):
-       return str(self.msg)
+    def text(self, text):
+        """ sends a message to the window chat  """
+        self.set_text = text
 
     def send(self, msg):
+        """ sends a message to the server  """
         self.msg = msg
         self.transport.write(self.msg.encode())
 
@@ -107,6 +112,7 @@ class App(QApplication):
         self.loop.run_forever()
 
     async def start(self):
+        """ start connection to the server  """
         connection = self.loop.create_connection(lambda: self.client, '127.0.0.1', 8888)
         await asyncio.wait_for(connection, 10000, loop=self.loop)
 
@@ -117,7 +123,3 @@ def main_window() -> None:
 
 if __name__ == '__main__':
     main_window()
-
-
-
-
