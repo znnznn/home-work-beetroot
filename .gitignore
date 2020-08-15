@@ -5,5 +5,15 @@ __pycache__\
 *.xml
 *.json
 *.txt
-*.pyc
-*.iml
+
+.idea/misc.xml
+.idea/home-work-beetroot.iml
+
+
+calc_mod/__pycache__/func_calc.cpython-38.pyc
+calc_mod/__pycache__/func_calc_mod.cpython-38.pyc
+lesson_28/client_chat_PyQt555.py
+lesson_27/ll.py
+lesson_27/sql.py
+
+
