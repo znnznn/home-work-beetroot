@@ -32,7 +32,7 @@ class MySeverChat(asyncio.Protocol):
 
     def data_received(self, data: bytes) -> None:
         self.message = f'{self.peername[1]}: {data.decode()}\n'
-        self.msg.append(f'{self.peername[1]}: {data.decode()}\n')
+        self.msg.append(self.message)
         self.send()
 
     def send(self):
