@@ -1,11 +1,12 @@
 __pycache__\
 *.iml
-*.html
+
 *.pyc
 *.xml
 *.json
 *.txt
 
+<<<<<<< Updated upstream
 .idea/misc.xml
 .idea/home-work-beetroot.iml
 
@@ -16,4 +17,6 @@ lesson_28/client_chat_PyQt555.py
 lesson_27/ll.py
 lesson_27/sql.py
 
+=======
+>>>>>>> Stashed changes
 
