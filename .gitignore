@@ -5,11 +5,9 @@ __pycache__\
 *.xml
 *.json
 *.txt
-*.pyc
-*.iml
-lesson_29_flask/templates/contacts.html
-lesson_29_flask/my_flask.py
-lesson_29_flask/my_flask.py
-lesson_29_flask/my_flask.py
-lesson_29_flask/static/css/main.css
-lesson_28/client_chat.py
+
+
+
+
+
+
