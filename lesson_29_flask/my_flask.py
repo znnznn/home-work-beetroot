@@ -1,15 +1,18 @@
 import psycopg2
 
-from flask import Flask, render_template, url_for, request, session, redirect, g
-from flask_login import LoginManager, login_required
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, render_template, url_for, request, session, redirect, g, flash
+from flask_login import LoginManager, login_required, login_user
 
-
-from .db_flask import DataBase
+from lesson_29_flask.userLogin_flask import UserLogin
+from lesson_29_flask.db_flask import DataBase
 import oauthlib
 # @login_required для сторінок які лише авторизованим юзерам
 
 app = Flask(__name__)
-# app.config['SECRET_KEY'] = 'f51ab319da5bb46ec221f7da979833a35250c86e'
+app.config['SECRET_KEY'] = 'f51ab319da5bb46ec221f7da979833a35250c86e'
+
+#user_now = LoginManager(app)
 
 stocks = {
     'WMT': "Wal-Mart Stores, Inc.",
@@ -41,8 +44,16 @@ def login_page():
     print(1)
     if request.method == 'POST':
         print(2)
-        print(request.form)
-        return redirect(url_for('login', user=session['user']))
+        data_user = {
+            'email': request.form['email'],
+            'password': request.form['inputPassword']
+        }
+        user = data_base(data_user).take_user()
+        if user and check_password_hash(user['password'], data_user['password']):
+            user_now = UserLogin().user(user)
+            login_user(user_now)
+            return redirect(url_for('user_page'))
+        flash('Невірно введений emal або пароль')
     elif request.method == 'POST' and request.form['user'] == '1234@ukr.net' and request.form['inputPassword'] == '1234':
         print(3)
         session['user'] = request.form['user']
@@ -56,7 +67,8 @@ def contacts_page():
     return render_template('contacts.html', title='Контакти')
 
 
-@app.route('/user/<name>', methods=['GET', 'POST'])
+@app.route('/user', methods=['GET', 'POST'])
+@login_required
 def user_page(name=None):
     user_name = name
     #print(request.form)
