@@ -1,0 +1,43 @@
+{% extends 'main.html'  %}
+
+{% block title  %}
+    {{ title }}
+{% endblock %}
+
+{% block body  %}
+<body>
+    <div class="skippy overflow-hidden">
+  <div class="container-xl">
+    <a class="sr-only sr-only-focusable d-inline-flex p-2 m-1" href="{{ url_for('contacts_page') }}">{{ title }}</a>
+  </div>
+    </div>
+    <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand">{{ title }}</h3>
+      <nav class="nav nav-masthead justify-content-center">
+        <a class="nav-link active" href="{{url_for('main_page')}}">Головна сторінка</a>
+        <a class="nav-link" href="{{url_for('login_page')}}">Авторизація</a>
+        <a class="nav-link" href="{{url_for('contacts_page')}}">Контакти</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <main role="main" class="inner cover">
+    <h1 class="cover-heading">{{ title }}</h1>
+    <p class="lead">
+      <a href="{{url_for('login_page')}}" class="btn btn-lg btn-secondary">Особистий кабінет</a>
+    </p>
+  </main>
+
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      <p>Підключи телеграм будь в курсі подій цілодобово <a href="http://localhost:5000/login">Телеграмбот</a>, by <a href="http://localhost:5000/">email</a>.</p>
+    </div>
+  </footer>
+</div>
+
+
+{% endblock %}
