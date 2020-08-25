@@ -7,29 +7,29 @@
 {% block body  %}
 
  <div class="container-xl">
-<body class="text-center">
-    <form action="{{url_for('login_page')}}" method="post" class="form-signin">
-  <img class="mb-4" src="" alt="" width="10" height="10">
-  <h1 class="h3 mb-3 font-weight-normal">Будь ласка введіть свої данні</h1>
-  <label for="inputEmail" class="sr-only">Email address</label>
-  <input type="email" name="email" value="" id="inputEmail" class="form-control" placeholder="Email address"  required>
-  <label for="inputPassword" class="sr-only">Password</label>
-  <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="inputPassword" value="" required="">
-  <div class="checkbox mb-3">
-    <label>
-      <input type="checkbox" value="remember-me"> Запам/'ятати мене
-    </label>
-  </div>
-        <p>
-            <a href="{{url_for('login_page')}}" class="btn btn-lg btn-secondary">Зайти в кабінет</a>
-            <a href="{{url_for('new_user_page')}}" class="btn btn-lg btn-secondary">Зареєструватись</a>
-        </p>
-  <p class="mt-5 mb-3 text-muted">© 2020-2020</p>
-</form>
+    <body class="text-center">
+        <form action="{{url_for('login_page')}}" method="POST" class="form-signin">
+          <img class="mb-4" src="" alt="" width="10" height="10">
+          <h1 class="h3 mb-3 font-weight-normal">Будь ласка введіть свої данні</h1>
+          <label for="inputEmail" class="sr-only">Email address</label>
+          <input type="email" name="email" value="" id="inputEmail" class="form-control" placeholder="Email address"  required>
+          <label for="inputPassword" class="sr-only">Password</label>
+          <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="inputPassword" value="" required="">
+          <div class="checkbox mb-3">
+            <label>
+              <input type="checkbox" value="remember-me"> Запам/'ятати мене
+            </label>
+          </div>
+            <p>
+                <a href="{{url_for('login_page')}}" class="btn btn-lg btn-secondary">Зайти в кабінет</a>
+                <a href="{{url_for('new_user_page')}}" class="btn btn-lg btn-secondary">Зареєструватись</a>
+            </p>
+            <p class="mt-5 mb-3 text-muted">© 2020-2020</p>
+        </form>
 
-
-</body>
+    <h1> {{ title }} </h1>
+    </body>
  </div>
 
-<h1> {{ title }} </h1>
+
 {% endblock %}

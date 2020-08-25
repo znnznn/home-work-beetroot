@@ -1,7 +1,8 @@
 import json
+from flask_login import UserMixin
 
 
-class UserLogin:
+class UserLogin(UserMixin):
 
     def user_db(self, user_id, db):
         self.user = db.get_user(user_id)

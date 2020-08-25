@@ -12,7 +12,7 @@ import oauthlib
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'f51ab319da5bb46ec221f7da979833a35250c86e'
 
-#user_now = LoginManager(app)
+login_manager = LoginManager(app)
 
 stocks = {
     'WMT': "Wal-Mart Stores, Inc.",
@@ -39,19 +39,24 @@ def main_page():
     return render_template('index.html', title='Головна сторінка')
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return UserLogin.get_id(user_id)
+
+
 @app.route('/login', methods=["POST", "GET"])
 def login_page():
     print(1)
     if request.method == 'POST':
         print(2)
         data_user = {
-            'email': request.form['email'],
-            'password': request.form['inputPassword']
+            'email': request.form.get['email'],
+            'password': request.form.get['inputPassword']
         }
         user = data_base(data_user).take_user()
         if user and check_password_hash(user['password'], data_user['password']):
-            user_now = UserLogin().user(user)
-            login_user(user_now)
+            userLogin = UserLogin().user(user)
+            login_user(userLogin)
             return redirect(url_for('user_page'))
         flash('Невірно введений emal або пароль')
     elif request.method == 'POST' and request.form['user'] == '1234@ukr.net' and request.form['inputPassword'] == '1234':
@@ -75,8 +80,15 @@ def user_page(name=None):
     return render_template('user.html',  title=f'{user_name}')
 
 
-@app.route('/new_user')
+@app.route('/new_user', methods=['POST', 'GET'])
 def new_user_page():
+    if request.method == 'POST':
+        first_name = request.form.get['firstName']
+        last_name = request.form.get['lastName']
+        user_name = request.form.get['username']
+        email = request.form.get['email']
+        address = request.form.get['address']
+
     return render_template('new_user.html', title='Регістрація')
 
 
@@ -92,7 +104,7 @@ def error_page(error):
     return render_template('error_page.html', title='Сторінку не знайдено'), 404
 
 
-app.run(host='0.0.0.0', port='5000')
+app.run(host='0.0.0.0', port='5000', debug=True)
 
 
 """@app.after_request
