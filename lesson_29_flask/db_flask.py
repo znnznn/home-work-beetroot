@@ -2,22 +2,38 @@ import psycopg2
 
 
 class DataBase:
-    def __init__(self, connection, cursor, user: dict):
-        self.connection = connection
-        self.cursor = cursor
+    def __init__(self, user: dict):
+        self.connection = None
+        self.cursor = None
         self.user = user
-        self.create_tab()
+        self.data_base()
+
+        print(5)
+
+    def data_base(self):
+
+        try:
+            self.connection = psycopg2.connect(host='localhost', database='postgres', port=5432,
+                                          user='postgres', password='postgres')
+            self.cursor = self.connection.cursor()
+            self.create_tab()
+        except:
+            self.cursor.close()
+
 
     def take_user(self):
 
         try:
-            self.cursor.execute(""" SELECT * FROM users WHERE EMAIL = %;""", (self.user['email']))
+            print(77)
+            self.cursor.execute(""" SELECT * FROM users WHERE users.email = %s""", (self.user['email'],))
             user = self.cursor.fetchone()
             if user:
+                print(user, 88)
                 return user
+            print(99)
             return False
         except Exception as e:
-            return f'{e}'
+            return False
 
     def edit_user(self):
         pass
@@ -44,29 +60,31 @@ class DataBase:
     def create_tab(self):
 
         try:
-            self.cursor.execute("""CREATE TABLE IF NOT EXISTS &% (
-                                      ID serial PRIMARY KEY NOT NULL,
-                                      STOCK_NAME VARCHAR(20) NOT NULL,
-                                      STICKER_STOCK VARCHAR(20) NOT NULL,
-                                      BID integer (20) NOT NULL,
-                                      ASK integer (20) NOT NULL
-                                      oper_date VARCHAR(20) NOT NULL                                           
-                                      );""", (self.user, ))
+            print(999)
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS users (
                                                   ID serial PRIMARY KEY NOT NULL,
                                                   FIRST_NAME VARCHAR(20) NOT NULL,
                                                   LAST_NAME VARCHAR(20) NOT NULL,
                                                   USERNAME VARCHAR (20) NOT NULL,
-                                                  PASSWORD VARCHAR NOT NULL
-                                                  EMAIL VARCHAR (20) NOT NULL
-                                                  ADDRESS VARCHAR(100) NOT NULL
+                                                  PASSWORD VARCHAR NOT NULL,
+                                                  EMAIL VARCHAR (20) NOT NULL,
+                                                  ADDRESS VARCHAR(100) NOT NULL,
                                                   oper_date VARCHAR(20) NOT NULL                                          
                                                   );""")
+            print(2999)
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS %s (
+                                                  ID serial PRIMARY KEY NOT NULL,
+                                                  STOCK_NAME VARCHAR(20) NOT NULL,
+                                                  STICKER_STOCK VARCHAR(20) NOT NULL,
+                                                  BID integer (20) NOT NULL,
+                                                  ASK integer (20) NOT NULL,
+                                                  oper_date VARCHAR(20) NOT NULL                                           
+                                                  );""", (self.user.get('email'),))
             self.cursor.close()
             self.connection.commit()
         except Exception as e:
             self.connection.rollback()
-            return f'Помилка з\'єднання з базою даних : {e}'
+            return print(f'Помилка з\'єднання з базою даних : {e}')
 
 
 """ 

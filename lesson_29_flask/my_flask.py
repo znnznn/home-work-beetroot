@@ -29,6 +29,7 @@ def data_base(user):
                                       user='postgres', password='postgres')
         cursor = connection.cursor()
         work_base = DataBase(connection, cursor, user)
+        print(type(work_base), 45)
         return work_base
 
 
@@ -49,20 +50,18 @@ def login_page():
     print(1)
     if request.method == 'POST':
         print(2)
-        data_user = {
-            'email': request.form.get['email'],
-            'password': request.form.get['inputPassword']
-        }
-        user = data_base(data_user).take_user()
-        if user and check_password_hash(user['password'], data_user['password']):
-            userLogin = UserLogin().user(user)
+        data_user = dict(request.form)
+        user = DataBase(data_user)
+        user_id = user.take_user()
+        print(user_id, 10)
+        if user_id and check_password_hash(user_id['password'], data_user['password']):
+            print(2.1)
+            userLogin = UserLogin().user(user_id)
             login_user(userLogin)
             return redirect(url_for('user_page'))
-        flash('Невірно введений emal або пароль')
-    elif request.method == 'POST' and request.form['user'] == '1234@ukr.net' and request.form['inputPassword'] == '1234':
-        print(3)
-        session['user'] = request.form['user']
-        return redirect(url_for('user_page', user=session['user']))
+        else:
+            flash('Невірно введений email або пароль')
+            return redirect(url_for('login_page'))
     print(4)
     return render_template('login.html', title='Авторизація')
 
