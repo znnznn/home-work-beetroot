@@ -16,7 +16,7 @@ class DataBase:
             self.connection = psycopg2.connect(host='localhost', database='postgres', port=5432,
                                           user='postgres', password='postgres')
             self.cursor = self.connection.cursor()
-            self.create_tab()
+
         except:
             self.cursor.close()
 
@@ -58,9 +58,10 @@ class DataBase:
         pass
 
     def create_tab(self):
-
+        print(self.user)
+        my_add = self.user['email'][:5]
         try:
-            print(999)
+
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS users (
                                                   ID serial PRIMARY KEY NOT NULL,
                                                   FIRST_NAME VARCHAR(20) NOT NULL,
@@ -72,14 +73,14 @@ class DataBase:
                                                   oper_date VARCHAR(20) NOT NULL                                          
                                                   );""")
             print(2999)
-            self.cursor.execute("""CREATE TABLE IF NOT EXISTS %s (
+            self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS {my_add} (
                                                   ID serial PRIMARY KEY NOT NULL,
                                                   STOCK_NAME VARCHAR(20) NOT NULL,
                                                   STICKER_STOCK VARCHAR(20) NOT NULL,
-                                                  BID integer (20) NOT NULL,
-                                                  ASK integer (20) NOT NULL,
+                                                  BID integer NOT NULL,
+                                                  ASK integer NOT NULL,
                                                   oper_date VARCHAR(20) NOT NULL                                           
-                                                  );""", (self.user.get('email'),))
+                                                  );""")
             self.cursor.close()
             self.connection.commit()
         except Exception as e:

@@ -82,12 +82,9 @@ def user_page(name=None):
 @app.route('/new_user', methods=['POST', 'GET'])
 def new_user_page():
     if request.method == 'POST':
-        first_name = request.form.get['firstName']
-        last_name = request.form.get['lastName']
-        user_name = request.form.get['username']
-        email = request.form.get['email']
-        address = request.form.get['address']
-
+        data_new_user = dict(request.form)
+        print(data_new_user)
+        return redirect(url_for('user_page'))
     return render_template('new_user.html', title='Регістрація')
 
 

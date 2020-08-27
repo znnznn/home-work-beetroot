@@ -74,7 +74,13 @@
         <h4 class="mb-3"></h4>
 
         <div class="d-block my-3">
-            <hr class="mb-4">
+           <label for="inputPassword">Ваш пароль</label>
+          <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Введіть пароль" required="">
+          <input type="password" class="form-control" id="inputPassword2" name="password2" placeholder="Повторіть пароль" required="">
+          <div class="invalid-feedback">
+            Будь-ласка ввдть однаковий пароль
+          </div>
+        </div>
           <p>
             <a>
               <button  formmethod="post" class="btn btn-primary btn-lg btn-block" type="submit">Зареєструватись</button>
