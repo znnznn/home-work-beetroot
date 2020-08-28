@@ -1,7 +1,8 @@
 import psycopg2
+import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask, render_template, url_for, request, session, redirect, g, flash
+from flask import Flask, render_template, url_for, request, redirect, g, flash
 from flask_login import LoginManager, login_required, login_user
 
 from lesson_29_flask.userLogin_flask import UserLogin
@@ -23,16 +24,6 @@ stocks = {
  }
 
 
-def data_base(user):
-    if not hasattr(g, 'link_db'):
-        connection = psycopg2.connect(host='localhost', database='postgres', port=5432,
-                                      user='postgres', password='postgres')
-        cursor = connection.cursor()
-        work_base = DataBase(connection, cursor, user)
-        print(type(work_base), 45)
-        return work_base
-
-
 @app.route('/')
 @app.route('/index')
 def main_page():
@@ -47,22 +38,21 @@ def load_user(user_id):
 
 @app.route('/login', methods=["POST", "GET"])
 def login_page():
-    print(1)
+
     if request.method == 'POST':
-        print(2)
+
         data_user = dict(request.form)
         user = DataBase(data_user)
         user_id = user.take_user()
-        print(user_id, 10)
+
         if user_id and check_password_hash(user_id['password'], data_user['password']):
-            print(2.1)
+
             userLogin = UserLogin().user(user_id)
             login_user(userLogin)
             return redirect(url_for('user_page'))
         else:
             flash('Невірно введений email або пароль')
             return redirect(url_for('login_page'))
-    print(4)
     return render_template('login.html', title='Авторизація')
 
 
@@ -75,7 +65,7 @@ def contacts_page():
 @login_required
 def user_page(name=None):
     user_name = name
-    #print(request.form)
+
     return render_template('user.html',  title=f'{user_name}')
 
 
@@ -83,9 +73,31 @@ def user_page(name=None):
 def new_user_page():
     if request.method == 'POST':
         data_new_user = dict(request.form)
-        print(data_new_user)
-        return redirect(url_for('user_page'))
-    return render_template('new_user.html', title='Регістрація')
+        for key, values in data_new_user.items():
+            data_new_user[key] = values.strip()
+        if '' in data_new_user.values() or ' ' in data_new_user.values():
+            flash('Поля мають бути заповненими')
+            return redirect(url_for('new_user_page'))
+        elif not data_new_user['firstName'].isalpha() or not data_new_user['lastName'].isalpha():
+            flash("Поле ім\'я або фамілія має містити лише букви")
+            return redirect(url_for('new_user_page'))
+        elif '@' not in data_new_user['email'] or '.' not in data_new_user['email']:
+            flash('Невірно введений формат електронної пошти')
+            return redirect(url_for('new_user_page'))
+        elif data_new_user['password'] != data_new_user['password2']:
+            flash('Введені паролі не рівні')
+            return redirect(url_for('new_user_page'))
+        data_new_user['password'] = generate_password_hash(data_new_user['password'])
+        data_new_user.pop('password2')
+        data_new_user['date'] = datetime.date
+        new_user = DataBase(data_new_user)
+        db_user = new_user.add_user()
+        if db_user:
+            flash('Ви успішно зареєструвались')
+            return redirect(url_for('login_page'))
+        flash(f"Користувач з такими даними вже існує")
+        return redirect(url_for('new_user_page'))
+    return render_template('new_user.html', title='Реєстрація')
 
 
 @app.teardown_appcontext

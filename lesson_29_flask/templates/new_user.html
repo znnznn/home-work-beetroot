@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body  %}
+
 <body class="bg-light">
     <div class="container">
   <div class="py-5 text-center">
@@ -15,6 +16,15 @@
       <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
     </ul>
     <h2>Форма реєстрації</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3>{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
     <p class="lead">Заповніть поля для реєстрації</p>
   </div>
 
