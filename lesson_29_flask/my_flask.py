@@ -7,6 +7,7 @@ from flask_login import LoginManager, login_required, login_user
 
 from lesson_29_flask.userLogin_flask import UserLogin
 from lesson_29_flask.db_flask import DataBase
+from lesson_29_flask.http_request import api_stock
 import oauthlib
 # @login_required для сторінок які лише авторизованим юзерам
 
@@ -42,17 +43,21 @@ def login_page():
     if request.method == 'POST':
 
         data_user = dict(request.form)
+
         user = DataBase(data_user)
         user_id = user.take_user()
+        print(data_user['password'])
+        print(user_id[4])
 
-        if user_id and check_password_hash(user_id['password'], data_user['password']):
-
-            userLogin = UserLogin().user(user_id)
+        if user_id and check_password_hash(user_id[4], data_user['password']):
+            print(5)
+            userLogin = UserLogin().user(user_id[0])
             login_user(userLogin)
             return redirect(url_for('user_page'))
         else:
             flash('Невірно введений email або пароль')
             return redirect(url_for('login_page'))
+    print(10)
     return render_template('login.html', title='Авторизація')
 
 
@@ -65,6 +70,9 @@ def contacts_page():
 @login_required
 def user_page(name=None):
     user_name = name
+    if request.method == 'POST':
+        pass
+    list_stock = api_stock()
 
     return render_template('user.html',  title=f'{user_name}')
 
@@ -73,8 +81,6 @@ def user_page(name=None):
 def new_user_page():
     if request.method == 'POST':
         data_new_user = dict(request.form)
-        for key, values in data_new_user.items():
-            data_new_user[key] = values.strip()
         if '' in data_new_user.values() or ' ' in data_new_user.values():
             flash('Поля мають бути заповненими')
             return redirect(url_for('new_user_page'))
@@ -87,9 +93,11 @@ def new_user_page():
         elif data_new_user['password'] != data_new_user['password2']:
             flash('Введені паролі не рівні')
             return redirect(url_for('new_user_page'))
+        for key, values in data_new_user.items():
+            data_new_user[key] = values.strip()
         data_new_user['password'] = generate_password_hash(data_new_user['password'])
         data_new_user.pop('password2')
-        data_new_user['date'] = datetime.date
+        data_new_user['date'] = str(datetime.datetime.today())
         new_user = DataBase(data_new_user)
         db_user = new_user.add_user()
         if db_user:
@@ -113,6 +121,7 @@ def error_page(error):
 
 
 app.run(host='0.0.0.0', port='5000', debug=True)
+
 
 
 """@app.after_request
