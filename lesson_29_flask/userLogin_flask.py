@@ -1,26 +1,18 @@
 import json
 from flask_login import UserMixin
+from lesson_29_flask.db_flask import DataBase
 
+class UserLogin(UserMixin, DataBase):
 
-class UserLogin(UserMixin):
-
-    def user_db(self, user_id, db):
-        self.user = db.get_user(user_id)
+    def user_db(self, user):
+        self.user = self.take_user_id(user)
         return self
 
-    def user(self, user):
+    def user_id(self, user):
         self.user = user
         return self
 
-    def is_autheticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
     def get_id(self):
-        return str(self.user['id'])
+        user = str(self.user['id'])
+        return user
 

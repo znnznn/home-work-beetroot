@@ -1,6 +1,6 @@
 import psycopg2
 
-from psycopg2.extras import DictCursor
+from psycopg2.extras import RealDictCursor
 
 
 
@@ -18,7 +18,7 @@ class DataBase:
         try:
             self.connection = psycopg2.connect(host='localhost', database='postgres', port=5432,
                                                user='postgres', password='postgres')
-            self.cursor = self.connection.cursor(cursor_factory=DictCursor)
+            self.cursor = self.connection.cursor(cursor_factory=RealDictCursor)
 
         except:
             self.cursor.close()
@@ -28,12 +28,28 @@ class DataBase:
 
         try:
             print(self.user['email'])
-            self.cursor.execute("SELECT * FROM users")
+            self.cursor.execute("SELECT * FROM users WHERE email = %s", (f"{self.user['email']}",))
             user = self.cursor.fetchone()
-            print(user)
+            print(dict(user))
             if user:
 
-                return user
+                return dict(user)
+
+            return False
+        except Exception as e:
+            print(e, 'take_user')
+            return False
+
+    def take_user_id(self, user_id):
+
+        try:
+            print(self.user['email'])
+            self.cursor.execute("SELECT * FROM users WHERE email = %s", (f"{user_id}",))
+            user = self.cursor.fetchone()
+            print(dict(user))
+            if user:
+
+                return dict(user)
 
             return False
         except Exception as e:
@@ -54,13 +70,13 @@ class DataBase:
             print(5)
             self.cursor.execute("""INSERT INTO users(FIRST_NAME, LAST_NAME, USERNAME,
                                 PASSWORD, EMAIL, ADDRESS, oper_date)
-                                VALUES(%s, %s, %s, %s, %s, %s, %s);""", (f"'{self.user['firstName']}'",
-                                                                          f"'{self.user['firstName']}'",
-                                                                          f"'{self.user['username']}'",
-                                                                          f"'{self.user['password']}'",
-                                                                          f"'{self.user['email']}'",
-                                                                          f"'{self.user['address']}'",
-                                                                          f"'{self.user['date']}'",))
+                                VALUES(%s, %s, %s, %s, %s, %s, %s);""", (f"{self.user['firstName']}",
+                                                                          f"{self.user['firstName']}",
+                                                                          f"{self.user['username']}",
+                                                                          f"{self.user['password']}",
+                                                                          f"{self.user['email']}",
+                                                                          f"{self.user['address']}",
+                                                                          f"{self.user['date']}",))
             self.cursor.close()
             self.connection.commit()
             return True
@@ -93,13 +109,21 @@ class DataBase:
         user = self.take_user()
         if user:
             print(user)
-            self.cursor.execute("""CREATE TABLE IF NOT EXISTS %s( ID serial PRIMARY KEY NOT NULL,
+            sql = f"""CREATE TABLE IF NOT EXISTS {self.user['email']}( ID serial PRIMARY KEY NOT NULL,
                                                                   STOCK_NAME VARCHAR(500) NOT NULL,
                                                                   STICKER_STOCK VARCHAR(500) NOT NULL,
                                                                   BID integer NOT NULL,
                                                                   ASK integer NOT NULL,
                                                                   oper_date VARCHAR(500) NOT NULL                                           
-                                                                  );""" % (self.user['email'],))
+                                                                  );"""
+            self.cursor.execute(sql)
+            #self.cursor.execute("""CREATE TABLE IF NOT EXISTS %s( ID serial PRIMARY KEY NOT NULL,
+            #                                                      STOCK_NAME VARCHAR(500) NOT NULL,
+            #                                                      STICKER_STOCK VARCHAR(500) NOT NULL,
+            #                                                      BID integer NOT NULL,
+            #                                                      ASK integer NOT NULL,
+            #                                                      oper_date VARCHAR(500) NOT NULL
+            #                                                      );""" % (self.user['email'],))
             self.cursor.close()
             self.connection.commit()
             return True

@@ -6,6 +6,15 @@
 
 {% block body  %}
 <body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3>{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
     <div class="skippy overflow-hidden">
   <div class="container-xl">
     <a class="sr-only sr-only-focusable d-inline-flex p-2 m-1" href="{{url_for('main_page')}}">Головна сторінка</a>

@@ -7,8 +7,23 @@
 {% block body  %}
 <body class="py-4">
     <div class="container">
+     <ul class="list-inline">
+      <li class="list-inline-item"><a href="{{url_for('main_page')}}">Головна сторінка</a></li>
+      <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
+      <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
+      <li class="list-inline-item"><a href="{{url_for('logout_page')}}">Вийти з кабінету</a></li>
+    </ul>
 
   <h1>{{ title }}</h1>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3>{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
   <p class="lead">Basic grid layouts to get you familiar with building within the Bootstrap grid system.</p>
   <p>In these examples the <code>.themed-grid-col</code> class is added to the columns to add some theming. This is not a class that is available in Bootstrap by default.</p>
 

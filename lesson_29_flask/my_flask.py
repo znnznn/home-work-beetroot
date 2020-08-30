@@ -3,7 +3,7 @@ import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, url_for, request, redirect, g, flash
-from flask_login import LoginManager, login_required, login_user
+from flask_login import LoginManager, login_required, login_user, logout_user
 
 from lesson_29_flask.userLogin_flask import UserLogin
 from lesson_29_flask.db_flask import DataBase
@@ -34,7 +34,7 @@ def main_page():
 
 @login_manager.user_loader
 def load_user(user_id):
-    return UserLogin.get_id(user_id)
+    return UserLogin(user_id).user_db(user_id)
 
 
 @app.route('/login', methods=["POST", "GET"])
@@ -43,15 +43,12 @@ def login_page():
     if request.method == 'POST':
 
         data_user = dict(request.form)
-
         user = DataBase(data_user)
         user_id = user.take_user()
         print(data_user['password'])
-        print(user_id[4])
-
-        if user_id and check_password_hash(user_id[4], data_user['password']):
+        if user_id and check_password_hash(user_id['password'], data_user['password']):
             print(5)
-            userLogin = UserLogin().user(user_id[0])
+            userLogin = UserLogin(user_id).user_id(user_id)
             login_user(userLogin)
             return redirect(url_for('user_page'))
         else:
@@ -93,7 +90,7 @@ def new_user_page():
         elif data_new_user['password'] != data_new_user['password2']:
             flash('Введені паролі не рівні')
             return redirect(url_for('new_user_page'))
-        for key, values in data_new_user.items():
+        for key, values in data_new_user.items():  # треба дізнатись чи треба паролі стріпати
             data_new_user[key] = values.strip()
         data_new_user['password'] = generate_password_hash(data_new_user['password'])
         data_new_user.pop('password2')
@@ -106,6 +103,14 @@ def new_user_page():
         flash(f"Користувач з такими даними вже існує")
         return redirect(url_for('new_user_page'))
     return render_template('new_user.html', title='Реєстрація')
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout_page():
+    logout_user()
+    flash('Ви вийшли  кабінету')
+    return redirect(url_for('main_page'))
 
 
 @app.teardown_appcontext
