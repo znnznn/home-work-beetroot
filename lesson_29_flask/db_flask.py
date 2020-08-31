@@ -23,7 +23,6 @@ class DataBase:
         except:
             self.cursor.close()
 
-
     def take_user(self):
 
         try:
@@ -59,8 +58,23 @@ class DataBase:
     def edit_user(self):
         pass
 
-    def del_user(self):
-        pass
+    def del_user(self):  # треба доробити
+        user = self.take_user()
+        if not user:
+            return False
+        try:
+            print(5)
+            self.cursor.execute("""Видалити акаунт)
+                                VALUES(%s);""", (f"{self.user['id']}",))
+            self.cursor.close()
+            self.connection.commit()
+            return True
+        except Exception as e:
+            print(e, 'add_user')
+            self.connection.rollback()
+            self.user['None'] = e
+            return False
+
 
     def add_user(self):
 
@@ -160,6 +174,31 @@ class DataBase:
         except Exception as e:
             self.connection.rollback()
             return print(f'Помилка з\'єднання з базою даних : {e}')
+
+    def add_message(self):
+        try:
+            print(5)
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS message (
+                                                              ID serial PRIMARY KEY NOT NULL,                                                              
+                                                              USERNAME VARCHAR (500) NOT NULL,                                                              
+                                                              EMAIL VARCHAR (500) NOT NULL,
+                                                              message text NOT NULL,
+                                                              oper_date VARCHAR(500) NOT NULL                                          
+                                                              );""")
+            self.cursor.execute("""INSERT INTO message(USERNAME, EMAIL, message, oper_date)
+                                VALUES(%s, %s, %s, %s);""", ( f"{self.user['username']}",
+                                                              f"{self.user['email']}",
+                                                              f"{self.user['message']}",
+                                                              f"{self.user['date']}",))
+            self.cursor.close()
+            self.connection.commit()
+            return True
+        except Exception as e:
+            print(e, 'add_message')
+            self.connection.rollback()
+            self.user['None'] = e
+            return False
+
 
 
 """ 

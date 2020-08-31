@@ -3,7 +3,7 @@ import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, url_for, request, redirect, g, flash
-from flask_login import LoginManager, login_required, login_user, logout_user
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from lesson_29_flask.userLogin_flask import UserLogin
 from lesson_29_flask.db_flask import DataBase
@@ -39,10 +39,12 @@ def load_user(user_id):
 
 @app.route('/login', methods=["POST", "GET"])
 def login_page():
-
+    if current_user.is_authenticated:
+        return redirect(url_for('user_page'))
     if request.method == 'POST':
 
         data_user = dict(request.form)
+        print(data_user)
         user = DataBase(data_user)
         user_id = user.take_user()
         print(data_user['password'])
@@ -58,24 +60,45 @@ def login_page():
     return render_template('login.html', title='Авторизація')
 
 
-@app.route('/contacts')
-def contacts_page():
+@app.route('/contacts',  methods=['POST', 'GET'])
+def contacts_page():  # проблеми з авторизованим користувачем меседж відсилається все добре але в консолі дивне повід.
+    if request.method == 'POST':
+        print(g)
+        data_user = dict(request.form)
+        print(data_user)
+        for key, values in data_user.items():
+            data_user[key] = values.strip()
+        if "" in data_user.values():
+            flash('Всі поля мають бути заповненими')
+            return redirect(url_for('contacts_page'))
+        data_user['date'] = str(datetime.datetime.today())
+        user = DataBase(data_user)
+        print(data_user)
+        message = user.add_message()
+        if message:
+            flash('Повідомлення успішно відправлено')
+            return render_template('contacts.html', title='Контакти')
+        flash("Сталась помилка з\'єднання з базою даних")
+        return redirect(redirect(url_for('contacts_page')))
     return render_template('contacts.html', title='Контакти')
 
 
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 def user_page(name=None):
+
     user_name = name
     if request.method == 'POST':
         pass
-    list_stock = api_stock()
+    #list_stock = api_stock()
 
     return render_template('user.html',  title=f'{user_name}')
 
 
 @app.route('/new_user', methods=['POST', 'GET'])
 def new_user_page():
+    if current_user.is_authenticated:
+        return redirect(url_for('user_page'))
     if request.method == 'POST':
         data_new_user = dict(request.form)
         if '' in data_new_user.values() or ' ' in data_new_user.values():
@@ -109,20 +132,26 @@ def new_user_page():
 @login_required
 def logout_page():
     logout_user()
-    flash('Ви вийшли  кабінету')
+    flash('Ви вийшли з кабінету')
     return redirect(url_for('main_page'))
 
 
 @app.teardown_appcontext
 def close(error):
-
     if hasattr(g, 'link_db'):
         g.link_db.close()
 
 
-@app.errorhandler(404)
+@app.errorhandler(401)
 def error_page(error):
-    return render_template('error_page.html', title='Сторінку не знайдено'), 404
+    flash('Авторизуйтесь будь ласка')
+    return redirect(url_for('login_page')), 401
+
+
+@app.errorhandler(404)
+def error_page1(error):
+    flash('Авторизуйтесь будь ласка')
+    return render_template('login.html', title='Авторизація'), 404
 
 
 app.run(host='0.0.0.0', port='5000', debug=True)

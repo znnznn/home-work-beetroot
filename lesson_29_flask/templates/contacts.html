@@ -6,26 +6,46 @@
 
 {% block body  %}
  <div class="container-xl">
-<body class="text-center">
-    <form class="form-signin">
-  <img class="mb-4" src="/docs/4.5/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-  <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-  <label for="inputEmail" class="sr-only">Email address</label>
-  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
-  <label for="inputPassword" class="sr-only">Password</label>
-  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
-  <div class="checkbox mb-3">
-    <label>
-      <input type="checkbox" value="remember-me"> Remember me
-    </label>
-  </div>
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-  <p class="mt-5 mb-3 text-muted">© 2020-2020</p>
-</form>
 
+    <body class="text-center">
+        <ul class="list-inline">
+      <li class="list-inline-item"><a href="{{url_for('main_page')}}">Головна сторінка</a></li>
+      <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
+      <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
+        {% if current_user.is_authenticated %}
 
-</body>
+            <li class="list-inline-item"><a href="{{url_for('logout_page')}}">Вийти з кабінету</a></li>
+        {% endif %}
+        <h3> {{ title }} </h3>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+    </ul>
+        <form class="form-signin">
+          <img class="mb-4" >
+          <h4 class="h3 mb-3 font-weight-normal">Будь ласка введіть свої дані</h4>
+          <label for="inputEmail" class="sr-only">Email address</label>
+          <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required="" autofocus="">
+          <label for="name" class="sr-only">Ім'я</label>
+          <input type="text" id="name" name="username" class="form-control" placeholder="Ім'я" required="">
+          <div class="text-center">
+             <label>
+                 <textarea name="message" rows="15" cols="50" placeholder="Введіть текст повідомлення i ми обов'язково Вам відповімо" autofocus=""></textarea>
+             </label>
+
+          </div>
+          <button formmethod="post" class="btn btn-lg btn-primary btn-block" type="submit">Надіслати повідомлення</button>
+            <h4> Головний офіс y м.Рівне </h4>
+            <h5> Штабквартира : Офіс для студентів "Beetroot academy" </h5>
+          <p class="mt-5 mb-3 text-muted">© 2020-2020</p>
+        </form>
+    </body>
  </div>
-
-<h1> {{ title }} </h1>
 {% endblock %}
+

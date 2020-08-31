@@ -19,19 +19,19 @@
     <body class="text-center">
         <form action="{{url_for('login_page')}}" method="POST" class="form-signin">
           <img class="mb-4" src="" alt="" width="10" height="10">
-          <h1 class="h3 mb-3 font-weight-normal">Будь ласка введіть свої данні</h1>
+          <h1 class="h3 mb-3 font-weight-normal">Будь ласка введіть свої дані</h1>
           <label for="inputEmail" class="sr-only">Email address</label>
           <input type="email" name="email" value="" id="inputEmail" class="form-control" placeholder="Email address"  required>
           <label for="inputPassword" class="sr-only">Password</label>
           <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" value="" required="">
           <div class="checkbox mb-3">
             <label>
-              <input type="checkbox" value="remember-me"> Запам'ятати мене
+              <input type="checkbox" value="remember-me" name="remember"> Запам'ятати мене
             </label>
           </div>
             <p>
                <button  formmethod="post" class="btn btn-primary btn-lg btn-block" type="submit">Зайти в кабінет</button>
-                <li class="list-inline-item"><a href="{{url_for('new_user_page')}}">Зареєструватись</a></li>
+                <h2><li class="list-inline-item"><a href="{{url_for('new_user_page')}}">Зареєструватись</a></li></h2>
             </p>
             <p class="mt-5 mb-3 text-muted">© 2020-2020</p>
         </form>
