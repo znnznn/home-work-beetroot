@@ -31,11 +31,15 @@ class DataBase:
             user = self.cursor.fetchone()
             print(dict(user))
             if user:
-
+                self.cursor.close()
+                self.connection.commit()
                 return dict(user)
-
+            self.cursor.close()
+            self.connection.commit()
             return False
         except Exception as e:
+            self.cursor.close()
+            self.connection.commit()
             print(e, 'take_user')
             return False
 
@@ -45,18 +49,31 @@ class DataBase:
             print(self.user['email'])
             self.cursor.execute("SELECT * FROM users WHERE email = %s", (f"{user_id}",))
             user = self.cursor.fetchone()
+
             print(dict(user))
             if user:
-
+                self.cursor.close()
+                self.connection.commit()
                 return dict(user)
-
+            self.cursor.close()
+            self.connection.commit()
             return False
         except Exception as e:
+            self.cursor.close()
+            self.connection.commit()
             print(e, 'take_user')
             return False
 
     def edit_user(self):
-        pass
+        try:
+            user = self.take_user()
+            if user:
+                self.cursor.execute("UPDATE users SET username = %s WHERE id = % s", (user['username'], user['id']))
+            self.cursor.close()
+            self.connection.commit()
+        except:
+            self.cursor.close()
+            self.connection.commit()
 
     def del_user(self):  # треба доробити
         user = self.take_user()
@@ -64,8 +81,7 @@ class DataBase:
             return False
         try:
             print(5)
-            self.cursor.execute("""Видалити акаунт)
-                                VALUES(%s);""", (f"{self.user['id']}",))
+            self.cursor.execute("""DELETE FROM users WHERE id = %s;""", (f"{self.user['id']}",))
             self.cursor.close()
             self.connection.commit()
             return True
