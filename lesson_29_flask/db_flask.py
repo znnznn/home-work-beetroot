@@ -26,10 +26,10 @@ class DataBase:
     def take_user(self):
 
         try:
-            print(self.user['email'])
+            print('take_user', self.user['email'])
             self.cursor.execute("SELECT * FROM users WHERE email = %s", (f"{self.user['email']}",))
             user = self.cursor.fetchone()
-            print(dict(user))
+            print('take_user', dict(user))
             if user:
                 self.cursor.close()
                 self.connection.commit()
@@ -67,10 +67,22 @@ class DataBase:
     def edit_user(self):
         try:
             user = self.take_user()
+            self.data_base()
             if user:
-                self.cursor.execute("UPDATE users SET username = %s WHERE id = % s", (user['username'], user['id']))
+                print(1212)
+                self.cursor.execute("""UPDATE users SET first_name = %s, last_name = %s,
+                                                        username = %s, password = %s, 
+                                                        email = %s, address = %s  WHERE id = %s""", (user['first_name'],
+                                                                                                     user['last_name'],
+                                                                                                     user['username'],
+                                                                                                     user['password'],
+                                                                                                     user['email'],
+                                                                                                     user['address'],
+                                                                                                     user['id']))
+                print(2121)
             self.cursor.close()
             self.connection.commit()
+            return True
         except:
             self.cursor.close()
             self.connection.commit()

@@ -7,7 +7,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 from lesson_29_flask.userLogin_flask import UserLogin
 from lesson_29_flask.db_flask import DataBase
-from lesson_29_flask.http_request import api_stock
+from lesson_29_flask.http_request import user_list
 import oauthlib
 # @login_required для сторінок які лише авторизованим юзерам
 
@@ -16,6 +16,7 @@ app.config['SECRET_KEY'] = 'f51ab319da5bb46ec221f7da979833a35250c86e'
 
 login_manager = LoginManager(app)
 
+user_id = {}
 stocks = {
     'WMT': "Wal-Mart Stores, Inc.",
     "MCD": "McDonald’s Corp.",
@@ -39,33 +40,28 @@ def load_user(user_id):
 
 @app.route('/login', methods=["POST", "GET"])
 def login_page():
+    global user_id
     if current_user.is_authenticated:
         return redirect(url_for('user_page'))
     if request.method == 'POST':
-
         data_user = dict(request.form)
-        print(data_user)
         user = DataBase(data_user)
         user_id = user.take_user()
-        print(data_user['password'])
         if user_id and check_password_hash(user_id['password'], data_user['password']):
-            print(5)
+            remember_me = True if data_user.get('remember') else False
             userLogin = UserLogin(user_id).user_id(user_id)
-            login_user(userLogin)
+            login_user(userLogin, remember=remember_me)
             return redirect(url_for('user_page'))
         else:
             flash('Невірно введений email або пароль')
             return redirect(url_for('login_page'))
-    print(10)
     return render_template('login.html', title='Авторизація')
 
 
 @app.route('/contacts',  methods=['POST', 'GET'])
 def contacts_page():  # проблеми з авторизованим користувачем меседж відсилається все добре але в консолі дивне повід.
     if request.method == 'POST':
-        print(g)
         data_user = dict(request.form)
-        print(data_user)
         for key, values in data_user.items():
             data_user[key] = values.strip()
         if "" in data_user.values():
@@ -73,7 +69,6 @@ def contacts_page():  # проблеми з авторизованим кори�
             return redirect(url_for('contacts_page'))
         data_user['date'] = str(datetime.datetime.today())
         user = DataBase(data_user)
-        print(data_user)
         message = user.add_message()
         if message:
             flash('Повідомлення успішно відправлено')
@@ -85,15 +80,47 @@ def contacts_page():  # проблеми з авторизованим кори�
 
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
-def user_page(name=None):
-
-    user_name = name
+def user_page():
+    global user_id
+    user_name = user_id.get('username')
     if request.method == 'POST':
-        pass
-    #list_stock = api_stock()
+        list_stock = stocks
 
-    return render_template('user.html',  title=f'{user_name}')
+    return render_template('user.html',  title=f'{user_name}', stocks=stocks)
 
+@app.route('/user/profile', methods=['GET', 'POST'])
+@login_required
+def profile_page():
+    global user_id
+    if request.method == 'POST':
+        user = dict(request.form)
+        if '' in user.values() or ' ' in user.values():
+            flash('Поля мають бути заповненими')
+            return redirect(url_for('profile_page'))
+        elif not user['firstName'].isalpha() or not user['lastName'].isalpha():
+            flash("Поле ім\'я або фамілія має містити лише букви")
+            return redirect(url_for('profile_page'))
+        elif '@' not in user['email'] or '.' not in user['email']:
+            flash('Невірно введений формат електронної пошти')
+            return redirect(url_for('profile_page'))
+        elif user['password'] != user['password2']:
+            flash('Введені паролі не рівні')
+            return redirect(url_for('profile_page'))
+        for key, values in user.items():  # треба дізнатись чи треба паролі стріпати
+            user[key] = values.strip()
+        user['id'] = user_id['id']
+        user['password'] = generate_password_hash(user['password'])
+        user.pop('password2')
+        user['date'] = str(datetime.datetime.today())
+        user_edit = DataBase(user)
+        db_user = user_edit.edit_user()
+        user_id = user
+        if db_user:
+            flash('Ви успішно змінили особисті дані')
+            return redirect(url_for('user_page'))
+        flash(f"Користувач з такими даними вже існує")
+        return redirect(url_for('new_user_page'))
+    return render_template('profile_user.html', title='Профіль', username=user_id)
 
 @app.route('/new_user', methods=['POST', 'GET'])
 def new_user_page():

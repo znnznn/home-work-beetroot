@@ -12,6 +12,7 @@
       <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
       <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
       <li class="list-inline-item"><a href="{{url_for('logout_page')}}">Вийти з кабінету</a></li>
+       <li class="list-inline-item"><a href="{{url_for('profile_page')}}">Особисті данні</a></li>
     </ul>
 
   <h1>{{ title }}</h1>
@@ -24,16 +25,16 @@
         </ul>
       {% endif %}
     {% endwith %}
-  <p class="lead">Basic grid layouts to get you familiar with building within the Bootstrap grid system.</p>
-  <p>In these examples the <code>.themed-grid-col</code> class is added to the columns to add some theming. This is not a class that is available in Bootstrap by default.</p>
+  <p class="lead">Дані по обраним цінним паперам</p>
 
-  <h2 class="mt-4">Five grid tiers</h2>
-  <p>There are five tiers to the Bootstrap grid system, one for each range of devices we support. Each tier starts at a minimum viewport size and automatically applies to the larger devices unless overridden.</p>
+
+  <h2 class="mt-4">Перелік акцій</h2>
+  <p>Відображено поточні ціни</p>
 
   <div class="row mb-3">
-    <div class="col-4 themed-grid-col">.col-4</div>
-    <div class="col-4 themed-grid-col">.col-4</div>
-    <div class="col-4 themed-grid-col">.col-4</div>
+    {% for key, value in stocks.items() %}
+           <div class="col-4 themed-grid-col">{{ key, value }}</div>
+        {% endfor %}
   </div>
 
   <div class="row mb-3">
