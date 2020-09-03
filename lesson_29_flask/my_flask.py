@@ -88,6 +88,7 @@ def user_page():
 
     return render_template('user.html',  title=f'{user_name}', stocks=stocks)
 
+
 @app.route('/user/profile', methods=['GET', 'POST'])
 @login_required
 def profile_page():
@@ -113,14 +114,30 @@ def profile_page():
         user.pop('password2')
         user['date'] = str(datetime.datetime.today())
         user_edit = DataBase(user)
+
         db_user = user_edit.edit_user()
         user_id = user
         if db_user:
-            flash('Ви успішно змінили особисті дані')
+            flash(f"{user['username']}, Ви успішно змінили особисті дані")
             return redirect(url_for('user_page'))
-        flash(f"Користувач з такими даними вже існує")
+        flash(f"Користувач з {user['email']} вже існує")
         return redirect(url_for('new_user_page'))
     return render_template('profile_user.html', title='Профіль', username=user_id)
+
+
+@app.route('/user/profile/delete', methods=['GET', 'POST'])
+@login_required
+def del_profile_page():
+    global user_id
+    username = user_id.get('username')
+    if request.method == 'POST':
+        logout_user()
+        del_user = DataBase(user_id).del_user()
+        flash(f'Нажаль {username} вас видалено.')
+        return redirect(url_for('main_page'))
+    flash(f'Ви впевненні {username}, що хочете себе видалити')
+    return render_template('delete_profile.html', title='Видалення профілю !!!', username=user_id)
+
 
 @app.route('/new_user', methods=['POST', 'GET'])
 def new_user_page():
@@ -148,9 +165,9 @@ def new_user_page():
         new_user = DataBase(data_new_user)
         db_user = new_user.add_user()
         if db_user:
-            flash('Ви успішно зареєструвались')
+            flash(f"{data_new_user['username']}, Ви успішно зареєструвались.")
             return redirect(url_for('login_page'))
-        flash(f"Користувач з такими даними вже існує")
+        flash(f"Користувач з {data_new_user['email']} вже існує.")
         return redirect(url_for('new_user_page'))
     return render_template('new_user.html', title='Реєстрація')
 
@@ -158,8 +175,10 @@ def new_user_page():
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout_page():
+    global user_id
+    username = user_id.get('username')
     logout_user()
-    flash('Ви вийшли з кабінету')
+    flash(f'{username}, Ви вийшли з кабінету.')
     return redirect(url_for('main_page'))
 
 

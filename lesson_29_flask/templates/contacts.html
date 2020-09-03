@@ -10,7 +10,11 @@
     <body class="text-center">
         <ul class="list-inline">
       <li class="list-inline-item"><a href="{{url_for('main_page')}}">Головна сторінка</a></li>
-      <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
+      {% if current_user.is_authenticated %}
+        <li class="list-inline-item"><a class="nav-link" href="{{url_for('user_page')}}">Особистий кабінет</a>
+      {% else %}
+         <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
+      {% endif %}
       <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
         {% if current_user.is_authenticated %}
 
@@ -36,7 +40,7 @@
           <input type="text" id="name" name="username" class="form-control" placeholder="Ім'я" required="">
           <div class="text-center">
              <label>
-                 <textarea name="message" rows="15" cols="50" placeholder="Введіть текст повідомлення i ми обов'язково Вам відповімо" autofocus=""></textarea>
+                 <textarea name="message" rows="15" cols="50" placeholder="Введіть текст повідомлення i ми обов'язково Вам надішлемо відповідь" autofocus=""></textarea>
              </label>
 
           </div>

@@ -2,10 +2,11 @@ import json
 from flask_login import UserMixin
 from lesson_29_flask.db_flask import DataBase
 
+
 class UserLogin(UserMixin, DataBase):
 
     def user_db(self, user):
-        self.user = self.take_user_id(user)
+        self.user = DataBase(user).take_user_id()
         return self
 
     def user_id(self, user):

@@ -15,6 +15,7 @@
       <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
       <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
       <li class="list-inline-item"><a href="{{url_for('logout_page')}}">Вийти з кабінету</a></li>
+       <li class="list-inline-item"><a href="{{url_for('del_profile_page')}}">Видалити профіль</a></li>
     </ul>
     <h2>Ваш профіль</h2>
     {% with messages = get_flashed_messages() %}
@@ -89,7 +90,7 @@
           <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Введіть пароль" required="">
           <input type="password" class="form-control" id="inputPassword2" name="password2" placeholder="Повторіть пароль" required="">
           <div class="invalid-feedback">
-            Будь-ласка ввдть однаковий пароль
+            Будь-ласка введіть однаковий пароль
           </div>
         </div>
           <p>
