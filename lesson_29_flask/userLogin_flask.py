@@ -17,3 +17,6 @@ class UserLogin(UserMixin, DataBase):
         user = str(self.user['id'])
         return user
 
+    def user_data(self):
+        return self.user
+
