@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = 'f51ab319da5bb46ec221f7da979833a35250c86e'
 
 login_manager = LoginManager(app)
 
-user_id = {}
+
 stocks = {
     'WMT': "Wal-Mart Stores, Inc.",
     "MCD": "McDonald’s Corp.",
@@ -35,12 +35,13 @@ def main_page():
 
 @login_manager.user_loader
 def load_user(user_id):
-    return UserLogin(user_id).user_db(user_id)
+    user = UserLogin(user_id).user_db(user_id)
+    return user
 
 
 @app.route('/login', methods=["POST", "GET"])
 def login_page():
-    global user_id
+
     if current_user.is_authenticated:
         return redirect(url_for('user_page'))
     if request.method == 'POST':
@@ -59,7 +60,7 @@ def login_page():
 
 
 @app.route('/contacts',  methods=['POST', 'GET'])
-def contacts_page():  # проблеми з авторизованим користувачем меседж відсилається все добре але в консолі дивне повід.
+def contacts_page():
     if request.method == 'POST':
         data_user = dict(request.form)
         for key, values in data_user.items():
@@ -81,7 +82,7 @@ def contacts_page():  # проблеми з авторизованим кори�
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 def user_page():
-    global user_id
+    user_id = current_user.user_data()
     user_name = user_id.get('username')
     if request.method == 'POST':
         list_stock = stocks
@@ -92,7 +93,7 @@ def user_page():
 @app.route('/user/profile', methods=['GET', 'POST'])
 @login_required
 def profile_page():
-    global user_id
+    user_id = current_user.user_data()
     if request.method == 'POST':
         user = dict(request.form)
         if '' in user.values() or ' ' in user.values():
@@ -114,9 +115,7 @@ def profile_page():
         user.pop('password2')
         user['date'] = str(datetime.datetime.today())
         user_edit = DataBase(user)
-
         db_user = user_edit.edit_user()
-        user_id = user
         if db_user:
             flash(f"{user['username']}, Ви успішно змінили особисті дані")
             return redirect(url_for('user_page'))
@@ -128,7 +127,7 @@ def profile_page():
 @app.route('/user/profile/delete', methods=['GET', 'POST'])
 @login_required
 def del_profile_page():
-    global user_id
+    user_id = current_user.user_data()
     username = user_id.get('username')
     if request.method == 'POST':
         logout_user()
@@ -175,7 +174,7 @@ def new_user_page():
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout_page():
-    global user_id
+    user_id = current_user.user_data()
     username = user_id.get('username')
     logout_user()
     flash(f'{username}, Ви вийшли з кабінету.')
