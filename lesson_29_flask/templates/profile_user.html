@@ -9,13 +9,17 @@
 <body class="bg-light">
     <div class="container">
   <div class="py-5 text-center">
-    <img class="d-block mx-auto mb-4" src="" alt="" width="72" height="72">
+    <img class="d-block mx-auto mb-4" src="" alt="" width="" height="">
      <ul class="list-inline">
       <li class="list-inline-item"><a href="{{url_for('main_page')}}">Головна сторінка</a></li>
-      <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
+      {% if not current_user.is_authenticated %}
+        <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
+      {% else %}
+        <li class="list-inline-item"><a href="{{url_for('user_page')}}">Особистий кабінет</a></li>
+      {% endif %}
       <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
       <li class="list-inline-item"><a href="{{url_for('logout_page')}}">Вийти з кабінету</a></li>
-       <li class="list-inline-item"><a href="{{url_for('del_profile_page')}}">Видалити профіль</a></li>
+      <li class="list-inline-item"><a href="{{url_for('del_profile_page')}}">Видалити профіль</a></li>
     </ul>
     <h2>Ваш профіль</h2>
     {% with messages = get_flashed_messages() %}
@@ -105,11 +109,6 @@
 
   <footer class="my-5 pt-5 text-muted text-center text-small">
     <p class="mb-1">© 2020-2020 Біржовий аналітик</p>
-    <ul class="list-inline">
-      <li class="list-inline-item"><a href="{{url_for('main_page')}}">Головна сторінка</a></li>
-      <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
-      <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
-    </ul>
   </footer>
 
 </body>

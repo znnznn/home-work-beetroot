@@ -12,14 +12,12 @@
       <li class="list-inline-item"><a href="{{url_for('main_page')}}">Головна сторінка</a></li>
       {% if current_user.is_authenticated %}
         <li class="list-inline-item"><a class="nav-link" href="{{url_for('user_page')}}">Особистий кабінет</a>
+        <li class="list-inline-item"><a href="{{url_for('logout_page')}}">Вийти з кабінету</a></li>
       {% else %}
          <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
       {% endif %}
       <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
-        {% if current_user.is_authenticated %}
 
-            <li class="list-inline-item"><a href="{{url_for('logout_page')}}">Вийти з кабінету</a></li>
-        {% endif %}
         <h3> {{ title }} </h3>
         {% with messages = get_flashed_messages() %}
           {% if messages %}

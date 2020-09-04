@@ -17,6 +17,15 @@
     {% endwith %}
  <div class="container-xl">
     <body class="text-center">
+        <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand">Біржовий аналітик</h3>
+      <nav class="nav nav-masthead justify-content-center">
+        <a class="nav-link active" href="{{url_for('main_page')}}">Головна сторінка</a>
+        <a class="nav-link" href="{{url_for('contacts_page')}}">Контакти</a>
+      </nav>
+    </div>
+  </header>
         <form action="{{url_for('login_page')}}" method="POST" class="form-signin">
           <img class="mb-4" src="" alt="" width="10" height="10">
           <h1 class="h3 mb-3 font-weight-normal">Будь ласка введіть свої дані</h1>
