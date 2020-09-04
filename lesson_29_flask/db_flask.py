@@ -69,15 +69,13 @@ class DataBase:
             self.cursor.execute("""UPDATE users 
                                         SET first_name=%s, last_name=%s,
                                             username=%s, password=%s, 
-                                            email=%s, address=%s  WHERE id=%s;""", (
-                                                                                    f"{self.user['firstName']}",
+                                            email=%s, address=%s  WHERE id=%s;""", (f"{self.user['firstName']}",
                                                                                     f"{self.user['lastName']}",
                                                                                     f"{self.user['username']}",
                                                                                     f"{self.user['password']}",
                                                                                     f"{self.user['email']}",
                                                                                     f"{self.user['address']}",
-                                                                                    f"{self.user['id']}")
-                                )
+                                                                                    f"{self.user['id']}"))
 
             self.cursor.close()
             self.connection.commit()
@@ -105,9 +103,12 @@ class DataBase:
         """ adds the user to the database after registration """
         if self.take_user():
             return False
+        self.data_base()
         try:
+            self.create_tab()
+            self.data_base()
             print(5)
-            self.cursor.execute("""INSERT INTO users(FIRST_NAME, LAST_NAME, USERNAME,
+            self.cursor.execute(f"""INSERT INTO users(FIRST_NAME, LAST_NAME, USERNAME,
                                 PASSWORD, EMAIL, ADDRESS, oper_date)
                                 VALUES(%s, %s, %s, %s, %s, %s, %s);""", (f"{self.user['firstName']}",
                                                                          f"{self.user['firstName']}",
@@ -115,7 +116,7 @@ class DataBase:
                                                                          f"{self.user['password']}",
                                                                          f"{self.user['email']}",
                                                                          f"{self.user['address']}",
-                                                                         f"{self.user['date']}",))
+                                                                         f"{self.user['date']}"))
             self.cursor.close()
             self.connection.commit()
             return True
@@ -167,11 +168,17 @@ class DataBase:
         pass
 
     def create_tab(self):
-
-        my_add = self.user['email'][:5]
+        """ creating a table of users and a table of wishes of users """
         try:
-
-            self.cursor.execute("""CREATE TABLE IF NOT EXISTS users (
+            sql = f"""CREATE TABLE IF NOT EXISTS "{self.user['email']}"( ID serial PRIMARY KEY NOT NULL,
+                                                                              STOCK_NAME VARCHAR(500) NOT NULL,
+                                                                              STICKER_STOCK VARCHAR(500) NOT NULL,
+                                                                              BID integer NOT NULL,
+                                                                              ASK integer NOT NULL,
+                                                                              oper_date VARCHAR(500) NOT NULL                                           
+                                                                              );"""
+            self.cursor.execute(sql)
+            self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS users (
                                                   ID serial PRIMARY KEY NOT NULL,
                                                   FIRST_NAME VARCHAR(500) NOT NULL,
                                                   LAST_NAME VARCHAR(500) NOT NULL,
@@ -180,15 +187,6 @@ class DataBase:
                                                   EMAIL VARCHAR (500) NOT NULL,
                                                   ADDRESS VARCHAR(500) NOT NULL,
                                                   oper_date VARCHAR(500) NOT NULL                                          
-                                                  );""")
-
-            self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS {my_add} (
-                                                  ID serial PRIMARY KEY NOT NULL,
-                                                  STOCK_NAME VARCHAR(20) NOT NULL,
-                                                  STICKER_STOCK VARCHAR(20) NOT NULL,
-                                                  BID integer NOT NULL,
-                                                  ASK integer NOT NULL,
-                                                  oper_date VARCHAR(20) NOT NULL                                           
                                                   );""")
             self.cursor.close()
             self.connection.commit()
