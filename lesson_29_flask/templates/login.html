@@ -18,21 +18,24 @@
  <div class="container-xl">
     <body class="text-center">
         <header class="masthead mb-auto">
-    <div class="inner">
-      <h3 class="masthead-brand">Біржовий аналітик</h3>
-      <nav class="nav nav-masthead justify-content-center">
-        <a class="nav-link active" href="{{url_for('main_page')}}">Головна сторінка</a>
-        <a class="nav-link" href="{{url_for('contacts_page')}}">Контакти</a>
-      </nav>
-    </div>
-  </header>
+        <div class="inner">
+          <h3 class="masthead-brand">Біржовий аналітик</h3>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link active" href="{{url_for('main_page')}}">Головна сторінка</a>
+            <a class="nav-link" href="{{url_for('contacts_page')}}">Контакти</a>
+          </nav>
+        </div>
+        </header>
         <form action="{{url_for('login_page')}}" method="POST" class="form-signin">
           <img class="mb-4" src="" alt="" width="10" height="10">
           <h1 class="h3 mb-3 font-weight-normal">Будь ласка введіть свої дані</h1>
           <label for="inputEmail" class="sr-only">Email address</label>
-          <input type="email" name="email" value="" id="inputEmail" class="form-control" placeholder="Email address"  required>
+          <input type="email" name="email" value="" id="inputEmail" class="form-control" placeholder="Email address"  required="">
           <label for="inputPassword" class="sr-only">Password</label>
           <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" value="" required="">
+            <div class="invalid-feedback">
+            Please enter your email.
+            </div>
           <div class="checkbox mb-3">
             <label>
               <input type="checkbox" value="remember-me" name="remember"> Запам'ятати мене
@@ -40,7 +43,7 @@
           </div>
             <p>
                <button  formmethod="post" class="btn btn-lg btn-secondary" type="submit">Зайти в кабінет</button>
-                <h2><li class="list-inline-item"><a href="{{url_for('new_user_page')}}">Зареєструватись</a></li></h2>
+                <ul><h2><li class="list-inline-item"><a href="{{url_for('new_user_page')}}">Зареєструватись</a></li></h2></ul>
             </p>
             <p class="mt-5 mb-3 text-muted">© 2020-2020</p>
         </form>

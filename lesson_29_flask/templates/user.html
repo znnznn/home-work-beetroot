@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block body  %}
+
 <body class="py-4">
+
     <div class="container">
      <ul class="list-inline">
       <li class="list-inline-item"><a href="{{url_for('main_page')}}">Головна сторінка</a></li>
@@ -33,11 +35,62 @@
   <h2 class="mt-4">Перелік акцій</h2>
   <p>Відображено поточні ціни</p>
 
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+              <input type="checkbox" value="remember-me" name="remember">
+            </th>
+					<th>Hantis</th>
+					<th>Mastron</th>
+					<th>Jevicon</th>
+					<th>Lang</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+              <input type="checkbox" value="remember-me" name="remember">
+            </td>
+					<td>Some one</td>
+					<td>Take mose</td>
+					<td>Likbes</td>
+					<td>Racounter</td>
+				</tr>
+				<tr>
+					<td>Linkage</td>
+					<td>Fordor</td>
+					<td>Miad ron me</td>
+					<td>Diablo core</td>
+					<td>Tidbade</td>
+				</tr>
+				<tr>
+					<td>Hicura</td>
+					<td>Warecom</td>
+					<td>Xamicon</td>
+					<td>Yamama</td>
+					<td>Udoricano</td>
+				</tr>
+				<tr>
+					<td>Lavistaro</td>
+					<td>Micanorta</td>
+					<td>Ebloconte ma</td>
+					<td>Quad ri port</td>
+					<td>Timesquer</td>
+				</tr>
+			</tbody>
+		</table>
   <div class="row mb-3">
+
     {% for key, value in stocks.items() %}
            <div class="col-4 themed-grid-col">{{ key, value }}</div>
         {% endfor %}
   </div>
+    <div class="checkbox mb-3">
+            <label>
+              <input type="checkbox" value="remember-me" name="remember"> Запам'ятати мене
+            </label>
+          </div>
 
   <div class="row mb-3">
     <div class="col-sm-4 themed-grid-col">.col-sm-4</div>
