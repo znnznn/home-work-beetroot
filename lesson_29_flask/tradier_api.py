@@ -1,7 +1,9 @@
 import requests
 import json
+import time
 
 #  url = 'https://sandbox.tradier.com/v1/markets/etb'   /beta/markets/fundamentals/corporate_actions
+
 
 def all_stocks():
 
@@ -26,7 +28,7 @@ def symbol_stocks(symbol):
     return resp
 
 
-print(symbol_stocks("AAPL"))
+
 
 
 """ A	NYSE MKT
