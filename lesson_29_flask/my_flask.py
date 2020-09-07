@@ -1,12 +1,14 @@
 import psycopg2
 import datetime
-
+import json
+import time
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, url_for, request, redirect, g, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from lesson_29_flask.userLogin_flask import UserLogin
 from lesson_29_flask.db_flask import DataBase
+from lesson_29_flask.tradier_api import symbol_stocks
 from lesson_29_flask.http_request import user_list
 import oauthlib
 # @login_required для сторінок які лише авторизованим юзерам
@@ -82,12 +84,22 @@ def contacts_page():
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 def user_page():
+    t1 = time.time()
     user_id = current_user.user_data()
     user_name = user_id.get('username')
     if request.method == 'POST':
         list_stock = stocks
-
-    return render_template('user.html',  title=f'{user_name}', stocks=stocks)
+    with open('stocks.json', 'r') as file_stocks:
+        list_stocks = json.load(file_stocks)
+        my_stocks = list_stocks['securities']['security']
+        my_stocks = sorted(my_stocks, key=lambda symbol: symbol['symbol'])
+    i = 0
+    while i != 110:
+        data_symbol = symbol_stocks(my_stocks[i]['symbol'])
+        my_stocks[i]['quote'] = data_symbol['quotes']['quote']
+        i += 1
+    print(time.time()-t1, 555)
+    return render_template('user.html',  title=f'{user_name}', stocks=my_stocks)
 
 
 @app.route('/user/profile', methods=['GET', 'POST'])
