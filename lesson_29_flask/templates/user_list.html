@@ -38,7 +38,7 @@
   <h2 class="mt-4">Перелік акцій</h2>
   <p></p>
 
-		<table class="table table thead-light th">
+		<table class="table">
 			<thead>
 				<tr>
 					<th>
@@ -72,33 +72,33 @@
 			<tbody>
 
                 {% for value in stocks %}
-                    <tr>
-                            <td><input type="checkbox" value="{{ value['symbol'] }}" name="{{ value['symbol'] }}"></td>
-                            {% for key, val in value.items() %}
-                                {% if key == 'quote' %}
-                                    {% for key, symbol in val.items() %}
-                                        {% if key == 'last' %}
-                                            <td>{{ symbol }}</td>
-                                        {% elif key == 'open' %}
-                                            <td>{{ symbol }}</td>
-                                        {% elif key == 'high' %}
-                                            <td>{{ symbol }}</td>
-                                        {% elif key == 'low' %}
-                                            <td>{{ symbol }}</td>
-                                        {% elif key == 'close' %}
-                                            <td>{{ symbol }}</td>
-                                        {% elif key == 'change_percentage' %}
-                                             <td>{{ symbol }}</td>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% else %}
-                                    <td>{{ val }}</td>
-                                {% endif %}
-                            {% endfor %}
-                        <td> <form action="{{ url_for('user_list') }}" method="post" ><button formmethod="post" class="btn btn-primary"  type="submit">Стежити</button></form></td>
-                    </tr>
-                {% endfor %}
 
+				<tr>
+                        <td><input type="checkbox" value="{{ value['symbol'] }}" name="{{ value['symbol'] }}"></td>
+                        {% for key, val in value.items() %}
+                            {% if key == 'quote' %}
+                                {% for key, symbol in val.items() %}
+                                    {% if key == 'last' %}
+                                        <td>{{ symbol }}</td>
+                                    {% elif key == 'open' %}
+                                        <td>{{ symbol }}</td>
+                                    {% elif key == 'high' %}
+                                        <td>{{ symbol }}</td>
+                                    {% elif key == 'low' %}
+                                        <td>{{ symbol }}</td>
+                                    {% elif key == 'close' %}
+                                        <td>{{ symbol }}</td>
+                                    {% elif key == 'change_percentage' %}
+                                        <td>{{ symbol }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <td>{{ val }}</td>
+                            {% endif %}
+                        {% endfor %}
+                       <td> <form action="{{ url_for('user_list') }}" method="post" ><button formmethod="post" class="btn btn-primary" value="{{ value['symbol'] }}" type="submit">Стежити</button></form></td>
+				</tr>
+                {% endfor %}
 
 
 			</tbody>
