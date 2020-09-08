@@ -94,13 +94,24 @@ def user_page():
         my_stocks = list_stocks['securities']['security']
         my_stocks = sorted(my_stocks, key=lambda symbol: symbol['symbol'])
     i = 0
-    while i != 110:
+    while i != 10:
         data_symbol = symbol_stocks(my_stocks[i]['symbol'])
         my_stocks[i]['quote'] = data_symbol['quotes']['quote']
         i += 1
-    print(time.time()-t1, 555)
+    print(time.time()-t1,  my_stocks[0])
+    print(my_stocks[0]['quote']['change_percentage'])
     return render_template('user.html',  title=f'{user_name}', stocks=my_stocks)
 
+
+@app.route('/user/stocks', methods=['GET', 'POST'])
+@login_required
+def user_list():
+    user_id = current_user.user_data()
+    user_name = user_id.get('username')
+    if request.method == 'POST':
+        my_stocks = dict(request.form)
+        print(dict(request.form))
+    return render_template('user_list.html', title=f'{user_name}', stocks=my_stocks)
 
 @app.route('/user/profile', methods=['GET', 'POST'])
 @login_required
