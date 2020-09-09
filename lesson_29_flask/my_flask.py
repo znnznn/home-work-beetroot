@@ -96,6 +96,10 @@ def user_page():
     i = 0
     while i != 10:
         data_symbol = symbol_stocks(my_stocks[i]['symbol'])
+        if data_symbol['quotes']['quote']['change_percentage'] >= 0:
+            my_stocks[i]['positive_change'] = True
+        else:
+            my_stocks[i]['positive_change'] = False
         my_stocks[i]['quote'] = data_symbol['quotes']['quote']
         i += 1
     print(time.time()-t1,  my_stocks[0])
@@ -110,8 +114,14 @@ def user_list():
     user_name = user_id.get('username')
     if request.method == 'POST':
         my_stocks = dict(request.form)
+        my_stocks['trade_date'] = str(datetime.datetime.today())
+        user_id['stock'] = my_stocks
+        add_data = DataBase(user_id).add_user_views()
         print(dict(request.form))
-    return render_template('user_list.html', title=f'{user_name}', stocks=my_stocks)
+        return redirect(url_for('user_list'))
+    user_stocks = DataBase(user_id).take_user_views()
+
+    return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks)
 
 @app.route('/user/profile', methods=['GET', 'POST'])
 @login_required
