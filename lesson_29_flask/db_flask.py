@@ -126,21 +126,6 @@ class DataBase:
             self.user['None'] = e
             return False
 
-    def edit_user_views(self):
-        """ changes the data on which the user conducts analytics """
-        try:
-            user = self.take_user()
-            user_id = user['id']
-            self.cursor.execute(f"SELECT * FROM {user_id}")
-            user = self.cursor.fetchall()
-            print(user)
-            if user:
-                return user
-
-            return False
-        except Exception as e:
-            print(e, 'take_user')
-            return False
 
     def del_user_views(self):
         """ deletes the data on which the user conducts analytics """
@@ -149,19 +134,36 @@ class DataBase:
     def add_user_views(self):
         """ adds the data on which the user conducts analytics """
         user = self.take_user()
-        if user:
-            print(user)
-            sql = f"""CREATE TABLE IF NOT EXISTS {self.user['email']}( ID serial PRIMARY KEY NOT NULL,
-                                                                  STOCK_NAME VARCHAR(500) NOT NULL,
-                                                                  STICKER_STOCK VARCHAR(500) NOT NULL,
-                                                                  BID integer NOT NULL,
-                                                                  ASK integer NOT NULL,
-                                                                  oper_date VARCHAR(500) NOT NULL                                           
-                                                                  );"""
-            self.cursor.execute(sql)
-            self.cursor.close()
-            self.connection.commit()
-            return True
+        self.data_base()
+        try:
+            if user:
+                print(user)
+                sql = f"""INSERT INTO {self.user['email']}
+                                                   (symbol, description, exch, type, open, high, low, bid, ask,
+                                                    hange_percentage, prevclose, week_52_high, week_52_low, trade_date)
+                                                    VALUES({self.user['stock']['symbol']},
+                                                           {self.user['stock']['description']},
+                                                           {self.user['stock']['exch']},
+                                                           {self.user['stock']['type']},
+                                                           {self.user['stock']['open']},
+                                                           {self.user['stock']['high']},
+                                                           {self.user['stock']['low']},
+                                                           {self.user['stock']['bid']},
+                                                           {self.user['stock']['ask']},
+                                                           {self.user['stock']['change_percentage']}, 
+                                                           {self.user['stock']['prevclose']},
+                                                           {self.user['stock']['week_52_high']},
+                                                           {self.user['stock']['week_52_low']},
+                                                           {self.user['stock']['trade_date']});"""
+                self.cursor.execute(sql)
+                self.cursor.close()
+                self.connection.commit()
+                return True
+        except Exception as e:
+            print(e, 'add_user_views')
+            self.connection.rollback()
+            self.user['None'] = e
+            return False
 
     def take_user_views(self):
         """ takes data on which the user conducts analytics """
@@ -171,11 +173,20 @@ class DataBase:
         """ creating a table of users and a table of wishes of users """
         try:
             sql = f"""CREATE TABLE IF NOT EXISTS "{self.user['email']}"( ID serial PRIMARY KEY NOT NULL,
-                                                                              STOCK_NAME VARCHAR(500) NOT NULL,
-                                                                              STICKER_STOCK VARCHAR(500) NOT NULL,
-                                                                              BID integer NOT NULL,
-                                                                              ASK integer NOT NULL,
-                                                                              oper_date VARCHAR(500) NOT NULL                                           
+                                                                              symbol VARCHAR(500) NOT NULL,
+                                                                              description VARCHAR(700) NOT NULL,
+                                                                              exch VARCHAR(70) NOT NULL,
+                                                                              type VARCHAR(70) NOT NULL,
+                                                                              open integer NOT NULL,
+                                                                              high integer NOT NULL,
+                                                                              low integer NOT NULL,
+                                                                              bid integer NOT NULL,
+                                                                              ask integer NOT NULL,
+                                                                              change_percentage integer NOT NULL,
+                                                                              prevclose integer NOT NULL,
+                                                                              week_52_high integer NOT NULL,
+                                                                              week_52_low integer NOT NULL,
+                                                                              trade_date VARCHAR(500) NOT NULL                                           
                                                                               );"""
             self.cursor.execute(sql)
             self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS users (
