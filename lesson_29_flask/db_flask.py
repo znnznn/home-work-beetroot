@@ -82,6 +82,7 @@ class DataBase:
             return True
         except Exception as e:
             print(e, 'edit_user')
+            self.user['Error'] = e
             self.cursor.close()
             self.connection.commit()
 
@@ -94,9 +95,9 @@ class DataBase:
             self.connection.commit()
             return True
         except Exception as e:
-            print(e, 'add_user')
+            print(e, 'del_user')
             self.connection.rollback()
-            self.user['None'] = e
+            self.user['Error'] = e
             return False
 
     def add_user(self):
@@ -123,9 +124,8 @@ class DataBase:
         except Exception as e:
             print(e, 'add_user')
             self.connection.rollback()
-            self.user['None'] = e
+            self.user['Error'] = e
             return False
-
 
     def del_user_views(self):
         """ deletes the data on which the user conducts analytics """
@@ -138,13 +138,13 @@ class DataBase:
         try:
             if user:
                 print(user)
-                sql = f"""INSERT INTO {self.user['email']}
+                sql = f"""INSERT INTO "{self.user['email']}"
                                                    (symbol, description, exch, type, open, high, low, bid, ask,
-                                                    hange_percentage, prevclose, week_52_high, week_52_low, trade_date)
-                                                    VALUES({self.user['stock']['symbol']},
-                                                           {self.user['stock']['description']},
-                                                           {self.user['stock']['exch']},
-                                                           {self.user['stock']['type']},
+                                                    change_percentage, prevclose, week_52_high, week_52_low, trade_date)
+                                                    VALUES('{self.user['stock']['symbol']}',
+                                                           '{self.user['stock']['description']}',
+                                                           '{self.user['stock']['exch']}',
+                                                           '{self.user['stock']['type']}',
                                                            {self.user['stock']['open']},
                                                            {self.user['stock']['high']},
                                                            {self.user['stock']['low']},
@@ -154,40 +154,62 @@ class DataBase:
                                                            {self.user['stock']['prevclose']},
                                                            {self.user['stock']['week_52_high']},
                                                            {self.user['stock']['week_52_low']},
-                                                           {self.user['stock']['trade_date']});"""
+                                                           '{self.user['stock']['trade_date']}');"""
                 self.cursor.execute(sql)
                 self.cursor.close()
                 self.connection.commit()
-                return True
+                return user
         except Exception as e:
             print(e, 'add_user_views')
             self.connection.rollback()
-            self.user['None'] = e
+            self.user['Error'] = e
             return False
 
     def take_user_views(self):
         """ takes data on which the user conducts analytics """
-        pass
+        self.data_base()
+
+        try:
+            print('take_user_views', self.user)
+            sql = f"""SELECT * FROM "{self.user['email']}";"""
+            self.cursor.execute(sql)
+
+            user = self.cursor.fetchall()
+            print(dict(user))
+            if user:
+                self.cursor.close()
+                self.connection.commit()
+                return dict(user)
+
+            self.cursor.close()
+            self.connection.commit()
+            return False
+        except Exception as e:
+            self.cursor.close()
+            self.connection.commit()
+            self.user['Error'] = e
+            print('take_user_views', e)
+            return False
 
     def create_tab(self):
         """ creating a table of users and a table of wishes of users """
         try:
             sql = f"""CREATE TABLE IF NOT EXISTS "{self.user['email']}"( ID serial PRIMARY KEY NOT NULL,
-                                                                              symbol VARCHAR(500) NOT NULL,
-                                                                              description VARCHAR(700) NOT NULL,
-                                                                              exch VARCHAR(70) NOT NULL,
-                                                                              type VARCHAR(70) NOT NULL,
-                                                                              open integer NOT NULL,
-                                                                              high integer NOT NULL,
-                                                                              low integer NOT NULL,
-                                                                              bid integer NOT NULL,
-                                                                              ask integer NOT NULL,
-                                                                              change_percentage integer NOT NULL,
-                                                                              prevclose integer NOT NULL,
-                                                                              week_52_high integer NOT NULL,
-                                                                              week_52_low integer NOT NULL,
-                                                                              trade_date VARCHAR(500) NOT NULL                                           
-                                                                              );"""
+                                                                          symbol VARCHAR(500) NOT NULL,
+                                                                          description text NOT NULL,
+                                                                          exch VARCHAR(70) NOT NULL,
+                                                                          type VARCHAR(70) NOT NULL,
+                                                                          open double precision NOT NULL,
+                                                                          high double precision NOT NULL,
+                                                                          low double precision NOT NULL,
+                                                                          bid double precision NOT NULL,
+                                                                          ask double precision NOT NULL,
+                                                                          change_percentage double precision NOT NULL,
+                                                                          prevclose double precision NOT NULL,
+                                                                          week_52_high double precision NOT NULL,
+                                                                          week_52_low double precision NOT NULL,
+                                                                          trade_date VARCHAR(500) NOT NULL                                           
+                                                                          );"""
             self.cursor.execute(sql)
             self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS users (
                                                   ID serial PRIMARY KEY NOT NULL,
@@ -203,6 +225,7 @@ class DataBase:
             self.connection.commit()
         except Exception as e:
             self.connection.rollback()
+            self.user['Error'] = e
             return print(f'Помилка з\'єднання з базою даних : {e}')
 
     def add_message(self):
@@ -227,7 +250,7 @@ class DataBase:
         except Exception as e:
             print(e, 'add_message')
             self.connection.rollback()
-            self.user['None'] = e
+            self.user['Error'] = e
             return False
 
 
