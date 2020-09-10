@@ -114,11 +114,18 @@ def user_list():
     user_name = user_id.get('username')
     if request.method == 'POST':
         my_stocks = dict(request.form)
+        print(my_stocks)
+        my_stocks = eval(my_stocks['stock'])
+        print('post', my_stocks)
         my_stocks['trade_date'] = str(datetime.datetime.today())
         user_id['stock'] = my_stocks
-        add_data = DataBase(user_id).add_user_views()
-        print(dict(request.form))
-        return redirect(url_for('user_list'))
+        user_stocks = DataBase(user_id).add_user_views()
+        print('user', current_user.user_data())
+        if user_stocks:
+            user_stocks = DataBase(user_id).take_user_views()
+            print(user_stocks)
+            flash('Дані збережено')
+            return redirect(url_for('user_list', title=f'{user_name}', stocks=user_stocks))
     user_stocks = DataBase(user_id).take_user_views()
 
     return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks)
