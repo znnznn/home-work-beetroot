@@ -112,6 +112,7 @@ def user_page():
 def user_list():
     user_id = current_user.user_data()
     user_name = user_id.get('username')
+    my_stocks = {}
     if request.method == 'POST':
         my_stocks = dict(request.form)
         print(my_stocks)
@@ -125,10 +126,13 @@ def user_list():
             user_stocks = DataBase(user_id).take_user_views()
             print(user_stocks)
             flash('Дані збережено')
-            return redirect(url_for('user_list', title=f'{user_name}', stocks=user_stocks))
+            return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks)
+        flash(f"Символ паперу {my_stocks['symbol']}: {my_stocks['description']} вже відсліковується")
+        user_stocks = DataBase(user_id).take_user_views()
+        return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks)
     user_stocks = DataBase(user_id).take_user_views()
-
     return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks)
+
 
 @app.route('/user/profile', methods=['GET', 'POST'])
 @login_required
