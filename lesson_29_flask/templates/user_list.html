@@ -30,7 +30,7 @@
       {% endif %}
       {% endwith %}
     <ul>
-        <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Дані по обраним цінним паперам</a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_list')}}">Дані по обраним цінним паперам</a></li>
     </ul>
 
 
@@ -38,20 +38,21 @@
   <h2 class="mt-4">Перелік акцій</h2>
   <p></p>
 
-		<table class="table">
+		<table class="table table thead-light th">
 			<thead>
-				<tr>
+				<tr bgcolor="#007bff" style="color:#fff">
 					<th>
                     <input type="checkbox" value="remember-me" name="remember">
                     </th>
-                   {% for key in user_stocks.keys() %}
+                   {% for key in stocks[0].keys() %}
                         {% if key == 'quote' %}
-					        <th>Остання ціна закриття</th>
+
                             <th>Ціна відкриття</th>
                             <th>Найвища ціна</th>
                             <th>Найнижча ціна</th>
-                            <th>Ціна закриття</th>
+                            <th>Ціна закриття сьогодні</th>
                             <th>Зміна у відсотках</th>
+                            <th>Остання ціна закриття</th>
                         {% elif key == "symbol" %}
                             <th>Символ паперу</th>
                         {% elif key == "exchange" %}
@@ -60,45 +61,81 @@
                             <th>Тип паперу</th>
                         {% elif key == "description" %}
                             <th>Емітент цінних паперів</th>
-                        {% else %}
+                        {% elif key != 'positive_change' %}
                            <th>{{ key }}</th>
                         {% endif %}
 					{% endfor %}
                    <th>
-                    <button  formmethod="post" class="btn" type="submit">Стежити</button>
+                    <button  formmethod="post" class="btn" type="submit">Видалити</button>
                     </th>
 				</tr>
 			</thead>
 			<tbody>
 
                 {% for value in stocks %}
-
-				<tr>
-                        <td><input type="checkbox" value="{{ value['symbol'] }}" name="{{ value['symbol'] }}"></td>
-                        {% for key, val in value.items() %}
-                            {% if key == 'quote' %}
-                                {% for key, symbol in val.items() %}
-                                    {% if key == 'last' %}
-                                        <td>{{ symbol }}</td>
-                                    {% elif key == 'open' %}
-                                        <td>{{ symbol }}</td>
-                                    {% elif key == 'high' %}
-                                        <td>{{ symbol }}</td>
-                                    {% elif key == 'low' %}
-                                        <td>{{ symbol }}</td>
-                                    {% elif key == 'close' %}
-                                        <td>{{ symbol }}</td>
-                                    {% elif key == 'change_percentage' %}
-                                        <td>{{ symbol }}</td>
+                    {% if value['positive_change'] %}
+                        <tr bgcolor="#1de04e" style="color:#fff">
+                                <td><input form="click-green" type="checkbox" value="{{ value['quote'] }}" name="stock"></td>
+                                {% for key, val in value.items() %}
+                                    {% if key == 'quote' %}
+                                        {% for key, symbol in val.items() %}
+                                            {% if key == 'prevclose' %}
+                                                <td>{{ symbol }}</td>
+                                            {% elif key == 'open' %}
+                                                <td>{{ symbol }}</td>
+                                            {% elif key == 'high' %}
+                                                <td>{{ symbol }}</td>
+                                            {% elif key == 'low' %}
+                                                <td>{{ symbol }}</td>
+                                            {% elif key == 'close' %}
+                                                {% if symbol == None %}
+                                                    <td>Ринок відкритий</td>
+                                                {% else %}
+                                                    <td>{{ symbol }}</td>
+                                                {% endif %}
+                                            {% elif key == 'change_percentage' %}
+                                                <td>{{ symbol }} ↑</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% elif key != 'positive_change' %}
+                                        <td>{{ val }}</td>
                                     {% endif %}
                                 {% endfor %}
-                            {% else %}
-                                <td>{{ val }}</td>
-                            {% endif %}
-                        {% endfor %}
-                       <td> <form action="{{ url_for('user_list') }}" method="post" ><button formmethod="post" class="btn btn-primary" value="{{ value['symbol'] }}" type="submit">Стежити</button></form></td>
-				</tr>
+                            <td> <form id="click-green" action="{{ url_for('user_list') }}" method="post" ><input type="hidden" name="stock" value="{{ value['quote'] }}"><button formmethod="post" class="btn btn-primary"  type="submit" onclick="">Видалити</button></form></td>
+                        </tr>
+                    {% else %}
+                         <tr bgcolor="#ff8080" style="color:#fff">
+                                    <td><input form="click-red" type="checkbox" value="{{ value['quote'] }}" name="stock"></td>
+                                    {% for key, val in value.items() %}
+                                        {% if key == 'quote' %}
+                                            {% for key, symbol in val.items() %}
+                                                {% if key == 'prevclose' %}
+                                                    <td>{{ symbol }}</td>
+                                                {% elif key == 'open' %}
+                                                    <td>{{ symbol }}</td>
+                                                {% elif key == 'high' %}
+                                                    <td>{{ symbol }}</td>
+                                                {% elif key == 'low' %}
+                                                    <td>{{ symbol }}</td>
+                                                {% elif key == 'close' %}
+                                                    {% if symbol == None %}
+                                                        <td>Ринок відкритий</td>
+                                                    {% else %}
+                                                        <td>{{ symbol }}</td>
+                                                    {% endif %}
+                                                {% elif key == 'change_percentage' %}
+                                                     <td>{{ symbol }} ↓</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% elif key != 'positive_change' %}
+                                            <td>{{ val }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                <td> <form action="{{ url_for('user_list') }}" method="post" id="click-red"><input type="hidden" name="stock" value="{{ value['quote'] }}"><button formmethod="post" class="btn btn-primary"  type="submit" onclick="">Видалити</button></form></td>
+                            </tr>
+                    {% endif %}
                 {% endfor %}
+
 
 
 			</tbody>
