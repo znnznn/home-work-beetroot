@@ -133,6 +133,8 @@ class DataBase:
 
     def add_user_views(self):
         """ adds the data on which the user conducts analytics """
+        if self.take_user_views_symbol():
+            return False
         user = self.take_user()
         self.data_base()
         try:
@@ -167,20 +169,20 @@ class DataBase:
 
     def take_user_views(self):
         """ takes data on which the user conducts analytics """
-        self.data_base()
 
+        self.data_base()
         try:
             print('take_user_views', self.user)
             sql = f"""SELECT * FROM "{self.user['email']}";"""
             self.cursor.execute(sql)
 
             user = self.cursor.fetchall()
-            print(dict(user))
+            stock = [dict(s) for s in user]
             if user:
                 self.cursor.close()
                 self.connection.commit()
-                return dict(user)
-
+                return stock
+            print(15)
             self.cursor.close()
             self.connection.commit()
             return False
@@ -189,6 +191,30 @@ class DataBase:
             self.connection.commit()
             self.user['Error'] = e
             print('take_user_views', e)
+            return False
+
+    def take_user_views_symbol(self):
+        """ checks for stock in the database """
+
+        self.data_base()
+        try:
+            sql = f"""SELECT * FROM "{self.user['email']}" WHERE symbol='{self.user['stock']['symbol']}';"""
+            self.cursor.execute(sql)
+
+            user = self.cursor.fetchall()
+            if user:
+                self.cursor.close()
+                self.connection.commit()
+                return True
+            print(15)
+            self.cursor.close()
+            self.connection.commit()
+            return False
+        except Exception as e:
+            self.cursor.close()
+            self.connection.commit()
+            self.user['Error'] = e
+            print('take_user_views_symbol', e)
             return False
 
     def create_tab(self):
