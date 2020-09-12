@@ -129,12 +129,23 @@ class DataBase:
 
     def del_user_views(self):
         """ deletes the data on which the user conducts analytics """
-        pass
+        try:
+            sql = f"""DELETE FROM "{self.user['email']}" WHERE ID={self.user['stock']['id']} """
+            self.cursor.execute(sql)
+            self.cursor.close()
+            self.connection.commit()
+            return True
+        except Exception as e:
+            print(e, 'del_user_views')
+            self.connection.rollback()
+            self.user['Error'] = e
+            return False
 
     def add_user_views(self):
         """ adds the data on which the user conducts analytics """
         if self.take_user_views_symbol():
             return False
+        self.data_base()
         user = self.take_user()
         self.data_base()
         try:
