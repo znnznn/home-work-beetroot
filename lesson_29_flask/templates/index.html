@@ -25,39 +25,28 @@
   <header class="masthead mb-auto">
     <div class="inner">
       <h3 class="masthead-brand">Біржовий аналітик</h3>
-      <nav class="nav nav-masthead justify-content-center">
-        <a class="nav-link active" href="{{url_for('main_page')}}">Головна сторінка</a>
-
-       {% if current_user.is_authenticated %}
-        <li class="list-inline-item"><a class="nav-link" href="{{url_for('user_page')}}">Особистий кабінет</a></li>
-        <li class="list-inline-item"><a class="nav-link" href="{{url_for('logout_page')}}">Вийти з кабінету</a></li>
-      {% else %}
-        <li class="list-inline-item"><a class="nav-link" href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
-      {% endif %}
-        <a class="nav-link" href="{{url_for('contacts_page')}}">Контакти</a>
-
-      </nav>
     </div>
   </header>
 
 
   <main role="main" class="inner cover">
     <h1 class="cover-heading">Майбутнє твоїх фінансів тут</h1>
-    <p class="lead">Не прогав можливість вигідно інвестуати власні кошти</p>
+    <p class="lead">Не прогав можливість вигідно інвестувати власні кошти</p>
     <p class="lead">
       <a href="{{url_for('login_page')}}" class="btn btn-lg btn-secondary">Особистий кабінет</a>
     </p>
+
   </main>
 
   <footer class="mastfoot mt-auto">
     <div class="inner">
-      <p>Підключи телеграм будь в курсі подій цілодобово <a href="http://localhost:5000/login">Телеграмбот</a>, by <a href="{{url_for('contacts_page')}}">email</a>.</p>
+      <p>Книга скарг і пропозицій <a href="{{url_for('contacts_page')}}">email</a>.</p>
     </div>
   </footer>
 </div>
 
 <h3 class="lead">Люди без інвестицій заробляють кошти, щоб витрачати </h3>
     <h3 class="lead"> Люди з інвестиціями витрачатють кошти, щоб заробляти</h3>
-    <h2 class="cover-heading"> Досить бути заробітчанином стань  І Н В Е С Т О Р О М !</h2>
+    <h2 class="cover-heading"> Досить бути заробітчанином - стань  І Н В Е С Т О Р О М !</h2>
     <h2 class="lead">Безкоштовний сервіс керування власними інвестиціями в цінні папери.</h2>
 {% endblock %}
