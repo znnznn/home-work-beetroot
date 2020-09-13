@@ -1,4 +1,5 @@
 import psycopg2
+import datetime
 
 from psycopg2.extras import RealDictCursor
 
@@ -23,10 +24,8 @@ class DataBase:
     def take_user(self):
         """ takes data from database by email """
         try:
-            print('take_user', self.user['email'])
             self.cursor.execute("SELECT * FROM users WHERE email = %s", (f"{self.user['email']}",))
             user = self.cursor.fetchone()
-            print('take_user', dict(user))
             if user:
                 self.cursor.close()
                 self.connection.commit()
@@ -43,16 +42,12 @@ class DataBase:
     def take_user_id(self):
         """ takes data from database by id(integer)  (used for Userlogin.UserMixin)"""
         try:
-            print('tas', self.user)
             self.cursor.execute(f"SELECT * FROM users WHERE id = {self.user};")
-            print('oops')
             user = self.cursor.fetchone()
-            print(dict(user))
             if user:
                 self.cursor.close()
                 self.connection.commit()
                 return dict(user)
-            print('sad')
             self.cursor.close()
             self.connection.commit()
             return False
@@ -89,13 +84,13 @@ class DataBase:
     def del_user(self):
         """ deletes user data in the database (delete profile) """
         try:
-            print(5)
+            sql = f""" DROP TABLE "{self.user['email']}";"""
             self.cursor.execute("""DELETE FROM users WHERE id = %s;""", (f"{self.user['id']}",))
+            self.cursor.execute(sql)
             self.cursor.close()
             self.connection.commit()
             return True
         except Exception as e:
-            print(e, 'del_user')
             self.connection.rollback()
             self.user['Error'] = e
             return False
@@ -108,7 +103,6 @@ class DataBase:
         try:
             self.create_tab()
             self.data_base()
-            print(5)
             self.cursor.execute(f"""INSERT INTO users(FIRST_NAME, LAST_NAME, USERNAME,
                                 PASSWORD, EMAIL, ADDRESS, oper_date)
                                 VALUES(%s, %s, %s, %s, %s, %s, %s);""", (f"{self.user['firstName']}",
@@ -132,6 +126,11 @@ class DataBase:
         try:
             sql = f"""DELETE FROM "{self.user['email']}" WHERE ID={self.user['stock']['id']} """
             self.cursor.execute(sql)
+
+            self.user['stock']['symbol'] = 'profit'
+            self.user['stock']['prevclose'] = self.user['stock']['profit']
+            self.user['stock']['trade_date'] = f'від {self.user["stock"]["trade_date"]} до {datetime.datetime.today()}'
+            user = self.add_user_views()
             self.cursor.close()
             self.connection.commit()
             return True
@@ -143,14 +142,10 @@ class DataBase:
 
     def add_user_views(self):
         """ adds the data on which the user conducts analytics """
-        if self.take_user_views_symbol():
-            return False
-        self.data_base()
         user = self.take_user()
         self.data_base()
         try:
             if user:
-                print(user)
                 sql = f"""INSERT INTO "{self.user['email']}"
                                                    (symbol, description, exch, type, open, high, low, bid, ask,
                                                     change_percentage, prevclose, week_52_high, week_52_low, trade_date)
@@ -180,11 +175,9 @@ class DataBase:
 
     def take_user_views(self):
         """ takes data on which the user conducts analytics """
-
         self.data_base()
         try:
-            print('take_user_views', self.user)
-            sql = f"""SELECT * FROM "{self.user['email']}";"""
+            sql = f"""SELECT * FROM "{self.user['email']}" where not symbol ='profit';"""
             self.cursor.execute(sql)
 
             user = self.cursor.fetchall()
@@ -193,7 +186,6 @@ class DataBase:
                 self.cursor.close()
                 self.connection.commit()
                 return stock
-            print(15)
             self.cursor.close()
             self.connection.commit()
             return False
@@ -206,7 +198,6 @@ class DataBase:
 
     def take_user_views_symbol(self):
         """ checks for stock in the database """
-
         self.data_base()
         try:
             sql = f"""SELECT * FROM "{self.user['email']}" WHERE symbol='{self.user['stock']['symbol']}';"""
@@ -217,7 +208,29 @@ class DataBase:
                 self.cursor.close()
                 self.connection.commit()
                 return True
-            print(15)
+            self.cursor.close()
+            self.connection.commit()
+            return False
+        except Exception as e:
+            self.cursor.close()
+            self.connection.commit()
+            self.user['Error'] = e
+            print('take_user_views_symbol', e)
+            return False
+
+    def take_user_profit(self):
+        """ takes data about all profit """
+        self.data_base()
+        try:
+            sql = f"""SELECT * FROM "{self.user['email']}" WHERE symbol='profit';"""
+            self.cursor.execute(sql)
+
+            user = self.cursor.fetchall()
+            list_profit = [dict(s) for s in user]
+            if user:
+                self.cursor.close()
+                self.connection.commit()
+                return list_profit
             self.cursor.close()
             self.connection.commit()
             return False
@@ -268,7 +281,6 @@ class DataBase:
     def add_message(self):
         """ adds sent user messages to the database """
         try:
-            print(5)
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS message (
                                                               ID serial PRIMARY KEY NOT NULL,                                                              
                                                               USERNAME VARCHAR (500) NOT NULL,                                                              
@@ -289,13 +301,3 @@ class DataBase:
             self.connection.rollback()
             self.user['Error'] = e
             return False
-
-
-
-""" 
-    WMT : Wal-Mart Stores, Inc.
-    MCD : McDonald’s Corp.
-    JNJ : Johnson & Johnson Inc.
-    JPM : JPMorgan Chase and Co.
-    MSFT: Microsoft Corp.
-"""
