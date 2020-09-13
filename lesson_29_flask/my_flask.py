@@ -1,7 +1,8 @@
 import psycopg2
 import datetime
 import json
-import time
+
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, url_for, request, redirect, g, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
@@ -10,21 +11,17 @@ from lesson_29_flask.userLogin_flask import UserLogin
 from lesson_29_flask.db_flask import DataBase
 from lesson_29_flask.tradier_api import symbol_stocks
 
-
-# @login_required для сторінок які лише авторизованим юзерам
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'f51ab319da5bb46ec221f7da979833a35250c86e'
 
 login_manager = LoginManager(app)
 
-amount_stock = 10
+amount_stock = 110
 
 
 @app.route('/')
 @app.route('/index')
 def main_page():
-
     return render_template('index.html', title='Головна сторінка')
 
 
@@ -36,7 +33,6 @@ def load_user(user_id):
 
 @app.route('/login', methods=["POST", "GET"])
 def login_page():
-
     if current_user.is_authenticated:
         return redirect(url_for('user_page'))
     if request.method == 'POST':
@@ -77,7 +73,6 @@ def contacts_page():
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 def user_page():
-
     user_id = current_user.user_data()
     user_name = user_id.get('username')
     with open('stocks.json', 'r') as file_stocks:
@@ -103,18 +98,12 @@ def user_list():
     user_name = user_id.get('username')
     if request.method == 'POST':
         my_stocks = dict(request.form)
-        print(my_stocks)
         my_stocks = eval(my_stocks['stock'])
-        print('post', my_stocks)
         my_stocks['trade_date'] = str(datetime.datetime.today())
         user_id['stock'] = my_stocks
         user_stocks = DataBase(user_id).add_user_views()
-        print('user', current_user.user_data())
         if user_stocks:
-            #user_stocks = DataBase(user_id).take_user_views()
-            print(user_stocks)
             text_flash = 'Дані збережено'
-            #return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks)
         elif not user_stocks:
             text_flash = f"Символ паперу {my_stocks['symbol']}: {my_stocks['description']} вже відслідковується"
         user_stocks = DataBase(user_id).take_user_views()
@@ -139,8 +128,9 @@ def user_list():
         return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks, sum_profit=sum_profit)
     user_stocks = DataBase(user_id).take_user_views()
     if not user_stocks:
-        user_stocks = {'Данні відстні': 'Список спостереження порожній'}
-        return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks)
+        sum_profit = 0
+        user_stocks = [{'Дані відсутні': 'Список спостереження порожній'}]
+        return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks, sum_profit=sum_profit)
     i = 0
     while i != len(user_stocks):
         price = user_stocks[i]['ask']
@@ -184,6 +174,27 @@ def user_list_del():
     return render_template('index.html', title=f'{user_name}')
 
 
+@app.route('/user/stocks/profit')
+@login_required
+def user_profit_page():
+    user_id = current_user.user_data()
+    user_name = user_id.get('username')
+    user_profit = DataBase(user_id).take_user_profit()
+    if user_profit:
+        flash(f'Отриманий прибуток за період з {user_id["oper_date"]} по {datetime.datetime.today()}')
+        sum_profit = sum([+i['prevclose'] for i in user_profit])
+        for i in user_profit:
+            if i['prevclose'] > 0:
+                i['positive_profit'] = True
+            else:
+                i['positive_profit'] = False
+    else:
+        flash(f"Ви не здійнили, ще жодної операції.")
+        sum_profit = 0
+        user_profit = [{'Дані відсутні': 'Список операцій порожній'}]
+    return render_template('user_profit.html', title=f'{user_name}', stocks=user_profit, sum_profit=sum_profit)
+
+
 @app.route('/user/profile', methods=['GET', 'POST'])
 @login_required
 def profile_page():
@@ -202,7 +213,7 @@ def profile_page():
         elif user['password'] != user['password2']:
             flash('Введені паролі не рівні')
             return redirect(url_for('profile_page'))
-        for key, values in user.items():  # треба дізнатись чи треба паролі стріпати
+        for key, values in user.items():
             user[key] = values.strip()
         user['id'] = user_id['id']
         user['password'] = generate_password_hash(user['password'])
