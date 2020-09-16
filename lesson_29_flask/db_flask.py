@@ -126,8 +126,7 @@ class DataBase:
         try:
             sql = f"""DELETE FROM "{self.user['email']}" WHERE ID={self.user['stock']['id']} """
             self.cursor.execute(sql)
-
-            self.user['stock']['symbol'] = 'profit'
+            self.user['stock']['exch'] = 'profit'
             self.user['stock']['prevclose'] = self.user['stock']['profit']
             self.user['stock']['trade_date'] = f'від {self.user["stock"]["trade_date"]} до {datetime.datetime.today()}'
             user = self.add_user_views()
@@ -222,7 +221,7 @@ class DataBase:
         """ takes data about all profit """
         self.data_base()
         try:
-            sql = f"""SELECT * FROM "{self.user['email']}" WHERE symbol='profit';"""
+            sql = f"""SELECT * FROM "{self.user['email']}" WHERE exch='profit';"""
             self.cursor.execute(sql)
 
             user = self.cursor.fetchall()
