@@ -74,7 +74,8 @@ def contacts_page():
 @login_required
 def user_page():
     user_id = current_user.user_data()
-    user_name = user_id.get('username')
+    if user_id:
+        user_name = user_id.get('username')
     with open('stocks.json', 'r') as file_stocks:
         list_stocks = json.load(file_stocks)
         my_stocks = list_stocks['securities']['security']
@@ -95,7 +96,8 @@ def user_page():
 @login_required
 def user_list():
     user_id = current_user.user_data()
-    user_name = user_id.get('username')
+    if user_id:
+        user_name = user_id.get('username')
     if request.method == 'POST':
         my_stocks = dict(request.form)
         my_stocks = eval(my_stocks['stock'])
@@ -155,7 +157,8 @@ def user_list():
 @login_required
 def user_list_del():
     user_id = current_user.user_data()
-    user_name = user_id.get('username')
+    if user_id:
+        user_name = user_id.get('username')
     if request.method == 'POST':
         my_stocks = dict(request.form)
         my_stocks = eval(my_stocks['stock'])
@@ -178,7 +181,8 @@ def user_list_del():
 @login_required
 def user_profit_page():
     user_id = current_user.user_data()
-    user_name = user_id.get('username')
+    if user_id:
+        user_name = user_id.get('username')
     user_profit = DataBase(user_id).take_user_profit()
     if user_profit:
         flash(f'Отриманий прибуток за період з {user_id["oper_date"]} по {datetime.datetime.today()}')
@@ -233,13 +237,14 @@ def profile_page():
 @login_required
 def del_profile_page():
     user_id = current_user.user_data()
-    username = user_id.get('username')
+    if user_id:
+        user_name = user_id.get('username')
     if request.method == 'POST':
         logout_user()
         del_user = DataBase(user_id).del_user()
-        flash(f'Нажаль {username} вас видалено.')
+        flash(f'Нажаль {user_name} вас видалено.')
         return redirect(url_for('main_page'))
-    flash(f'Ви впевненні {username}, що хочете себе видалити')
+    flash(f'Ви впевненні {user_name}, що хочете себе видалити')
     return render_template('delete_profile.html', title='Видалення профілю !!!', username=user_id)
 
 
@@ -280,9 +285,10 @@ def new_user_page():
 @login_required
 def logout_page():
     user_id = current_user.user_data()
-    username = user_id.get('username')
+    if user_id:
+        username = user_id.get('username')
+        flash(f'{username}, Ви вийшли з кабінету.')
     logout_user()
-    flash(f'{username}, Ви вийшли з кабінету.')
     return redirect(url_for('main_page'))
 
 
