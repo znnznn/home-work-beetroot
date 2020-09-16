@@ -9,31 +9,26 @@
 <body class="bg-light">
     <div class="container">
   <div class="py-5 text-center">
-
-     <ul class="list-inline">
+     <p class="list-inline">
       {% if current_user.is_authenticated %}
-         <li class="list-inline-item"><a href="{{url_for('del_profile_page')}}">Видалити профіль</a></li>
-
-
+       <li class="list-inline-item"><a href="{{url_for('del_profile_page')}}" style="color:#fff"><h5>Видалити профіль</h5></a></li>
       {% endif %}
-
-    <h2>Ваш профіль</h2>
+       <p><h2 style="color:#dbff6d">Ваш профіль</h2>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class=flashes>
         {% for message in messages %}
-          <li><h3>{{ message }}</h3></li>
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
         {% endfor %}
         </ul>
       {% endif %}
     {% endwith %}
-    <p class="lead">{{ username['username'] }}</p>
+       <p class="lead"><h3 style="color:#dbff6d">{{ username['username'] }}</h3></p>
+     </ul>
   </div>
-
-
     <div class="col-md-8 order-md-1">
-      <h4 class="mb-3">Ваші дані</h4>
-      <form method="post" class="needs-validation" novalidate="">
+      <h4 class="mb-3" style="color:#dbff6d">Ваші дані</h4>
+      <form method="post" class="needs-validation" novalidate="" style="color:#dbff6d">
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName">Ім'я</label>

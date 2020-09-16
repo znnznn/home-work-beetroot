@@ -11,30 +11,31 @@
     <div class="container">
 
 
-  <h1>{{ title }}</h1>
+  <h1 style="color:#dbff6d">{{ title }}</h1>
       {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class=flashes>
         {% for message in messages %}
-          <li><h3>{{ message }}</h3></li>
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
         {% endfor %}
         </ul>
       {% endif %}
       {% endwith %}
     <ul>
-        <li class="list-inline-item"><a href="{{url_for('user_list')}}">Дані по обраним цінним паперам</a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_list')}}" style="color:#fff">Дані по обраним цінним паперам</a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_profit_page')}}" style="color:#fff">Прибуток від операцій</a></li>
     </ul>
 
-  <h2 class="mt-4">Перелік здійснених операцій</h2>
-  <p>* кожна операція умовно відображає продаж пакету акцій розміром 1 лот (100 шт)</p>
+  <h2 class="mt-4" style="color:#dbff6d">Перелік здійснених операцій</h2>
+  <p style="color:#dbff6d">* кожна операція умовно відображає продаж пакету акцій розміром 1 лот (100 шт)</p>
 
 		<table class="table table thead-light th">
 			<thead>
 				<tr bgcolor="#007bff" style="color:#fff">
 
                    {% for key in stocks[0].keys() %}
-                        {%if key == "exch" %}
-                            <th>Біржа</th>
+                        {%if key == "symbol" %}
+                            <th>Символ паперу</th>
                         {% elif key == "type" %}
                             <th>Тип паперу</th>
                         {% elif key == "description" %}
@@ -49,7 +50,7 @@
                            <th>Період операції</th>
                         {% elif key == 'prevclose' %}
                            <th>Прибуток/ збиток</th>
-                        {% elif not key in ['open', 'high', 'low', 'week_52_high', 'positive_profit', 'week_52_low', 'symbol'] %}
+                        {% elif not key in ['open', 'high', 'low', 'week_52_high', 'positive_profit', 'week_52_low', 'exch'] %}
                            <th>{{ key }}</th>
                         {% endif %}
 					{% endfor %}
@@ -80,7 +81,7 @@
                                         <td>{{ val }}</td>
                                     {% elif key == 'prevclose' %}
                                         <td>{{ val }} ↑</td>
-                                    {% elif not key in ['open', 'high', 'low', 'week_52_high', 'positive_profit', 'week_52_low', 'symbol'] %}
+                                    {% elif not key in ['open', 'high', 'low', 'week_52_high', 'positive_profit', 'week_52_low', 'exch'] %}
                                         <td>{{ val }}</td>
                                     {% endif %}
                                 {% endfor %}
@@ -98,7 +99,7 @@
                                         <td>{{ val }}</td>
                                     {% elif key == 'prevclose' %}
                                         <td>{{ val }} ↓</td>
-                                    {% elif not key in ['open', 'high', 'low', 'week_52_high', 'positive_profit', 'week_52_low', 'symbol'] %}
+                                    {% elif not key in ['open', 'high', 'low', 'week_52_high', 'positive_profit', 'week_52_low', 'exch'] %}
                                         <td>{{ val }}</td>
                                     {% endif %}
                                 {% endfor %}

@@ -9,24 +9,23 @@
 <body class="bg-light">
     <div class="container">
   <div class="py-5 text-center">
-    <img class="d-block mx-auto mb-4" src="" alt="" width="72" height="72">
-    <h2>Форма реєстрації</h2>
+    <h2 style="color:#dbff6d">Форма реєстрації</h2>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class=flashes>
         {% for message in messages %}
-          <li><h3>{{ message }}</h3></li>
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
         {% endfor %}
         </ul>
       {% endif %}
     {% endwith %}
-    <p class="lead">Заповніть поля для реєстрації</p>
+    <p class="lead" style="color:#dbff6d">Заповніть поля для реєстрації</p>
   </div>
 
 
     <div class="col-md-8 order-md-1">
-      <h4 class="mb-3">Ваші дані</h4>
-      <form method="post" class="needs-validation">
+      <h4 class="mb-3" style="color:#dbff6d">Ваші дані</h4>
+      <form method="post" class="needs-validation" style="color:#dbff6d">
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName">Ім'я</label>
@@ -58,7 +57,7 @@
         </div>
 
         <div class="mb-3">
-          <label for="email">Email <span class="text-muted">(Електронна пошта)</span></label>
+          <label for="email" style="color:#dbff6d">Email <span class="text-muted">(Електронна пошта)</span></label>
           <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required="">
           <div class="invalid-feedback">
             Будь ласка введіть електронну адресу
@@ -98,11 +97,7 @@
 
   <footer class="my-5 pt-5 text-muted text-center text-small">
     <p class="mb-1">© 2020-2020 Біржовий аналітик</p>
-    <ul class="list-inline">
-      <li class="list-inline-item"><a href="{{url_for('main_page')}}">Головна сторінка</a></li>
-      <li class="list-inline-item"><a href="{{url_for('login_page')}}">Сторінка авторизації</a></li>
-      <li class="list-inline-item"><a href="{{url_for('contacts_page')}}">Контакти</a></li>
-    </ul>
+
   </footer>
 
 </body>

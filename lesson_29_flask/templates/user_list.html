@@ -11,24 +11,24 @@
     <div class="container">
 
 
-  <h1>{{ title }}</h1>
+  <h1 style="color:#dbff6d">{{ title }}</h1>
       {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class=flashes>
         {% for message in messages %}
-          <li><h3>{{ message }}</h3></li>
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
         {% endfor %}
         </ul>
       {% endif %}
       {% endwith %}
     <ul>
-        <li class="list-inline-item"><a href="{{url_for('user_list')}}">Дані по обраним цінним паперам</a></li>
-        <li class="list-inline-item"><a href="{{url_for('user_profit_page')}}">Прибуток від операцій</a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_list')}}" style="color:#dbff6d">Дані по обраним цінним паперам</a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_profit_page')}}" style="color:#dbff6d">Прибуток від операцій</a></li>
 
     </ul>
 
-  <h2 class="mt-4">Перелік куплених акцій</h2>
-  <p>* кожна операція умовно відображає продаж пакету акцій розміром 1 лот (100 шт)</p>
+  <h2 class="mt-4" style="color:#dbff6d">Перелік куплених акцій</h2>
+  <p style="color:#dbff6d">* кожна операція умовно відображає продаж пакету акцій розміром 1 лот (100 шт)</p>
 
 		<table class="table table thead-light th">
 			<thead>

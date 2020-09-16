@@ -8,29 +8,30 @@
  <div class="container-xl">
 
     <body class="text-center">
-        <ul class="list-inline">
-
+        <ul class="list-inline" style="color:#BDB76B">
         <h3> {{ title }} </h3>
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             <ul class=flashes>
             {% for message in messages %}
-              <li>{{ message }}</li>
+                <li><h3>{{ message }}</h3></li>
             {% endfor %}
             </ul>
           {% endif %}
         {% endwith %}
     </ul>
-        <form class="form-signin">
+        <form class="form-signin" style="color:#BDB76B">
           <img class="mb-4" >
           <h4 class="h3 mb-3 font-weight-normal">Будь ласка введіть свої дані</h4>
           <label for="inputEmail" class="sr-only">Email address</label>
           <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required="" autofocus="">
+            <br>
           <label for="name" class="sr-only">Ім'я</label>
           <input type="text" id="name" name="username" class="form-control" placeholder="Ім'я" required="">
           <div class="text-center">
+              <br>
              <label>
-                 <textarea name="message" rows="15" cols="50" placeholder="Введіть текст повідомлення i ми обов'язково Вам надішлемо відповідь" autofocus=""></textarea>
+                 <textarea class="form-control" name="message" rows="7" cols="120" required="" placeholder="Введіть текст повідомлення i ми обов'язково Вам надішлемо відповідь" autofocus=""></textarea>
              </label>
 
           </div>

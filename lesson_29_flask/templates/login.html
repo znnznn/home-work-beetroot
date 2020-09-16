@@ -10,13 +10,13 @@
       {% if messages %}
         <ul class=flashes>
         {% for message in messages %}
-          <li>{{ message }}</li>
+          <li style="color:#dbff6d">{{ message }}</li>
         {% endfor %}
         </ul>
       {% endif %}
     {% endwith %}
  <div class="container-xl">
-    <body class="text-center">
+    <body class="text-center" style="color:#FFF5EE">
         <header class="masthead mb-auto">
         <div class="inner">
           <h3 class="masthead-brand">Біржовий аналітик</h3>
@@ -24,10 +24,10 @@
         </div>
         </header>
         <form action="{{url_for('login_page')}}" method="POST" class="form-signin">
-          <img class="mb-4" src="" alt="" width="10" height="10">
           <h1 class="h3 mb-3 font-weight-normal">Будь ласка введіть свої дані</h1>
           <label for="inputEmail" class="sr-only">Email address</label>
           <input type="email" name="email" value="" id="inputEmail" class="form-control" placeholder="Email address"  required="">
+            <br>
           <label for="inputPassword" class="sr-only">Password</label>
           <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" value="" required="">
             <div class="invalid-feedback">
@@ -40,7 +40,7 @@
           </div>
             <p>
                <button  formmethod="post" class="btn btn-lg btn-secondary" type="submit">Зайти в кабінет</button>
-                <ul><h2><li class="list-inline-item"><a href="{{url_for('new_user_page')}}">Зареєструватись</a></li></h2></ul>
+                <ul><h2><li class="list-inline-item"><a href="{{url_for('new_user_page')}}" style="color:#FFF5EE">Зареєструватись</a></li></h2></ul>
             </p>
             <p class="mt-5 mb-3 text-muted">© 2020-2020</p>
         </form>
@@ -49,7 +49,7 @@
       {% if messages %}
         <ul class=flashes>
         {% for message in messages %}
-          <li>{{ message }}</li>
+            <li><h3>{{ message }}</h3></li>
         {% endfor %}
         </ul>
       {% endif %}
