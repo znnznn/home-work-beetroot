@@ -2,7 +2,6 @@ import psycopg2
 import datetime
 import json
 
-
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, url_for, request, redirect, g, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
@@ -59,7 +58,7 @@ def contacts_page():
         if "" in data_user.values():
             flash('Всі поля мають бути заповненими')
             return redirect(url_for('contacts_page'))
-        data_user['date'] = str(datetime.datetime.today())
+        data_user['date'] = str(datetime.datetime.today())[:16]
         user = DataBase(data_user)
         message = user.add_message()
         if message:
@@ -76,6 +75,8 @@ def user_page():
     user_id = current_user.user_data()
     if user_id:
         user_name = user_id.get('username')
+    else:
+        user_name = str(user_id)
     with open('stocks.json', 'r') as file_stocks:
         list_stocks = json.load(file_stocks)
         my_stocks = list_stocks['securities']['security']
@@ -92,21 +93,83 @@ def user_page():
     return render_template('user.html',  title=f'{user_name}', stocks=my_stocks)
 
 
+@app.route('/user/stocks/search/all', methods=['GET', 'POST'])
+@login_required
+def user_search():
+    user_id = current_user.user_data()
+    if user_id:
+        user_name = user_id.get('username')
+    else:
+        user_name = str(user_id)
+    if request.method == 'POST':
+        my_stocks = [dict(request.form)]
+        data_symbol = symbol_stocks(my_stocks[0]['symbol'])
+        if data_symbol:
+            if data_symbol['quotes']['quote']['change_percentage'] >= 0:
+                my_stocks[0]['positive_change'] = True
+            else:
+                my_stocks[0]['positive_change'] = False
+            my_stocks[0]['quote'] = data_symbol['quotes']['quote']
+            return render_template('user.html', title=f'{user_name}', stocks=my_stocks)
+        my_stocks = [{'Дані відсутні': f'Символ {my_stocks[0]["symbol"]} не знайдено'}]
+        return render_template('user.html', title=f'{user_name}', stocks=my_stocks)
+    return redirect(url_for('user_page'))
+
+@app.route('/user/stocks/search', methods=['GET', 'POST'])
+@login_required
+def user_list_search():
+    user_id = current_user.user_data()
+    if user_id:
+        user_name = user_id.get('username')
+    else:
+        user_name = str(user_id)
+    if request.method == 'POST':
+        my_stocks = dict(request.form)
+        my_stocks['symbol'] = str(my_stocks['symbol']).upper()
+        user_id['stock'] = my_stocks
+        user_stocks = DataBase(user_id).take_user_views_symbol()
+        if user_stocks:
+            i = 0
+            while i != len(user_stocks):
+                price = user_stocks[i]['ask']
+                data_symbol = symbol_stocks(user_stocks[i]['symbol'])
+                price_new = data_symbol['quotes']['quote']['bid']
+                delta = round((price_new - price) * 100, 2)
+                user_stocks[i]['profit'] = delta
+                user_stocks[i]['bid'] = price
+                user_stocks[i]['ask'] = price_new
+                user_stocks[i]['change_percentage'] = round((price_new - price) / price * 100, 2)
+                print(user_stocks)
+                if delta >= 0:
+                    user_stocks[i]['positive_profit'] = True
+                else:
+                    user_stocks[i]['positive_profit'] = False
+                i += 1
+                sum_profit = sum([+i['profit'] for i in user_stocks])
+                return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks, sum_profit=sum_profit)
+        user_stocks = [{'Дані відсутні': f'Символ {my_stocks["symbol"]} не знайдено'}]
+        sum_profit = 0
+        return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks, sum_profit=sum_profit)
+
+    return user_list()
+
 @app.route('/user/stocks', methods=['GET', 'POST'])
 @login_required
 def user_list():
     user_id = current_user.user_data()
     if user_id:
         user_name = user_id.get('username')
+    else:
+        user_name = str(user_id)
     if request.method == 'POST':
         my_stocks = dict(request.form)
         my_stocks = eval(my_stocks['stock'])
-        my_stocks['trade_date'] = str(datetime.datetime.today())
+        my_stocks['trade_date'] = str(datetime.datetime.today())[:16]
         user_id['stock'] = my_stocks
         user_stocks = DataBase(user_id).add_user_views()
         if user_stocks:
             text_flash = 'Дані збережено'
-        elif not user_stocks:
+        else:
             text_flash = f"Символ паперу {my_stocks['symbol']}: {my_stocks['description']} вже відслідковується"
         user_stocks = DataBase(user_id).take_user_views()
         i = 0
@@ -159,10 +222,12 @@ def user_list_del():
     user_id = current_user.user_data()
     if user_id:
         user_name = user_id.get('username')
+    else:
+        user_name = str(user_id)
     if request.method == 'POST':
         my_stocks = dict(request.form)
         my_stocks = eval(my_stocks['stock'])
-        my_stocks['trade_date'] = str(datetime.datetime.today())
+        my_stocks['trade_date'] = str(datetime.datetime.today())[:16]
         user_id['stock'] = my_stocks
         user_stocks = DataBase(user_id).del_user_views()
         if user_stocks:
@@ -183,10 +248,15 @@ def user_profit_page():
     user_id = current_user.user_data()
     if user_id:
         user_name = user_id.get('username')
+    else:
+        user_name = str(user_id)
     user_profit = DataBase(user_id).take_user_profit()
     if user_profit:
-        flash(f'Отриманий прибуток за період з {user_id["oper_date"]} по {datetime.datetime.today()}')
         sum_profit = sum([+i['prevclose'] for i in user_profit])
+        if sum_profit < 0:
+            flash(f'Отриманий збиток за період з {user_id["oper_date"]} по {str(datetime.datetime.today())[:16]}')
+        else:
+            flash(f'Отриманий прибуток за період з {user_id["oper_date"]} по {str(datetime.datetime.today())[:16]}')
         for i in user_profit:
             if i['prevclose'] > 0:
                 i['positive_profit'] = True
@@ -222,7 +292,7 @@ def profile_page():
         user['id'] = user_id['id']
         user['password'] = generate_password_hash(user['password'])
         user.pop('password2')
-        user['date'] = str(datetime.datetime.today())
+        user['date'] = str(datetime.datetime.today())[:16]
         user_edit = DataBase(user)
         db_user = user_edit.edit_user()
         if db_user:
@@ -239,6 +309,8 @@ def del_profile_page():
     user_id = current_user.user_data()
     if user_id:
         user_name = user_id.get('username')
+    else:
+        user_name = str(user_id)
     if request.method == 'POST':
         logout_user()
         del_user = DataBase(user_id).del_user()
@@ -270,7 +342,7 @@ def new_user_page():
             data_new_user[key] = values.strip()
         data_new_user['password'] = generate_password_hash(data_new_user['password'])
         data_new_user.pop('password2')
-        data_new_user['date'] = str(datetime.datetime.today())
+        data_new_user['date'] = str(datetime.datetime.today())[:16]
         new_user = DataBase(data_new_user)
         db_user = new_user.add_user()
         if db_user:

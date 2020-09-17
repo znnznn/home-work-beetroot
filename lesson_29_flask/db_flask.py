@@ -5,7 +5,7 @@ from psycopg2.extras import RealDictCursor
 
 
 class DataBase:
-    #  work with the database
+    """ work with the database """
     def __init__(self, user: dict):
         self.connection = None
         self.cursor = None
@@ -20,6 +20,7 @@ class DataBase:
             self.cursor = self.connection.cursor(cursor_factory=RealDictCursor)
         except:
             self.cursor.close()
+            return False
 
     def take_user(self):
         """ takes data from database by email """
@@ -101,22 +102,24 @@ class DataBase:
             return False
         self.data_base()
         try:
-            self.create_tab()
-            self.data_base()
-            self.cursor.execute(f"""INSERT INTO users(FIRST_NAME, LAST_NAME, USERNAME,
-                                PASSWORD, EMAIL, ADDRESS, oper_date)
-                                VALUES(%s, %s, %s, %s, %s, %s, %s);""", (f"{self.user['firstName']}",
-                                                                         f"{self.user['firstName']}",
-                                                                         f"{self.user['username']}",
-                                                                         f"{self.user['password']}",
-                                                                         f"{self.user['email']}",
-                                                                         f"{self.user['address']}",
-                                                                         f"{self.user['date']}"))
-            self.cursor.close()
-            self.connection.commit()
-            return True
+            table = self.create_tab()
+            if table:
+                self.data_base()
+                self.cursor.execute(f"""INSERT INTO users(FIRST_NAME, LAST_NAME, USERNAME,
+                                    PASSWORD, EMAIL, ADDRESS, oper_date)
+                                    VALUES(%s, %s, %s, %s, %s, %s, %s);""", (f"{self.user['firstName']}",
+                                                                             f"{self.user['firstName']}",
+                                                                             f"{self.user['username']}",
+                                                                             f"{self.user['password']}",
+                                                                             f"{self.user['email']}",
+                                                                             f"{self.user['address']}",
+                                                                             f"{self.user['date']}"))
+                self.cursor.close()
+                self.connection.commit()
+                return True
+            return False
         except Exception as e:
-            print(e, 'add_user')
+            print('add_user', e)
             self.connection.rollback()
             self.user['Error'] = e
             return False
@@ -128,13 +131,14 @@ class DataBase:
             self.cursor.execute(sql)
             self.user['stock']['exch'] = 'profit'
             self.user['stock']['prevclose'] = self.user['stock']['profit']
-            self.user['stock']['trade_date'] = f'від {self.user["stock"]["trade_date"]} до {datetime.datetime.today()}'
+            self.user['stock']['trade_date'] = f'''від {self.user["stock"]["trade_date"]}
+                                                   до {str(datetime.datetime.today())[:16]}'''
             user = self.add_user_views()
             self.cursor.close()
             self.connection.commit()
             return True
         except Exception as e:
-            print(e, 'del_user_views')
+            print('del_user_views', e)
             self.connection.rollback()
             self.user['Error'] = e
             return False
@@ -167,7 +171,7 @@ class DataBase:
                 self.connection.commit()
                 return user
         except Exception as e:
-            print(e, 'add_user_views')
+            print('add_user_views', e)
             self.connection.rollback()
             self.user['Error'] = e
             return False
@@ -176,9 +180,8 @@ class DataBase:
         """ takes data on which the user conducts analytics """
         self.data_base()
         try:
-            sql = f"""SELECT * FROM "{self.user['email']}" where not symbol ='profit';"""
+            sql = f"""SELECT * FROM "{self.user['email']}" where not exch ='profit';"""
             self.cursor.execute(sql)
-
             user = self.cursor.fetchall()
             stock = [dict(s) for s in user]
             if user:
@@ -199,14 +202,15 @@ class DataBase:
         """ checks for stock in the database """
         self.data_base()
         try:
-            sql = f"""SELECT * FROM "{self.user['email']}" WHERE symbol='{self.user['stock']['symbol']}';"""
+            sql = f"""SELECT * FROM "{self.user['email']}" 
+                        WHERE symbol='{self.user['stock']['symbol']}' and exch != 'profit';"""
             self.cursor.execute(sql)
-
             user = self.cursor.fetchall()
+            stock = [dict(s) for s in user]
             if user:
                 self.cursor.close()
                 self.connection.commit()
-                return True
+                return stock
             self.cursor.close()
             self.connection.commit()
             return False
@@ -237,7 +241,7 @@ class DataBase:
             self.cursor.close()
             self.connection.commit()
             self.user['Error'] = e
-            print('take_user_views_symbol', e)
+            print('take_user_profit', e)
             return False
 
     def create_tab(self):
@@ -275,7 +279,8 @@ class DataBase:
         except Exception as e:
             self.connection.rollback()
             self.user['Error'] = e
-            return print(f'Помилка з\'єднання з базою даних : {e}')
+            print('create_tab', e)
+            return False
 
     def add_message(self):
         """ adds sent user messages to the database """
@@ -296,7 +301,7 @@ class DataBase:
             self.connection.commit()
             return True
         except Exception as e:
-            print(e, 'add_message')
+            print('add_message', e)
             self.connection.rollback()
             self.user['Error'] = e
             return False
