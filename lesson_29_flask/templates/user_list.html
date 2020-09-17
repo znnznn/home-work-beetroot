@@ -9,7 +9,10 @@
 <body class="py-4">
 
     <div class="container">
-
+    <form class="form-inline mt-2 mt-md-0" id="search" action="{{ url_for('user_list_search') }}" method="post">
+        <input class="form-control mr-sm-2" name="symbol" value="" type="text" placeholder="Пошук" aria-label="Пошук" required="">
+        <button form="search" class="btn btn-outline-success my-2 my-sm-0" type="submit" formmethod="post">Пошук</button>
+      </form>
 
   <h1 style="color:#dbff6d">{{ title }}</h1>
       {% with messages = get_flashed_messages() %}
