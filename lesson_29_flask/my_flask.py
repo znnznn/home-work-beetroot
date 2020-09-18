@@ -90,6 +90,7 @@ def user_page():
             my_stocks[i]['positive_change'] = False
         my_stocks[i]['quote'] = data_symbol['quotes']['quote']
         i += 1
+    print(my_stocks[0])
     return render_template('user.html',  title=f'{user_name}', stocks=my_stocks)
 
 
@@ -102,18 +103,27 @@ def user_search():
     else:
         user_name = str(user_id)
     if request.method == 'POST':
-        my_stocks = [dict(request.form)]
-        data_symbol = symbol_stocks(my_stocks[0]['symbol'])
+        stock = [dict(request.form)]
+        with open('stocks.json', 'r') as file_stocks:
+            list_stocks = json.load(file_stocks)
+            stocks = list_stocks['securities']['security']
+            for i in stocks:
+                if i['symbol'] == stock[0]['symbol']:
+                    my_stocks =[i]
+        print(my_stocks)
+        data_symbol = [symbol_stocks(my_stocks[0]['symbol'])]
         if data_symbol:
-            if data_symbol['quotes']['quote']['change_percentage'] >= 0:
+            if data_symbol[0]['quotes']['quote']['change_percentage'] >= 0:
                 my_stocks[0]['positive_change'] = True
             else:
                 my_stocks[0]['positive_change'] = False
-            my_stocks[0]['quote'] = data_symbol['quotes']['quote']
+            my_stocks[0]['quote'] = data_symbol[0]['quotes']['quote']
+            print(my_stocks)
             return render_template('user.html', title=f'{user_name}', stocks=my_stocks)
         my_stocks = [{'Дані відсутні': f'Символ {my_stocks[0]["symbol"]} не знайдено'}]
         return render_template('user.html', title=f'{user_name}', stocks=my_stocks)
     return redirect(url_for('user_page'))
+
 
 @app.route('/user/stocks/search', methods=['GET', 'POST'])
 @login_required
@@ -152,6 +162,7 @@ def user_list_search():
         return render_template('user_list.html', title=f'{user_name}', stocks=user_stocks, sum_profit=sum_profit)
 
     return user_list()
+
 
 @app.route('/user/stocks', methods=['GET', 'POST'])
 @login_required

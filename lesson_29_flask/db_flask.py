@@ -276,6 +276,7 @@ class DataBase:
                                                   );""")
             self.cursor.close()
             self.connection.commit()
+            return True
         except Exception as e:
             self.connection.rollback()
             self.user['Error'] = e
