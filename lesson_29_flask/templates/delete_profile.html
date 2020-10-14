@@ -1,0 +1,52 @@
+{% extends 'main.html'  %}
+
+{% block title  %}
+    {{ title }}
+{% endblock %}
+
+{% block body  %}
+<body class="text-center">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <div class="skippy overflow-hidden">
+  <div class="container-xl">
+    <a class="sr-only sr-only-focusable d-inline-flex p-2 m-1" href="{{ url_for('contacts_page') }}" style="color:#dbff6d">{{ title }}</a>
+  </div>
+    </div>
+
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand" style="color:#FF1493">{{ title }}</h3>
+    </div>
+  </header>
+
+
+
+  <main role="main" class="inner cover">
+    <h1 class="cover-heading" style="color:#FF0000">{{ title }}</h1>
+    <p class="lead">
+       <form method="post">
+            <button  formmethod="post" class="btn btn-lg btn-secondary" type="submit" >Т А К видаліть мене</button>
+       </form>
+  </main>
+
+
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+       <p  style="color:#fff">Книга скарг і пропозицій <a href="{{url_for('contacts_page')}}" style="color:#dbff6d">email</a>.</p>
+    </div>
+  </footer>
+</div>
+
+</body>
+
+
+{% endblock %}

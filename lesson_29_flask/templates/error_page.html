@@ -1,0 +1,48 @@
+{% extends 'main.html'  %}
+
+{% block title  %}
+    {{ title }}
+{% endblock %}
+
+{% block body  %}
+<body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <div class="skippy overflow-hidden">
+  <div class="container-xl">
+    <a class="sr-only sr-only-focusable d-inline-flex p-2 m-1" href="{{ url_for('contacts_page') }}" style="color:#dbff6d">{{ title }}</a>
+  </div>
+    </div>
+    <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand" style="color:#dbff6d">{{ title }}</h3>
+
+    </div>
+  </header>
+
+
+  <main role="main" class="inner cover" style="color:#dbff6d">
+    <h1 class="cover-heading">{{ title }}</h1>
+    <p class="lead">
+      <a href="{{url_for('login_page')}}" class="btn btn-lg btn-secondary">Особистий кабінет</a>
+    </p>
+  </main>
+
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+       <p>Книга скарг і пропозицій <a href="{{url_for('contacts_page')}}">email</a>.</p>
+    </div>
+  </footer>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'main.html'  %}
+
+{% block title  %}
+     {{ title }}
+{% endblock %}
+
+{% block body  %}
+
+<body class="py-4">
+
+    <div class="container">
+    <form class="form-inline mt-2 mt-md-0" id="search" action="{{ url_for('user_list_search') }}" method="post">
+        <input class="form-control mr-sm-2" name="symbol" value="" type="text" placeholder="Пошук" aria-label="Пошук" required="">
+        <button form="search" class="btn btn-outline-success my-2 my-sm-0" type="submit" formmethod="post">Пошук</button>
+      </form>
+
+  <h1 style="color:#dbff6d">{{ title }}</h1>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+      {% endwith %}
+    <ul>
+        <li class="list-inline-item"><a href="{{url_for('user_list')}}" style="color:#dbff6d">Дані по обраним цінним паперам</a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_profit_page')}}" style="color:#dbff6d">Прибуток від операцій</a></li>
+
+    </ul>
+
+  <h2 class="mt-4" style="color:#dbff6d">Перелік куплених акцій</h2>
+  <p style="color:#dbff6d">* кожна операція умовно відображає продаж пакету акцій розміром 1 лот (100 шт)</p>
+
+		<table class="table table thead-light th">
+			<thead>
+				<tr bgcolor="#007bff" style="color:#fff">
+
+                   {% for key in stocks[0].keys() %}
+                        {% if key == "symbol" %}
+                            <th>Символ паперу</th>
+                        {% elif key == "exch" %}
+                            <th>Біржа</th>
+                        {% elif key == "type" %}
+                            <th>Тип паперу</th>
+                        {% elif key == "description" %}
+                            <th>Емітент цінних паперів</th>
+                        {% elif key == "bid" %}
+                            <th>Ціна по який придбано атив</th>
+                        {% elif key == "ask" %}
+                            <th>Ціна можливого продажу</th>
+                        {% elif key == 'change_percentage' %}
+                           <th>Зміна ціни у відсотках</th>
+                        {% elif key == 'week_52_high' %}
+                           <th>Найвища ціна за рік</th>
+                        {% elif key == 'week_52_low' %}
+                           <th>Найнижча ціна за рік</th>
+                        {% elif key == 'week_52_low' %}
+                           <th>Найнижча ціна за рік</th>
+                        {% elif key == 'trade_date' %}
+                           <th>Дата покупки (стеження)</th>
+                        {% elif key == 'profit' %}
+                           <th>Можливий прибуток/ збиток =</th>
+                        {% elif not key in ['open', 'high', 'low', 'prevclose', 'positive_profit'] %}
+                           <th>{{ key }}</th>
+                        {% endif %}
+					{% endfor %}
+                   {% if sum_profit >= 0 %}
+                        <th bgcolor="1de04e">Прибуток всього ∑ {{ sum_profit }} ↑</th>
+                    {% else %}
+                        <th bgcolor="#ff8080">Прибуток всього ∑ {{ sum_profit }} ↓</th>
+                    {% endif %}
+				</tr>
+			</thead>
+			<tbody>
+
+                {% for value in stocks %}
+                    {% if value['positive_profit'] %}
+                        <tr bgcolor="#1de04e" style="color:#fff">
+                                {% for key, val in value.items() %}
+                                    {% if key == 'bid' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'ask' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'change_percentage' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'week_52_high' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'week_52_low' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'trade_date' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'profit' %}
+                                        <td>{{ val }} ↑</td>
+                                    {% elif not key in ['open', 'high', 'low', 'prevclose', 'positive_profit'] %}
+                                        <td>{{ val }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if value.get('Дані відсутні') == None %}
+                                    <td> <form id="click-green" action="{{ url_for('user_list_del') }}" method="post" ><input type="hidden" name="stock" value="{{ value }}"><button formmethod="post" class="btn btn-primary"  type="submit" onclick="">Продати</button></form></td>
+                                {% endif %}
+                        </tr>
+                    {% else %}
+                         <tr bgcolor="#ff8080" style="color:#fff">
+                                {% for key, val in value.items() %}
+                                    {% if key == 'bid' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'ask' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'change_percentage' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'week_52_high' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'week_52_low' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'trade_date' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'profit' %}
+                                        <td>{{ val }} ↓</td>
+                                    {% elif not key in ['open', 'high', 'low', 'prevclose', 'positive_profit'] %}
+                                        <td>{{ val }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if value.get('Дані відсутні') == None %}
+                                    <td> <form action="{{ url_for('user_list_del') }}" method="post" id="click-red"><input type="hidden" name="stock" value="{{ value }}"><button formmethod="post" class="btn btn-primary"  type="submit" onclick="">Продати</button></form></td>
+                                {% endif %}
+                            </tr>
+                    {% endif %}
+                {% endfor %}
+			</tbody>
+		</table>
+    </div>
+</body>
+{% endblock %}

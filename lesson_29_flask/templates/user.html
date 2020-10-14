@@ -1,0 +1,142 @@
+{% extends 'main.html'  %}
+
+{% block title  %}
+     {{ title }}
+{% endblock %}
+
+{% block body  %}
+
+<body class="py-4">
+
+    <div class="container">
+        <div class="container">
+    <form class="form-inline mt-2 mt-md-0" id="search" action="{{ url_for('user_search') }}" method="post">
+        <input class="form-control mr-sm-2" name="symbol" value="" type="text" placeholder="Пошук" aria-label="Пошук" required="">
+        <button form="search" class="btn btn-outline-success my-2 my-sm-0" type="submit" formmethod="post">Пошук</button>
+      </form>
+
+  <h1 style="color:#dbff6d">{{ title }}</h1>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+      {% endwith %}
+    <ul>
+        <li class="list-inline-item"><a href="{{url_for('user_list')}}" style="color:#fff">Дані по обраним цінним паперам</a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_profit_page')}}" style="color:#fff">Прибуток від операцій</a></li>
+    </ul>
+
+
+
+  <h2 class="mt-4" style="color:#dbff6d">Перелік акцій</h2>
+  <p style="color:#dbff6d">Оберіть акції для стеження/купівлі</p>
+  <p style="color:#dbff6d">* кожний раз при виборі акції умовно купується 1 лот (100 шт)</p>
+		<table class="table table thead-light th">
+			<thead>
+				<tr bgcolor="#007bff" style="color:#fff">
+
+                   {% for key in stocks[0].keys() %}
+                        {% if key == 'quote' %}
+
+                            <th>Ціна відкриття сьогодні</th>
+                            <th>Найвища ціна сьогодні</th>
+                            <th>Найнижча ціна сьогодні</th>
+                            <th>Ціна закриття сьогодні</th>
+                            <th>Ціна закупки зараз</th>
+                            <th>Зміна у відсотках</th>
+                            <th>Остання ціна закриття</th>
+                        {% elif key == "symbol" %}
+                            <th>Символ паперу</th>
+                        {% elif key == "exchange" %}
+                            <th>Біржа</th>
+                        {% elif key == "type" %}
+                            <th>Тип паперу</th>
+                        {% elif key == "description" %}
+                            <th>Емітент цінних паперів</th>
+                        {% elif key != 'positive_change' %}
+                           <th>{{ key }}</th>
+                        {% endif %}
+					{% endfor %}
+                   <th>
+                    <button  formmethod="post" class="btn" type="submit">Стежити</button>
+                    </th>
+				</tr>
+			</thead>
+			<tbody>
+
+                {% for value in stocks %}
+                    {% if value['positive_change'] %}
+                        <tr bgcolor="#1de04e" style="color:#fff">
+                                {% for key, val in value.items() %}
+                                    {% if key == 'quote' %}
+                                        {% for key, symbol in val.items() %}
+                                            {% if key == 'prevclose' %}
+                                                <td>{{ symbol }}</td>
+                                            {% elif key == 'open' %}
+                                                <td>{{ symbol }}</td>
+                                            {% elif key == 'high' %}
+                                                <td>{{ symbol }}</td>
+                                            {% elif key == 'low' %}
+                                                <td>{{ symbol }}</td>
+                                            {% elif key == 'close' %}
+                                                {% if symbol == None %}
+                                                    <td>Ринок відкритий</td>
+                                                {% else %}
+                                                    <td>{{ symbol }}</td>
+                                                {% endif %}
+                                            {% elif key == 'ask' %}
+                                                <td>{{ symbol }}</td>
+                                            {% elif key == 'change_percentage' %}
+                                                <td>{{ symbol }} ↑</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% elif key != 'positive_change' %}
+                                        <td>{{ val }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            <td> <form id="click-green" action="{{ url_for('user_list') }}" method="post" ><input type="hidden" name="stock" value="{{ value['quote'] }}"><button formmethod="post" class="btn btn-primary"  type="submit" onclick="">Купити</button></form></td>
+                        </tr>
+                    {% else %}
+                         <tr bgcolor="#ff8080" style="color:#fff">
+                                    {% for key, val in value.items() %}
+                                        {% if key == 'quote' %}
+                                            {% for key, symbol in val.items() %}
+                                                {% if key == 'prevclose' %}
+                                                    <td>{{ symbol }}</td>
+                                                {% elif key == 'open' %}
+                                                    <td>{{ symbol }}</td>
+                                                {% elif key == 'high' %}
+                                                    <td>{{ symbol }}</td>
+                                                {% elif key == 'low' %}
+                                                    <td>{{ symbol }}</td>
+                                                {% elif key == 'close' %}
+                                                    {% if symbol == None %}
+                                                        <td>Ринок відкритий</td>
+                                                    {% else %}
+                                                        <td>{{ symbol }}</td>
+                                                    {% endif %}
+                                                {% elif key == 'ask' %}
+                                                    <td>{{ symbol }}</td>
+                                                {% elif key == 'change_percentage' %}
+                                                    <td>{{ symbol }} ↓</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% elif key != 'positive_change' %}
+                                            <td>{{ val }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                <td> <form action="{{ url_for('user_list') }}" method="post" id="click-red"><input type="hidden" name="stock" value="{{ value['quote'] }}"><button formmethod="post" class="btn btn-primary"  type="submit" onclick="">Купити</button></form></td>
+                            </tr>
+                    {% endif %}
+                {% endfor %}
+
+			</tbody>
+		</table>
+
+    </div>
+</body>
+{% endblock %}

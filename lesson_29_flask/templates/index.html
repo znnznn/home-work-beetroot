@@ -1,0 +1,52 @@
+{% extends 'main.html'  %}
+
+{% block title  %}
+    {{ title }}
+{% endblock %}
+
+{% block body  %}
+<body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <div class="skippy overflow-hidden">
+  <div class="container-xl">
+    <a class="sr-only sr-only-focusable d-inline-flex p-2 m-1" href="{{url_for('main_page')}}">Головна сторінка</a>
+  </div>
+    </div>
+    <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand">Біржовий аналітик</h3>
+    </div>
+  </header>
+
+
+  <main role="main" class="inner cover" style="color:#00FF00">
+    <h1 class="cover-heading">Майбутнє твоїх фінансів тут</h1>
+    <p class="lead">Не прогав можливість вигідно інвестувати власні кошти</p>
+    <p class="lead">
+      <a href="{{url_for('login_page')}}" class="btn btn-lg btn-secondary">Торгівля</a>
+    </p>
+
+  </main>
+
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      <p>Книга скарг і пропозицій <a href="{{url_for('contacts_page')}}" style="color:#FFF5EE">email</a>.</p>
+    </div>
+  </footer>
+</div>
+
+<h3 class="lead" style="color:#FFF5EE">Люди без інвестицій заробляють кошти, щоб витрачати </h3>
+    <h3 class="lead" style="color:#FFF5EE"> Люди з інвестиціями витрачатють кошти, щоб заробляти</h3>
+    <h2 class="cover-heading" style="color:#FFF5EE"> Досить бути заробітчанином - стань  І Н В Е С Т О Р О М !</h2>
+    <h2 class="lead" style="color:#FFF5EE">Безкоштовний сервіс керування власними інвестиціями в цінні папери.</h2>
+{% endblock %}

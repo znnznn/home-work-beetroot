@@ -1,0 +1,107 @@
+{% extends 'main.html'  %}
+
+{% block title  %}
+     {{ title }}
+{% endblock %}
+
+{% block body  %}
+
+<body class="bg-light">
+    <div class="container">
+  <div class="py-5 text-center">
+     <p class="list-inline">
+      {% if current_user.is_authenticated %}
+       <li class="list-inline-item"><a href="{{url_for('del_profile_page')}}" style="color:#fff"><h5>Видалити профіль</h5></a></li>
+      {% endif %}
+       <p><h2 style="color:#dbff6d">Ваш профіль</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+       <p class="lead"><h3 style="color:#dbff6d">{{ username['username'] }}</h3></p>
+     </ul>
+  </div>
+    <div class="col-md-8 order-md-1">
+      <h4 class="mb-3" style="color:#dbff6d">Ваші дані</h4>
+      <form method="post" class="needs-validation" novalidate="" style="color:#dbff6d">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">Ім'я</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Богдан" value="{{ username['first_name'] }}" required="">
+            <div class="invalid-feedback">
+              Введіть ім'я
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Фамілія</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" value="{{ username['last_name'] }}" placeholder="Українець"  required="">
+            <div class="invalid-feedback">
+              Введіть Фамілію.
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="username">Username/Login</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">@</span>
+            </div>
+            <input type="text" class="form-control" id="username" name="username" value="{{ username['username'] }}" placeholder="Username" required="">
+            <div class="invalid-feedback" style="width: 100%;">
+              Введуть ім'я для користування
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email">Email <span class="text-muted">(Електронна пошта)</span></label>
+          <input type="email" class="form-control" id="email" name="email" value="{{ username['email'] }}" placeholder="you@example.com" required="">
+          <div class="invalid-feedback">
+            Будь ласка введіть електронну адресу
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="address">Місце реєстрації</label>
+          <input type="text" class="form-control" id="address" name="address" value="{{ username['address'] }}" placeholder="1234 Рівне Рівненська" required="">
+          <div class="invalid-feedback">
+            Будь ласка введіть адресу.
+          </div>
+        </div>
+
+
+        <hr class="mb-4">
+
+        <h4 class="mb-3"></h4>
+
+        <div class="d-block my-3">
+           <label for="inputPassword">Ваш пароль</label>
+          <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Введіть пароль" required="">
+          <input type="password" class="form-control" id="inputPassword2" name="password2" placeholder="Повторіть пароль" required="">
+          <div class="invalid-feedback">
+            Будь-ласка введіть однаковий пароль
+          </div>
+        </div>
+          <p>
+            <a>
+              <button  formmethod="post" class="btn btn-primary btn-lg btn-block" type="submit">Змінити дані</button>
+            </a>
+          </p>
+
+      </form>
+    </div>
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">© 2020-2020 Біржовий аналітик</p>
+  </footer>
+
+</body>
+
+{% endblock %}

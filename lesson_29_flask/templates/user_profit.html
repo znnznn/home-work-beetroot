@@ -1,0 +1,113 @@
+{% extends 'main.html'  %}
+
+{% block title  %}
+     {{ title }}
+{% endblock %}
+
+{% block body  %}
+
+<body class="py-4">
+
+    <div class="container">
+
+
+  <h1 style="color:#dbff6d">{{ title }}</h1>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li><h3 style="color:#dbff6d">{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+      {% endwith %}
+    <ul>
+        <li class="list-inline-item"><a href="{{url_for('user_list')}}" style="color:#fff">Дані по обраним цінним паперам</a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_profit_page')}}" style="color:#fff">Прибуток від операцій</a></li>
+    </ul>
+
+  <h2 class="mt-4" style="color:#dbff6d">Перелік здійснених операцій</h2>
+  <p style="color:#dbff6d">* кожна операція умовно відображає продаж пакету акцій розміром 1 лот (100 шт)</p>
+
+		<table class="table table thead-light th">
+			<thead>
+				<tr bgcolor="#007bff" style="color:#fff">
+
+                   {% for key in stocks[0].keys() %}
+                        {%if key == "symbol" %}
+                            <th>Символ паперу</th>
+                        {% elif key == "type" %}
+                            <th>Тип паперу</th>
+                        {% elif key == "description" %}
+                            <th>Емітент цінних паперів</th>
+                        {% elif key == "bid" %}
+                            <th>Ціна придбання</th>
+                        {% elif key == "ask" %}
+                            <th>Ціна продажу</th>
+                        {% elif key == 'change_percentage' %}
+                           <th>Зміна ціни у відсотках</th>
+                        {% elif key == 'trade_date' %}
+                           <th>Період операції</th>
+                        {% elif key == 'prevclose' %}
+                           <th>Прибуток/ збиток</th>
+                        {% elif not key in ['open', 'high', 'low', 'week_52_high', 'positive_profit', 'week_52_low', 'exch'] %}
+                           <th>{{ key }}</th>
+                        {% endif %}
+					{% endfor %}
+                    {% if sum_profit > 0 %}
+                        <th bgcolor="1de04e">Прибуток всього ∑ {{ sum_profit }} ↑</th>
+                    {% else %}
+                        <th bgcolor="#ff8080">Прибуток всього ∑ {{ sum_profit }} ↓</th>
+                    {% endif %}
+				</tr>
+			</thead>
+			<tbody>
+
+                {% for value in stocks %}
+                    {% if value['positive_profit'] %}
+                        <tr bgcolor="#1de04e" style="color:#fff">
+                                {% for key, val in value.items() %}
+                                    {% if key == 'bid' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'ask' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'change_percentage' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'week_52_high' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'week_52_low' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'trade_date' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'prevclose' %}
+                                        <td>{{ val }} ↑</td>
+                                    {% elif not key in ['open', 'high', 'low', 'week_52_high', 'positive_profit', 'week_52_low', 'exch'] %}
+                                        <td>{{ val }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                        </tr>
+                    {% else %}
+                         <tr bgcolor="#ff8080" style="color:#fff">
+                                {% for key, val in value.items() %}
+                                    {% if key == 'bid' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'ask' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'change_percentage' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'trade_date' %}
+                                        <td>{{ val }}</td>
+                                    {% elif key == 'prevclose' %}
+                                        <td>{{ val }} ↓</td>
+                                    {% elif not key in ['open', 'high', 'low', 'week_52_high', 'positive_profit', 'week_52_low', 'exch'] %}
+                                        <td>{{ val }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                    {% endif %}
+                {% endfor %}
+			</tbody>
+		</table>
+    </div>
+</body>
+{% endblock %}

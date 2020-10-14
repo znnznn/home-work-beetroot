@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" type="text/css">
+
+    <title>{% block title %}{% endblock %}</title>
+
+</head>
+
+<body>
+    <br>
+    <div class="container">
+
+        <nav class="nav-tabs nav-item nav-link">
+    <ul class="list-inline">
+        <li class="list-inline-item"><a href="{{url_for('main_page')}}" style="color:#fff"><h4>Головна сторінка</h4></a></li>
+      {% if current_user.is_authenticated %}
+        <li class="list-inline-item"><a href="{{url_for('user_page')}}" style="color:#fff"><h4>Перелік акцій</h4></a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_list')}}" style="color:#fff"><h4>Придбані акції</h4></a></li>
+        <li class="list-inline-item"><a href="{{url_for('user_profit_page')}}" style="color:#fff"><h4>Прибуток від операцій</h4></a></li>
+        <li class="list-inline-item"><a href="{{url_for('profile_page')}}" style="color:#fff"><h4>Реєстрацйні дані</h4></a></li>
+        <li class="list-inline-item"><a href="{{url_for('logout_page')}}" style="color:#fff"><h4>Вийти з кабінету</h4></a></li>
+      {% else %}
+        <li class="list-inline-item"><a href="{{url_for('login_page')}}" style="color:#fff"><h4>Сторінка авторизації</h4></a></li>
+         <li class="list-inline-item"><a href="{{url_for('new_user_page')}}" style="color:#fff"><h4>Зареєструватись</h4></a></li>
+      {% endif %}
+      <li class="list-inline-item"><a href="{{url_for('contacts_page')}}" style="color:#fff"><h4>Контакти</h4></a></li>
+    </ul>
+         </nav>
+    </div>
+    {% block body %}{% endblock %}
+</body>
+</html>
+
